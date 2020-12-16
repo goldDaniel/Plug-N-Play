@@ -20,6 +20,11 @@ Application::Application()
     SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
+    SDL_DisplayMode DM;
+    SDL_GetCurrentDisplayMode(0, &DM);
+    window_width = DM.w;
+    window_height = DM.h;
+
     window = SDL_CreateWindow( "Plug N Play", 
                                 SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                                 window_width, window_height, 
@@ -30,10 +35,7 @@ Application::Application()
     SDL_GL_SetSwapInterval(1);
 
 
-    SDL_DisplayMode DM;
-    SDL_GetCurrentDisplayMode(0, &DM);
-    window_width = DM.w;
-    window_height = DM.h;
+    
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -119,11 +121,11 @@ void Application::Run()
     auto texture = Texture::CreateTexture("Assets/Textures/Player.png");
 
     Entity player = ECS.CreateEntity();  
-    ECS.AddComponent(player, Transform{glm::vec2(0, -5), glm::vec2(2.f, 2.f), 0.f});
+    ECS.AddComponent(player, Transform{glm::vec2(0, -5), glm::vec2(1.f, 1.f), 0.f});
     ECS.AddComponent(player, Velocity());
     ECS.AddComponent(player, PlayerInput());
     ECS.AddComponent(player, InputSet{SDLK_LEFT, SDLK_RIGHT, SDLK_UP, SDLK_DOWN, SDLK_SPACE});
-    ECS.AddComponent(player, Weapon({0.25f}));
+    ECS.AddComponent(player, Weapon({0.08f}));
     ECS.AddComponent(player, Renderable{glm::vec4(1,1,1,1), texture.get() });        
     ECS.AddComponent(player, DebugRenderable{DebugRenderable::ShapeType::CIRCLE, glm::vec4(1,0,0,1)});        
 

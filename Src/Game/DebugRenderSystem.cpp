@@ -53,6 +53,23 @@ void DebugRenderSystem::Update(float dt)
             sh->Rect(p0, p1);
         }
     }
-
+    
+    int grid_size = 8;
+    for(int i = -grid_size; i < grid_size; i++)
+    {
+        for(int j = -grid_size; j < grid_size; j++)
+        {
+            sh->SetColor(glm::vec4(0,1,0,1));
+            glm::vec2 min(i - 0.5f, j - 0.5f);
+            glm::vec2 max(i + 0.5f, j + 0.5f);
+            sh->Rect(min, max);
+        }
+    }
+    //draw blue rectangle at the origin tile
+    sh->SetColor(glm::vec4(0.2f, 0.2f, 1.f, 1.f));
+    glm::vec2 min(-0.5f, -0.5f);
+    glm::vec2 max( 0.5f,  0.5f);
+    sh->Rect(min, max);
+    
     sh->End();
 }

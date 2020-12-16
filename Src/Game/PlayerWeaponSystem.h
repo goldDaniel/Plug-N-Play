@@ -35,19 +35,19 @@ public:
 
                     auto texture = Texture::CreateTexture("Assets/Textures/Bullet.png").get();
 
-                    Renderable r { glm::vec4(1.f,1.f,1.f,1.f), texture };
-                    ECS->AddComponent<Renderable>(bullet, r);
-
                     float ratio = (float)texture->GetWidth() / (float)texture->GetHeight();
                     float scaleX = ratio;
                     float scaleY = 1;
 
-                    glm::vec2 pos = trans.position + glm::vec2(0, trans.scale.y / 2.f);
+                    glm::vec2 pos = trans.position + glm::vec2(0, trans.scale.y / 2.f + scaleY / 2.f);
                     Transform t { pos, glm::vec2(scaleX, scaleY), 0 };
                     ECS->AddComponent<Transform>(bullet, t);
 
-                    Velocity v { glm::vec2(0, 30) };
+                    Velocity v { glm::vec2(0, 24) };
                     ECS->AddComponent<Velocity>(bullet, v);
+
+                    Renderable r { glm::vec4(1.f,1.f,1.f,1.f), texture };
+                    ECS->AddComponent<Renderable>(bullet, r);
                 }                
             }
         }
