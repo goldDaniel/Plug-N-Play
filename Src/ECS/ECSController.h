@@ -67,15 +67,13 @@ public:
 
     //SYSTEM========================================================
 	template<typename T>
-    std::shared_ptr<T> RegisterSystem()
+    std::shared_ptr<T> RegisterSystem(Signature sig)
     {
-        return system_manager->RegisterSystem<T>(this);
-    }
+        auto system = system_manager->RegisterSystem<T>(this);
+        
+        system_manager->SetSignature<T>(sig);
 
-	template<typename T>
-    void SetSystemSignature(Signature signature)
-    {
-        system_manager->SetSignature<T>(signature);
+        return system;
     }
 };
 

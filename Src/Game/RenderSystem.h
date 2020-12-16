@@ -1,19 +1,17 @@
-#ifndef DEBUG_RENDER_SYSTEM_H
-#define DEBUG_RENDER_SYSTEM_H
+#ifndef RENDER_SYSTEM_H
+#define RENDER_SYSTEM_H
 
 #include <Core.h>
-#include <Graphics/ShapeRenderer.h>
-
+#include <Graphics/SpriteBatch.h>
 
 
 class ECSController;
 
 
-class DebugRenderSystem : public System
+class RenderSystem : public System
 {
-
 private:
-    std::unique_ptr<ShapeRenderer> sh;
+    std::unique_ptr<SpriteBatch> s;
 
     Entity camera = 0;
 
@@ -24,7 +22,7 @@ private:
 
 public:
 
-    DebugRenderSystem(ECSController* ECS);
+    RenderSystem(ECSController* ECS);
 
     void SetCamera(Entity entity);
 

@@ -2,6 +2,7 @@
 #define COMPONENT_TYPES_H
 
 #include <glm/glm.hpp>
+#include <Graphics/Texture.h>
 
 struct Camera
 {
@@ -34,6 +35,12 @@ struct PlayerInput
     bool key_down = false;
 
     bool key_shoot = false;
+};
+
+struct Renderable
+{
+    glm::vec4 color;
+    Texture* texture;
 };
 
 struct DebugRenderable

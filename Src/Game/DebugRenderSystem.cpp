@@ -7,19 +7,18 @@
 DebugRenderSystem::DebugRenderSystem(ECSController* ECS) : System::System(ECS)
 {
     sh = std::make_unique<ShapeRenderer>();
+}
 
-    camera = ECS->CreateEntity();
-    Camera cam_comp;
-    cam_comp.proj = glm::mat4(1.f);
-    cam_comp.view = glm::lookAt(glm::vec3(0,0,10), glm::vec3(0,0,0), glm::vec3(0,1,0));
-    ECS->AddComponent(camera, cam_comp);
+void DebugRenderSystem::SetCamera(Entity entity)
+{
+    //please check for errors later
+    this->camera = entity;
 }
 
 void DebugRenderSystem::SetScreenDimensions(int w, int h)
 {
     screen_width = w;
     screen_height = h;
-    ECS->GetComponent<Camera>(camera).proj = glm::perspective(glm::radians(67.f), (float)screen_width/(float)screen_height, 1.f, 100.f);;
 }
 
 void DebugRenderSystem::Update(float dt)
@@ -29,7 +28,8 @@ void DebugRenderSystem::Update(float dt)
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    const auto& cam = ECS->GetComponent<Camera>(camera);
+    auto& cam = ECS->GetComponent<Camera>(camera);
+    cam.proj = glm::perspective(glm::radians(67.f), (float)screen_width/(float)screen_height, 1.f, 100.f);;
     sh->Begin(cam.proj, cam.view);
     
     for (auto const& entity : entities)

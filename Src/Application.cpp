@@ -4,6 +4,7 @@
 #include "Game/InputSystem.h"
 #include "Game/CameraSystem.h"
 #include "Game/PlayerSystem.h"
+#include "Game/RenderSystem.h"
 #include "Game/DebugRenderSystem.h"
 
 
@@ -47,55 +48,60 @@ void Application::Run()
     ECS.RegisterComponent<Camera>();
     ECS.RegisterComponent<InputSet>();
     ECS.RegisterComponent<PlayerInput>();
+    ECS.RegisterComponent<Renderable>();
     ECS.RegisterComponent<DebugRenderable>();
 
-    auto inputSystem = ECS.RegisterSystem<InputSystem>();
+    Signature inputSig;
+    inputSig.set(ECS.GetComponentType<InputSet>());
+    inputSig.set(ECS.GetComponentType<PlayerInput>());
+    auto inputSystem = ECS.RegisterSystem<InputSystem>(inputSig);
     inputSystem->SetQuitCallback([&running]() 
     {
         running = false;
     });
 
-    Signature inputSig;
-    inputSig.set(ECS.GetComponentType<InputSet>());
-    inputSig.set(ECS.GetComponentType<PlayerInput>());
-    ECS.SetSystemSignature<InputSystem>(inputSig);
-
-    auto playerSystem = ECS.RegisterSystem<PlayerSystem>();
+    
     Signature playerSig;
     playerSig.set(ECS.GetComponentType<Transform>());
     playerSig.set(ECS.GetComponentType<PlayerInput>());
-    ECS.SetSystemSignature<PlayerSystem>(playerSig);
-
-    auto cameraSystem = ECS.RegisterSystem<CameraSystem>();
+    auto playerSystem = ECS.RegisterSystem<PlayerSystem>(playerSig);
+    
+    
     Signature camSig;
-    camSig.set(ECS.GetComponentType<Camera>());
-    ECS.SetSystemSignature<CameraSystem>(camSig);
+    camSig.set(ECS.GetComponentType<Camera>()); 
+    auto cameraSystem = ECS.RegisterSystem<CameraSystem>(camSig);
+    
 
-    auto renderSystem = ECS.RegisterSystem<DebugRenderSystem>();
-    renderSystem->SetScreenDimensions(window_width, window_height);
+    Signature debugSig;
+    debugSig.set(ECS.GetComponentType<Transform>());
+    debugSig.set(ECS.GetComponentType<DebugRenderable>());
+    auto debugRenderSystem = ECS.RegisterSystem<DebugRenderSystem>(debugSig);
+    debugRenderSystem->SetScreenDimensions(window_width, window_height);
+    
+    
     Signature renderSig;
     renderSig.set(ECS.GetComponentType<Transform>());
-    renderSig.set(ECS.GetComponentType<DebugRenderable>());
-    ECS.SetSystemSignature<DebugRenderSystem>(renderSig);
+    renderSig.set(ECS.GetComponentType<Renderable>());
+    auto renderSystem = ECS.RegisterSystem<RenderSystem>(renderSig);
+    renderSystem->SetScreenDimensions(window_width, window_height);
 
 
-    int entites_sqrt = 32;
-    for(int i = 0; i < entites_sqrt; i++)
-    {
-        for(int j = 0; j < entites_sqrt; j++)
-        {
-            float posX = (float)(i + 1) / (float)entites_sqrt * 20.f - 10.f;
-            float posY = (float)(j + 1) / (float)entites_sqrt * 16.f - 8.f;
+    Entity camera = ECS.CreateEntity();
+    Camera cam_comp;
+    cam_comp.proj = glm::mat4(1.f);
+    cam_comp.view = glm::lookAt(glm::vec3(0,0,10), glm::vec3(0,0,0), glm::vec3(0,1,0));
+    ECS.AddComponent(camera, cam_comp);
+
+    debugRenderSystem->SetCamera(camera);
+    renderSystem->SetCamera(camera);
+
     
-    
-            Entity e = ECS.CreateEntity();  
-            ECS.AddComponent(e, Transform{glm::vec2(posX, posY), 0.5f, 0.f});
-            ECS.AddComponent(e, InputSet{SDLK_LEFT, SDLK_RIGHT, SDLK_UP, SDLK_DOWN});
-            ECS.AddComponent(e, PlayerInput());
-            ECS.AddComponent(e, DebugRenderable{DebugRenderable::ShapeType::CIRCLE, glm::vec4(1,0,0,1)});        
-        }   
-    }
-    
+    Entity player = ECS.CreateEntity();  
+    ECS.AddComponent(player, Transform{glm::vec2(0, -5), 0.5f, 0.f});
+    ECS.AddComponent(player, InputSet{SDLK_LEFT, SDLK_RIGHT, SDLK_UP, SDLK_DOWN});
+    ECS.AddComponent(player, PlayerInput());
+    ECS.AddComponent(player, DebugRenderable{DebugRenderable::ShapeType::CIRCLE, glm::vec4(1,0,0,1)});        
+
 
 
     float elapsed = 0;
@@ -114,8 +120,8 @@ void Application::Run()
         playerSystem->Update(dt);        
         cameraSystem->Update(dt);
 
-        renderSystem->SetScreenDimensions(window_width, window_height);
-        renderSystem->Update(dt);
+        debugRenderSystem->SetScreenDimensions(window_width, window_height);
+        debugRenderSystem->Update(dt);
 
         SDL_GL_SwapWindow(window);
     }

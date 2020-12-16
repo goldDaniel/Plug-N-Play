@@ -10,10 +10,10 @@ Texture::Texture(const std::string& filepath)
 {
     glGenTextures(1, &ID);
     glBindTexture(GL_TEXTURE_2D, ID);
-    // set the texture wrapping parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
+    
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    // set texture filtering parameters
+    
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     
@@ -22,7 +22,7 @@ Texture::Texture(const std::string& filepath)
     void* data = stbi_load(filepath.c_str(), &width, &height, &nrChannels, 0);
     if (data)
     {
-        assert(nrChannels == 3 || nrChannels == 4);
+        assert((nrChannels == 3 || nrChannels == 4) && "Texture channel count is invalid");
 
         if(nrChannels == 3)
         {
@@ -33,7 +33,7 @@ Texture::Texture(const std::string& filepath)
         {
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
             glGenerateMipmap(GL_TEXTURE_2D);
-        }    
+        }   
     }
     else
     {

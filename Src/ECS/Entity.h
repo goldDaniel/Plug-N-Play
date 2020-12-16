@@ -7,7 +7,7 @@
 
 
 using Entity = std::uint32_t;
-const Entity MAX_ENTITIES = 4096;
+const Entity MAX_ENTITIES = 1024;
 
 /**
  * @brief A ComponentType will be represented as a bit inside of a signature
