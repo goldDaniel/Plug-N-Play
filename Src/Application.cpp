@@ -104,7 +104,7 @@ void Application::Run()
     Texture* texture = new Texture("Assets/Textures/Player.png");
 
     Entity player = ECS.CreateEntity();  
-    ECS.AddComponent(player, Transform{glm::vec2(0, -5), 1.f, 0.f});
+    ECS.AddComponent(player, Transform{glm::vec2(0, -5), 2.f, 0.f});
     ECS.AddComponent(player, InputSet{SDLK_LEFT, SDLK_RIGHT, SDLK_UP, SDLK_DOWN});
     ECS.AddComponent(player, PlayerInput());
     ECS.AddComponent(player, Renderable{glm::vec4(1,1,1,1), texture});        

@@ -152,16 +152,16 @@ void SpriteBatch::Draw(Texture const * const tex, float const x, float const y, 
     }
 
     texcoord_buffer[current_tex_index++] = 0;
-    texcoord_buffer[current_tex_index++] = 0;
-
     texcoord_buffer[current_tex_index++] = 1;
-    texcoord_buffer[current_tex_index++] = 0;
 
     texcoord_buffer[current_tex_index++] = 1;
     texcoord_buffer[current_tex_index++] = 1;
+
+    texcoord_buffer[current_tex_index++] = 1;
+    texcoord_buffer[current_tex_index++] = 0;
     
     texcoord_buffer[current_tex_index++] = 0;
-    texcoord_buffer[current_tex_index++] = 1;
+    texcoord_buffer[current_tex_index++] = 0;
 
     
     
