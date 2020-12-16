@@ -2,26 +2,27 @@
 #define TEXTURE_H
 
 #include <string>
-
+#include <memory>
+#include <unordered_map>
 
 class Texture
 {
 private:
-    unsigned int ID;
+    static std::unordered_map<std::string, std::shared_ptr<Texture>> loaded_textures;
 
-    int width;
-    int height;
+    const unsigned int ID;
+
+    const int width;
+    const int height;
+
 public:
+    static std::shared_ptr<Texture> CreateTexture(const std::string& filepath);
 
-
-    Texture(const std::string& filepath);
-
+    Texture(unsigned int ID, int w, int h);
     ~Texture();
 
     unsigned int GetID() const;
-
     int GetWidth() const;
-
     int GetHeight() const;
 };
 

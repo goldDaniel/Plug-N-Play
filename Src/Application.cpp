@@ -100,14 +100,13 @@ void Application::Run()
     debugRenderSystem->SetCamera(camera);
     renderSystem->SetCamera(camera);
 
-    
-    Texture* texture = new Texture("Assets/Textures/Player.png");
+    auto texture = Texture::CreateTexture("Assets/Textures/Player.png");
 
     Entity player = ECS.CreateEntity();  
     ECS.AddComponent(player, Transform{glm::vec2(0, -5), 2.f, 0.f});
     ECS.AddComponent(player, InputSet{SDLK_LEFT, SDLK_RIGHT, SDLK_UP, SDLK_DOWN});
     ECS.AddComponent(player, PlayerInput());
-    ECS.AddComponent(player, Renderable{glm::vec4(1,1,1,1), texture});        
+    ECS.AddComponent(player, Renderable{glm::vec4(1,1,1,1), texture.get() });        
     ECS.AddComponent(player, DebugRenderable{DebugRenderable::ShapeType::CIRCLE, glm::vec4(1,0,0,1)});        
 
 
