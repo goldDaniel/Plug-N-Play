@@ -113,7 +113,7 @@ public:
      * @param rY the radius along the Y-axis
      * @param segments how many segments make up the circle
      */
-    void Ellipse(const glm::vec2& position, float rX, float rY, int segments);
+    void Ellipse(const glm::vec2& position, float rX, float rY, int segments = 32);
 
     /**
      * @brief Adds a rectangle shape to the buffer

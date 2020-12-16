@@ -3,44 +3,42 @@
 
 #include <Core.h>
 #include "Components.h"
+#include "Graphics/Texture.h"
 
 
-class PlayerSystem : public System
+class PlayerMovementSystem : public System
 {
-private:
-    
-
 public:
 
-    PlayerSystem(ECSController* ECS) : System::System(ECS) {}
+    PlayerMovementSystem(ECSController* ECS) : System::System(ECS) {}
     
     void Update(float dt)
     {
         for(const auto& entity : entities)
         {
-            auto& transform = ECS->GetComponent<Transform>(entity);
+            auto& vel = ECS->GetComponent<Velocity>(entity);
             const auto& input = ECS->GetComponent<PlayerInput>(entity);   
 
-            glm::vec2 velocity(0,0);
-            
+            glm::vec2 input_velocity(0,0);
+        
             if(input.key_left)
             {
-                velocity.x -= 8;
+                input_velocity.x -= 8;
             }
             if(input.key_right)
             {
-                velocity.x += 8;
+                input_velocity.x += 8;
             }
             if(input.key_up)
             {
-                velocity.y += 8;
+                input_velocity.y += 8;
             }
             if(input.key_down)
             {
-                velocity.y -= 8;
+                input_velocity.y -= 8;
             }
 
-            transform.position += velocity * dt;
+            vel.velocity = input_velocity;
         }
     }
 };

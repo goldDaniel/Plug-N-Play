@@ -33,9 +33,9 @@ void RenderSystem::Update(float dt)
         const auto& renderable = ECS->GetComponent<Renderable>(entity);
 
         s->SetColor(renderable.color);
-        s->Draw(renderable.texture, 
-                transform.position.x, transform.position.y, 
-                transform.scale, transform.scale);
+        s->Draw(    renderable.texture, 
+                    transform.position.x, transform.position.y, 
+                    transform.scale.x,  transform.scale.y);
     }
 
     s->End();

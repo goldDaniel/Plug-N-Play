@@ -17,7 +17,7 @@ private:
     std::queue<Entity> available_entities;
     std::array<Signature, MAX_ENTITIES> entity_signatures;
 
-    std::uint32_t current_entity_count;
+    std::uint32_t current_entity_count = 0;
 
 public:
 

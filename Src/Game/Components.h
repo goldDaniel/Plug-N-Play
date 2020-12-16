@@ -13,8 +13,13 @@ struct Camera
 struct Transform
 { 
     glm::vec2 position = glm::vec2(0,0);
-    float scale = 1;
+    glm::vec2 scale = glm::vec2(1,1);
     float rotation = 0;
+};
+
+struct Velocity
+{
+    glm::vec2 velocity{0,0};
 };
 
 struct InputSet
@@ -35,6 +40,12 @@ struct PlayerInput
     bool key_down = false;
 
     bool key_shoot = false;
+};
+
+struct Weapon
+{
+    float cooldown = 0;
+    float cooldown_timer = 0;
 };
 
 struct Renderable

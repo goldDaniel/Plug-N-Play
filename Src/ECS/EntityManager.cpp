@@ -2,6 +2,7 @@
 #include "EntityManager.h"
 
 #include <cassert>
+#include <iostream>
 
 /**
  * @brief Construct a new Entity Manager object
@@ -26,6 +27,8 @@ Entity EntityManager::CreateEntity()
 
     Entity id = available_entities.front();
     available_entities.pop();
+
+    current_entity_count++;
 
     return id;
 }

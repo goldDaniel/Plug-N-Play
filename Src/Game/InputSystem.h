@@ -50,10 +50,19 @@ public:
             const auto& inputSet = ECS->GetComponent<InputSet>(entity);
             auto& input = ECS->GetComponent<PlayerInput>(entity);
 
+            if(keys_pressed.find(inputSet.key_left) == keys_pressed.end()) keys_pressed[inputSet.key_left] = false;
+            if(keys_pressed.find(inputSet.key_right) == keys_pressed.end()) keys_pressed[inputSet.key_right] = false;
+            if(keys_pressed.find(inputSet.key_up) == keys_pressed.end()) keys_pressed[inputSet.key_up] = false;
+            if(keys_pressed.find(inputSet.key_down) == keys_pressed.end()) keys_pressed[inputSet.key_down] = false;
+            if(keys_pressed.find(inputSet.key_shoot) == keys_pressed.end()) keys_pressed[inputSet.key_shoot] = false;
+
+
             input.key_left = keys_pressed[inputSet.key_left];
             input.key_right = keys_pressed[inputSet.key_right];
             input.key_up = keys_pressed[inputSet.key_up];
             input.key_down = keys_pressed[inputSet.key_down];
+
+            input.key_shoot = keys_pressed[inputSet.key_shoot];
         }   
     }
 };

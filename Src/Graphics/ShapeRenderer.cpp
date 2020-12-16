@@ -132,16 +132,7 @@ void ShapeRenderer::Line(const glm::vec2& p0, const glm::vec2& p1)
  */
 void ShapeRenderer::Circle(const glm::vec2& position, float radius, int segments)
 {
-    for(int i = 0; i < segments; i++)
-    {
-        float angle0 = (float)i / (float)segments * glm::pi<float>() * 2;
-        float angle1 = (float)(i + 1) / (float)segments * glm::pi<float>() * 2;
-        
-        glm::vec2 p0 = position + glm::vec2(glm::cos(angle0), glm::sin(angle0)) * radius;
-        glm::vec2 p1 = position + glm::vec2(glm::cos(angle1), glm::sin(angle1)) * radius;
-
-        Line(p0, p1);
-    }
+    Ellipse(position, radius, radius, segments);
 }
 
 /**

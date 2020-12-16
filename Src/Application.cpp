@@ -5,7 +5,9 @@
 #include "Game/Components.h"
 #include "Game/InputSystem.h"
 #include "Game/CameraSystem.h"
-#include "Game/PlayerSystem.h"
+#include "Game/MovementSystem.h"
+#include "Game/PlayerWeaponSystem.h"
+#include "Game/PlayerMovementSystem.h"
 #include "Game/RenderSystem.h"
 #include "Game/DebugRenderSystem.h"
 
@@ -50,7 +52,9 @@ void Application::Run()
 
     ECSController ECS;
     ECS.RegisterComponent<Transform>();
+    ECS.RegisterComponent<Velocity>();
     ECS.RegisterComponent<Camera>();
+    ECS.RegisterComponent<Weapon>();
     ECS.RegisterComponent<InputSet>();
     ECS.RegisterComponent<PlayerInput>();
     ECS.RegisterComponent<Renderable>();
@@ -66,12 +70,24 @@ void Application::Run()
     });
 
     
-    Signature playerSig;
-    playerSig.set(ECS.GetComponentType<Transform>());
-    playerSig.set(ECS.GetComponentType<PlayerInput>());
-    auto playerSystem = ECS.RegisterSystem<PlayerSystem>(playerSig);
+    Signature playerMoveSig;
+    playerMoveSig.set(ECS.GetComponentType<Transform>());
+    playerMoveSig.set(ECS.GetComponentType<PlayerInput>());
+    auto playerSystem = ECS.RegisterSystem<PlayerMovementSystem>(playerMoveSig);
+
+    Signature playerWeaponSig;
+    playerWeaponSig.set(ECS.GetComponentType<Transform>());
+    playerWeaponSig.set(ECS.GetComponentType<Weapon>());
+    playerWeaponSig.set(ECS.GetComponentType<PlayerInput>());
+    auto weaponSystem = ECS.RegisterSystem<PlayerWeaponSystem>(playerWeaponSig);
     
-    
+
+    Signature movementSig;
+    movementSig.set(ECS.GetComponentType<Transform>());
+    movementSig.set(ECS.GetComponentType<Velocity>());
+    auto movementSystem = ECS.RegisterSystem<MovementSystem>(movementSig);
+
+
     Signature camSig;
     camSig.set(ECS.GetComponentType<Camera>()); 
     auto cameraSystem = ECS.RegisterSystem<CameraSystem>(camSig);
@@ -103,9 +119,11 @@ void Application::Run()
     auto texture = Texture::CreateTexture("Assets/Textures/Player.png");
 
     Entity player = ECS.CreateEntity();  
-    ECS.AddComponent(player, Transform{glm::vec2(0, -5), 2.f, 0.f});
-    ECS.AddComponent(player, InputSet{SDLK_LEFT, SDLK_RIGHT, SDLK_UP, SDLK_DOWN});
+    ECS.AddComponent(player, Transform{glm::vec2(0, -5), glm::vec2(2.f, 2.f), 0.f});
+    ECS.AddComponent(player, Velocity());
     ECS.AddComponent(player, PlayerInput());
+    ECS.AddComponent(player, InputSet{SDLK_LEFT, SDLK_RIGHT, SDLK_UP, SDLK_DOWN, SDLK_SPACE});
+    ECS.AddComponent(player, Weapon({0.25f}));
     ECS.AddComponent(player, Renderable{glm::vec4(1,1,1,1), texture.get() });        
     ECS.AddComponent(player, DebugRenderable{DebugRenderable::ShapeType::CIRCLE, glm::vec4(1,0,0,1)});        
 
@@ -123,7 +141,9 @@ void Application::Run()
         elapsed += dt;
 
         inputSystem->Update(dt);      
-        playerSystem->Update(dt);        
+        playerSystem->Update(dt);     
+        movementSystem->Update(dt);   
+        weaponSystem->Update(dt);
         cameraSystem->Update(dt);
 
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);

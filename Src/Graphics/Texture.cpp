@@ -14,9 +14,6 @@ std::shared_ptr<Texture> Texture::CreateTexture(const std::string& filepath)
         return loaded_textures[filepath];
     }
 
-
-    std::shared_ptr<Texture> result = nullptr;    
-
     unsigned int ID;
     int width;
     int height;
@@ -47,7 +44,7 @@ std::shared_ptr<Texture> Texture::CreateTexture(const std::string& filepath)
             glGenerateMipmap(GL_TEXTURE_2D);
         }   
 
-        result = std::make_shared<Texture>(ID, width, height);
+        loaded_textures[filepath] = std::make_shared<Texture>(ID, width, height);
     }
     else
     {
@@ -55,7 +52,7 @@ std::shared_ptr<Texture> Texture::CreateTexture(const std::string& filepath)
     }
     stbi_image_free(data);
 
-    return result;
+    return loaded_textures[filepath];
 }
 
 Texture::Texture(unsigned int ID, int w, int h) : ID(ID), width(w), height(h)

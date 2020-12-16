@@ -38,17 +38,17 @@ void DebugRenderSystem::Update(float dt)
 
         if(renderable.type == DebugRenderable::ShapeType::CIRCLE)
         {
-            sh->Circle(transform.position, transform.scale / 2.f);
+            sh->Ellipse(transform.position, transform.scale.x / 2.f, transform.scale.y / 2.f);
         }
         if(renderable.type == DebugRenderable::ShapeType::RECT)
         {
             glm::vec2 p0 = transform.position;
-            p0.x -= transform.scale / 2.f;
-            p0.y -= transform.scale / 2.f;
+            p0.x -= transform.scale.x / 2.f;
+            p0.y -= transform.scale.y / 2.f;
 
             glm::vec2 p1 = transform.position;
-            p1.x += transform.scale / 2.f;
-            p1.y += transform.scale / 2.f;
+            p1.x += transform.scale.x / 2.f;
+            p1.y += transform.scale.y / 2.f;
 
             sh->Rect(p0, p1);
         }
