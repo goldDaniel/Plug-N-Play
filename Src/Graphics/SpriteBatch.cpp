@@ -128,20 +128,20 @@ void SpriteBatch::Draw(Texture const * const tex, float const x, float const y, 
         Clear();
     }
 
-    position_buffer[current_pos_index++] = x - w / 2;
-    position_buffer[current_pos_index++] = y - h / 2;
+    position_buffer[current_pos_index++] = x - w / 2.f;
+    position_buffer[current_pos_index++] = y - h / 2.f;
     position_buffer[current_pos_index++] = 0;
 
-    position_buffer[current_pos_index++] = x + w / 2;
-    position_buffer[current_pos_index++] = y - h / 2;
+    position_buffer[current_pos_index++] = x + w / 2.f;
+    position_buffer[current_pos_index++] = y - h / 2.f;
     position_buffer[current_pos_index++] = 0;
 
-    position_buffer[current_pos_index++] = x + w / 2;
-    position_buffer[current_pos_index++] = y + h / 2;
+    position_buffer[current_pos_index++] = x + w / 2.f;
+    position_buffer[current_pos_index++] = y + h / 2.f;
     position_buffer[current_pos_index++] = 0;
 
-    position_buffer[current_pos_index++] = x - w / 2;
-    position_buffer[current_pos_index++] = y + h / 2;
+    position_buffer[current_pos_index++] = x - w / 2.f;
+    position_buffer[current_pos_index++] = y + h / 2.f;
     position_buffer[current_pos_index++] = 0;
 
     for(int i = 0; i < 4; i++)

@@ -25,11 +25,8 @@ void DebugRenderSystem::Update(float dt)
 {
     elapsed += dt;
 
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    auto& cam = ECS->GetComponent<Camera>(camera);
-    cam.proj = glm::perspective(glm::radians(67.f), (float)screen_width/(float)screen_height, 1.f, 100.f);;
+    const auto& cam = ECS->GetComponent<Camera>(camera);
     sh->Begin(cam.proj, cam.view);
     
     for (auto const& entity : entities)
@@ -41,7 +38,7 @@ void DebugRenderSystem::Update(float dt)
 
         if(renderable.type == DebugRenderable::ShapeType::CIRCLE)
         {
-            sh->Circle(transform.position, transform.scale);
+            sh->Circle(transform.position, transform.scale / 2.f);
         }
         if(renderable.type == DebugRenderable::ShapeType::RECT)
         {

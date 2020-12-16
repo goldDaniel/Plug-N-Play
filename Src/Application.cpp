@@ -1,5 +1,7 @@
 #include "Application.h"
 
+#include "Graphics/Texture.h"
+
 #include "Game/Components.h"
 #include "Game/InputSystem.h"
 #include "Game/CameraSystem.h"
@@ -30,6 +32,9 @@ Application::Application()
     SDL_GetCurrentDisplayMode(0, &DM);
     window_width = DM.w;
     window_height = DM.h;
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 Application::~Application()
@@ -88,7 +93,7 @@ void Application::Run()
 
     Entity camera = ECS.CreateEntity();
     Camera cam_comp;
-    cam_comp.proj = glm::mat4(1.f);
+    cam_comp.proj = glm::perspective(glm::radians(67.f), (float)window_width/(float)window_height, 1.f, 100.f);;
     cam_comp.view = glm::lookAt(glm::vec3(0,0,10), glm::vec3(0,0,0), glm::vec3(0,1,0));
     ECS.AddComponent(camera, cam_comp);
 
@@ -96,12 +101,14 @@ void Application::Run()
     renderSystem->SetCamera(camera);
 
     
+    Texture* texture = new Texture("Assets/Textures/Player.png");
+
     Entity player = ECS.CreateEntity();  
-    ECS.AddComponent(player, Transform{glm::vec2(0, -5), 0.5f, 0.f});
+    ECS.AddComponent(player, Transform{glm::vec2(0, -5), 1.f, 0.f});
     ECS.AddComponent(player, InputSet{SDLK_LEFT, SDLK_RIGHT, SDLK_UP, SDLK_DOWN});
     ECS.AddComponent(player, PlayerInput());
+    ECS.AddComponent(player, Renderable{glm::vec4(1,1,1,1), texture});        
     ECS.AddComponent(player, DebugRenderable{DebugRenderable::ShapeType::CIRCLE, glm::vec4(1,0,0,1)});        
-
 
 
     float elapsed = 0;
@@ -120,7 +127,9 @@ void Application::Run()
         playerSystem->Update(dt);        
         cameraSystem->Update(dt);
 
-        debugRenderSystem->SetScreenDimensions(window_width, window_height);
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);        
+        renderSystem->Update(dt);
         debugRenderSystem->Update(dt);
 
         SDL_GL_SwapWindow(window);
