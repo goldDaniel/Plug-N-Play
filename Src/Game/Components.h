@@ -45,6 +45,12 @@ struct InputSet
     int key_shoot = 0;
 };
 
+struct Bullet
+{
+    //for collision checks 
+    float radius = 1;
+};
+
 struct PlayerInput
 {
     bool key_left = false;

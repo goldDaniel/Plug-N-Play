@@ -43,8 +43,10 @@ public:
                     Transform t { pos, glm::vec2(scaleX, scaleY), 0 };
                     ECS->AddComponent<Transform>(bullet, t);
 
+                    ECS->AddComponent<Bullet>(bullet, Bullet({0.25f}));
+
                     Velocity v { glm::vec2(0, 24) };
-                    ECS->AddComponent<Velocity>(bullet, v);
+                    ECS->AddComponent<Velocity>(bullet, v); 
 
                     Renderable r { glm::vec4(1.f,1.f,1.f,1.f), texture };
                     ECS->AddComponent<Renderable>(bullet, r);

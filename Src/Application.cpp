@@ -3,6 +3,7 @@
 #include "Graphics/Texture.h"
 
 #include "Game/Components.h"
+#include "Game/BulletSystem.h"
 #include "Game/InputSystem.h"
 #include "Game/CameraSystem.h"
 #include "Game/MovementSystem.h"
@@ -55,6 +56,7 @@ void Application::Run()
     ECS.RegisterComponent<Transform>();
     ECS.RegisterComponent<Velocity>();
     ECS.RegisterComponent<Camera>();
+    ECS.RegisterComponent<Bullet>();
     ECS.RegisterComponent<Weapon>();
     ECS.RegisterComponent<BezierPath>();
     ECS.RegisterComponent<InputSet>();
@@ -93,7 +95,11 @@ void Application::Run()
     Signature camSig;
     camSig.set(ECS.GetComponentType<Camera>()); 
     auto cameraSystem = ECS.RegisterSystem<CameraSystem>(camSig);
-    
+
+    Signature bulletSig;
+    bulletSig.set(ECS.GetComponentType<Transform>());
+    bulletSig.set(ECS.GetComponentType<Bullet>());
+    auto bulletSystem = ECS.RegisterSystem<BulletSystem>(bulletSig);
 
     Signature pathSig;
     pathSig.set(ECS.GetComponentType<Transform>());
@@ -130,11 +136,11 @@ void Application::Run()
     {
         auto texture = Texture::CreateTexture("Assets/Textures/Player.png");
         Entity player = ECS.CreateEntity();  
-        ECS.AddComponent(player, Transform{glm::vec2(0, -5), glm::vec2(1.f, 1.f), 0.f});
+        ECS.AddComponent(player, Transform{glm::vec2(0, -5), glm::vec2(1.5f, 1.5f), 0.f});
         ECS.AddComponent(player, Velocity());
         ECS.AddComponent(player, PlayerInput());
         ECS.AddComponent(player, InputSet{SDLK_LEFT, SDLK_RIGHT, SDLK_UP, SDLK_DOWN, SDLK_SPACE});
-        ECS.AddComponent(player, Weapon({0.08f}));
+        ECS.AddComponent(player, Weapon({0.06f}));
         ECS.AddComponent(player, Renderable{glm::vec4(1,1,1,1), texture.get() });        
         ECS.AddComponent(player, DebugRenderable{DebugRenderable::ShapeType::CIRCLE, glm::vec4(1,0,0,1)});        
     }
@@ -183,6 +189,7 @@ void Application::Run()
         movementSystem->Update(dt);   
         weaponSystem->Update(dt);
         pathSystem->Update(dt);
+        bulletSystem->Update(dt);
         cameraSystem->Update(dt);
 
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
