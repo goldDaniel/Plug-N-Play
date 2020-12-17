@@ -120,6 +120,8 @@ void SpriteBatch::Draw(Texture const * const tex, float const x, float const y, 
     {
         Flush();
         Clear();
+
+        current_texture = tex;
     }
 
     if(current_pos_index >= POS_BUFFER_SIZE - 1)
