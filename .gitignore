@@ -32,3 +32,5 @@
 *.app
 
 Assets/Textures/
+.vs/
+Debug/

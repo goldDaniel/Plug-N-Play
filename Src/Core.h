@@ -2,8 +2,17 @@
 #define CORE_H
 
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_opengles2.h>
 
+#ifdef GL_ES_VERSION_2_0 
+	#include <SDL2/SDL_opengles2.h>
+
+#define GL_VERSION_MAJOR 2
+#define GL_VERSION_MINOR 0
+#else
+	#include <glad/glad/glad.h>
+	#define GL_VERSION_MAJOR 3
+	#define GL_VERSION_MINOR 3
+#endif
 
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>

@@ -1,5 +1,7 @@
 #include "Application.h"
 
+#include "Core.h"
+
 #include "Graphics/Texture.h"
 
 #include "Game/Components.h"
@@ -17,25 +19,32 @@
 Application::Application()
 {
     SDL_Init(SDL_INIT_VIDEO);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, GL_VERSION_MAJOR);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, GL_VERSION_MINOR);
     SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
     SDL_DisplayMode DM;
     SDL_GetCurrentDisplayMode(0, &DM);
-    window_width = DM.w;
-    window_height = DM.h;
+    window_width = 576; //DM.w;
+    window_height = 1024; //DM.h;
 
     window = SDL_CreateWindow( "Plug N Play", 
                                 SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                                 window_width, window_height, 
-                                SDL_WINDOW_FULLSCREEN | SDL_WINDOW_OPENGL);
+                                SDL_WINDOW_OPENGL);
 
 
     context = SDL_GL_CreateContext(window);
     SDL_GL_SetSwapInterval(1);
     
+#ifndef GL_ES_VERSION_2_0
+    if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress))
+    {
+        std::cout << "Failed to initialize GLAD" << std::endl;
+    }
+#endif
+
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
