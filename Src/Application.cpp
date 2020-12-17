@@ -64,6 +64,7 @@ void Application::Run()
     ECS.RegisterComponent<Renderable>();
     ECS.RegisterComponent<DebugRenderable>();
 
+
     Signature inputSig;
     inputSig.set(ECS.GetComponentType<InputSet>());
     inputSig.set(ECS.GetComponentType<PlayerInput>());
@@ -78,6 +79,7 @@ void Application::Run()
     playerMoveSig.set(ECS.GetComponentType<Transform>());
     playerMoveSig.set(ECS.GetComponentType<PlayerInput>());
     auto playerSystem = ECS.RegisterSystem<PlayerMovementSystem>(playerMoveSig);
+
 
     Signature playerWeaponSig;
     playerWeaponSig.set(ECS.GetComponentType<Transform>());
@@ -96,15 +98,18 @@ void Application::Run()
     camSig.set(ECS.GetComponentType<Camera>()); 
     auto cameraSystem = ECS.RegisterSystem<CameraSystem>(camSig);
 
+
     Signature bulletSig;
     bulletSig.set(ECS.GetComponentType<Transform>());
     bulletSig.set(ECS.GetComponentType<Bullet>());
     auto bulletSystem = ECS.RegisterSystem<BulletSystem>(bulletSig);
 
+
     Signature pathSig;
     pathSig.set(ECS.GetComponentType<Transform>());
     pathSig.set(ECS.GetComponentType<BezierPath>());
     auto pathSystem = ECS.RegisterSystem<PathFollowingSystem>(pathSig);
+
 
     Signature debugSig;
     debugSig.set(ECS.GetComponentType<Transform>());
@@ -155,7 +160,6 @@ void Application::Run()
         BezierPath path({curve, speed, 0.f});
 
         ECS.AddComponent(enemy, path);
-
         ECS.AddComponent(enemy, Renderable({glm::vec4(1,1,1,1), Texture::CreateTexture("Assets/Textures/Enemy.png").get() }));
     }
     //creates the enemy entity
@@ -168,7 +172,6 @@ void Application::Run()
         BezierPath path({curve, speed, 0.f});
 
         ECS.AddComponent(enemy, path);
-
         ECS.AddComponent(enemy, Renderable({glm::vec4(1,1,1,1), Texture::CreateTexture("Assets/Textures/Enemy.png").get() }));
     }
 

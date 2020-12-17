@@ -17,6 +17,7 @@ public:
         {
             auto& trans = ECS->GetComponent<Transform>(entity);   
             auto& path = ECS->GetComponent<BezierPath>(entity);
+
             
             if(path.time < 1)
             {
@@ -28,9 +29,14 @@ public:
             }
             
 
-            Bezier::Point p = path.curve.valueAt(path.time);
-            trans.position.x = p.x;
-            trans.position.y = p.y;
+            glm::vec2 pos_previous = trans.position;
+
+            Bezier::Point p_current = path.curve.valueAt(path.time);
+            trans.position.x = p_current.x;
+            trans.position.y = p_current.y;
+
+            glm::vec2 dir = trans.position - pos_previous;
+            trans.rotation = glm::atan(dir.y, dir.x);
         }
     }
 };
