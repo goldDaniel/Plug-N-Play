@@ -3,15 +3,15 @@
 #include "Graphics/Texture.h"
 
 #include "Game/Components.h"
-#include "Game/BulletSystem.h"
-#include "Game/InputSystem.h"
-#include "Game/CameraSystem.h"
-#include "Game/MovementSystem.h"
-#include "Game/PathFollowingSystem.h"
-#include "Game/PlayerWeaponSystem.h"
-#include "Game/PlayerMovementSystem.h"
-#include "Game/RenderSystem.h"
-#include "Game/DebugRenderSystem.h"
+#include "Game/Systems/BulletSystem.h"
+#include "Game/Systems/InputSystem.h"
+#include "Game/Systems/CameraSystem.h"
+#include "Game/Systems/MovementSystem.h"
+#include "Game/Systems/PathFollowingSystem.h"
+#include "Game/Systems/PlayerWeaponSystem.h"
+#include "Game/Systems/PlayerMovementSystem.h"
+#include "Game/Systems/RenderSystem.h"
+#include "Game/Systems/DebugRenderSystem.h"
 
 
 Application::Application()

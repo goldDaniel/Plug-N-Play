@@ -3,9 +3,6 @@
 
 #include <Core.h>
 
-#include "Components.h"
-
-
 class CameraSystem : public System
 {
 

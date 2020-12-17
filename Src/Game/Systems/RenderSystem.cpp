@@ -1,9 +1,5 @@
 #include "RenderSystem.h"
 
-#include "Components.h"
-
-
-
 RenderSystem::RenderSystem(ECSController* ECS) : System::System(ECS)
 {
     s = std::make_unique<SpriteBatch>();

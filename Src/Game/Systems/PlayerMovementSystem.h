@@ -2,7 +2,6 @@
 #define PLAYER_SYSTEM_H
 
 #include <Core.h>
-#include "Components.h"
 #include "Graphics/Texture.h"
 
 

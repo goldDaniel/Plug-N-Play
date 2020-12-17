@@ -1,9 +1,5 @@
 #include "DebugRenderSystem.h"
 
-#include "Components.h"
-
-
-
 DebugRenderSystem::DebugRenderSystem(ECSController* ECS) : System::System(ECS)
 {
     sh = std::make_unique<ShapeRenderer>();

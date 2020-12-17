@@ -20,6 +20,7 @@
 #include <cstring>
 
 #include "ECS/ECSController.h"
+#include "Game/Components.h"
 
 
 #endif

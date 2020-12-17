@@ -2,8 +2,6 @@
 #define PLAYER_MOVEMENT_SYSTEM_H
 
 #include <Core.h>
-#include "Components.h"
-
 
 class MovementSystem : public System
 {

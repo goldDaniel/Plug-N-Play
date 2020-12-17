@@ -2,8 +2,6 @@
 #define BULLET_SYSTEM_H
 
 #include <Core.h>
-#include "Components.h"
-
 
 class BulletSystem : public System
 {

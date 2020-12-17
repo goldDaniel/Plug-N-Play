@@ -2,8 +2,6 @@
 #define PATH_FOLLOWING_SYSTEM_H
 
 #include <Core.h>
-#include "Components.h"
-
 
 class PathFollowingSystem : public System
 {
