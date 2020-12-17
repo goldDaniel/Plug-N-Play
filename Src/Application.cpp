@@ -6,6 +6,7 @@
 #include "Game/InputSystem.h"
 #include "Game/CameraSystem.h"
 #include "Game/MovementSystem.h"
+#include "Game/PathFollowingSystem.h"
 #include "Game/PlayerWeaponSystem.h"
 #include "Game/PlayerMovementSystem.h"
 #include "Game/RenderSystem.h"
@@ -33,8 +34,6 @@ Application::Application()
 
     context = SDL_GL_CreateContext(window);
     SDL_GL_SetSwapInterval(1);
-
-
     
 
     glEnable(GL_BLEND);
@@ -57,6 +56,7 @@ void Application::Run()
     ECS.RegisterComponent<Velocity>();
     ECS.RegisterComponent<Camera>();
     ECS.RegisterComponent<Weapon>();
+    ECS.RegisterComponent<BezierPath>();
     ECS.RegisterComponent<InputSet>();
     ECS.RegisterComponent<PlayerInput>();
     ECS.RegisterComponent<Renderable>();
@@ -95,6 +95,11 @@ void Application::Run()
     auto cameraSystem = ECS.RegisterSystem<CameraSystem>(camSig);
     
 
+    Signature pathSig;
+    pathSig.set(ECS.GetComponentType<Transform>());
+    pathSig.set(ECS.GetComponentType<BezierPath>());
+    auto pathSystem = ECS.RegisterSystem<PathFollowingSystem>(pathSig);
+
     Signature debugSig;
     debugSig.set(ECS.GetComponentType<Transform>());
     debugSig.set(ECS.GetComponentType<DebugRenderable>());
@@ -108,27 +113,58 @@ void Application::Run()
     auto renderSystem = ECS.RegisterSystem<RenderSystem>(renderSig);
     renderSystem->SetScreenDimensions(window_width, window_height);
 
+    //creates the camera entity
+    {
+        Entity camera = ECS.CreateEntity();
+        Camera cam_comp;
+        cam_comp.proj = glm::perspective(glm::radians(67.f), (float)window_width/(float)window_height, 1.f, 100.f);;
+        cam_comp.view = glm::lookAt(glm::vec3(0,0,10), glm::vec3(0,0,0), glm::vec3(0,1,0));
+        ECS.AddComponent(camera, cam_comp);
 
-    Entity camera = ECS.CreateEntity();
-    Camera cam_comp;
-    cam_comp.proj = glm::perspective(glm::radians(67.f), (float)window_width/(float)window_height, 1.f, 100.f);;
-    cam_comp.view = glm::lookAt(glm::vec3(0,0,10), glm::vec3(0,0,0), glm::vec3(0,1,0));
-    ECS.AddComponent(camera, cam_comp);
 
-    debugRenderSystem->SetCamera(camera);
-    renderSystem->SetCamera(camera);
+        debugRenderSystem->SetCamera(camera);
+        renderSystem->SetCamera(camera);    
+    }
+    
+    //creates the player entity
+    {
+        auto texture = Texture::CreateTexture("Assets/Textures/Player.png");
+        Entity player = ECS.CreateEntity();  
+        ECS.AddComponent(player, Transform{glm::vec2(0, -5), glm::vec2(1.f, 1.f), 0.f});
+        ECS.AddComponent(player, Velocity());
+        ECS.AddComponent(player, PlayerInput());
+        ECS.AddComponent(player, InputSet{SDLK_LEFT, SDLK_RIGHT, SDLK_UP, SDLK_DOWN, SDLK_SPACE});
+        ECS.AddComponent(player, Weapon({0.08f}));
+        ECS.AddComponent(player, Renderable{glm::vec4(1,1,1,1), texture.get() });        
+        ECS.AddComponent(player, DebugRenderable{DebugRenderable::ShapeType::CIRCLE, glm::vec4(1,0,0,1)});        
+    }
 
-    auto texture = Texture::CreateTexture("Assets/Textures/Player.png");
+    //creates the enemy entity
+    {
+        Entity enemy = ECS.CreateEntity();
+        ECS.AddComponent(enemy, Transform{glm::vec2(0,0), glm::vec2(1.f, 1.f), 0.f});
 
-    Entity player = ECS.CreateEntity();  
-    ECS.AddComponent(player, Transform{glm::vec2(0, -5), glm::vec2(1.f, 1.f), 0.f});
-    ECS.AddComponent(player, Velocity());
-    ECS.AddComponent(player, PlayerInput());
-    ECS.AddComponent(player, InputSet{SDLK_LEFT, SDLK_RIGHT, SDLK_UP, SDLK_DOWN, SDLK_SPACE});
-    ECS.AddComponent(player, Weapon({0.08f}));
-    ECS.AddComponent(player, Renderable{glm::vec4(1,1,1,1), texture.get() });        
-    ECS.AddComponent(player, DebugRenderable{DebugRenderable::ShapeType::CIRCLE, glm::vec4(1,0,0,1)});        
+        Bezier::Bezier<2> curve({{-3.f, 6.f}, {3.f, 6.f}, {3.f, -6.f}});
+        float speed = 1.f/4.f;
+        BezierPath path({curve, speed, 0.f});
 
+        ECS.AddComponent(enemy, path);
+
+        ECS.AddComponent(enemy, Renderable({glm::vec4(1,1,1,1), Texture::CreateTexture("Assets/Textures/Enemy.png").get() }));
+    }
+    //creates the enemy entity
+    {
+        Entity enemy = ECS.CreateEntity();
+        ECS.AddComponent(enemy, Transform{glm::vec2(0,0), glm::vec2(1.f, 1.f), 0.f});
+
+        Bezier::Bezier<2> curve({{3.f, 6.f}, {-3.f, 6.f}, {-3.f, -6.f}});
+        float speed = 1.f/4.f;
+        BezierPath path({curve, speed, 0.f});
+
+        ECS.AddComponent(enemy, path);
+
+        ECS.AddComponent(enemy, Renderable({glm::vec4(1,1,1,1), Texture::CreateTexture("Assets/Textures/Enemy.png").get() }));
+    }
 
     float elapsed = 0;
     float prevTicks = SDL_GetTicks();
@@ -146,6 +182,7 @@ void Application::Run()
         playerSystem->Update(dt);     
         movementSystem->Update(dt);   
         weaponSystem->Update(dt);
+        pathSystem->Update(dt);
         cameraSystem->Update(dt);
 
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);

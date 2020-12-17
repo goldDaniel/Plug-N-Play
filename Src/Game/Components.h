@@ -4,6 +4,8 @@
 #include <glm/glm.hpp>
 #include <Graphics/Texture.h>
 
+#include <bezier.h>
+
 struct Camera
 {
     glm::mat4 proj = glm::mat4(1.f);
@@ -15,6 +17,17 @@ struct Transform
     glm::vec2 position = glm::vec2(0,0);
     glm::vec2 scale = glm::vec2(1,1);
     float rotation = 0;
+};
+
+struct BezierPath
+{   
+    Bezier::Bezier<2> curve;
+    
+    //how much per second we increase time by
+    float speed = 0;
+
+    //the accumulator that will go between 0.f - 1.f
+    float time = 0;
 };
 
 struct Velocity
