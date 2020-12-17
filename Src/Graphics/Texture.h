@@ -19,7 +19,6 @@ public:
     static std::shared_ptr<Texture> CreateTexture(const std::string& filepath);
 
     Texture(unsigned int ID, int w, int h);
-    ~Texture();
 
     unsigned int GetID() const;
     int GetWidth() const;

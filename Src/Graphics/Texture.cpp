@@ -58,11 +58,6 @@ std::shared_ptr<Texture> Texture::CreateTexture(const std::string& filepath)
 Texture::Texture(unsigned int ID, int w, int h) : ID(ID), width(w), height(h)
 {}
 
-Texture::~Texture()
-{
-    glDeleteTextures(1, &ID);
-}
-
 unsigned int Texture::GetID() const
 {
     return ID;
