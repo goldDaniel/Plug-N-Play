@@ -35,6 +35,12 @@ struct Velocity
     glm::vec2 velocity{0,0};
 };
 
+struct Collider
+{
+    std::uint16_t collides_with = 0;
+    float radius = 0;
+};
+
 struct InputSet
 {
     int key_left = 0;
@@ -47,8 +53,6 @@ struct InputSet
 
 struct Bullet
 {
-    //for collision checks 
-    float radius = 1;
 };
 
 struct PlayerInput

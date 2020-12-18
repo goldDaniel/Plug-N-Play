@@ -141,6 +141,7 @@
     <ClInclude Include="src\game\Components.h" />
     <ClInclude Include="src\game\systems\BulletSystem.h" />
     <ClInclude Include="src\game\systems\CameraSystem.h" />
+    <ClInclude Include="Src\Game\Systems\CollisionSystem.h" />
     <ClInclude Include="src\game\systems\DebugRenderSystem.h" />
     <ClInclude Include="src\game\systems\InputSystem.h" />
     <ClInclude Include="src\game\systems\MovementSystem.h" />

@@ -8,6 +8,7 @@
 #include "Game/Systems/BulletSystem.h"
 #include "Game/Systems/InputSystem.h"
 #include "Game/Systems/CameraSystem.h"
+#include "Game/Systems/CollisionSystem.h"
 #include "Game/Systems/MovementSystem.h"
 #include "Game/Systems/PathFollowingSystem.h"
 #include "Game/Systems/PlayerWeaponSystem.h"
@@ -66,6 +67,7 @@ void Application::Run()
     ECS.RegisterComponent<Transform>();
     ECS.RegisterComponent<Velocity>();
     ECS.RegisterComponent<Camera>();
+    ECS.RegisterComponent<Collider>();
     ECS.RegisterComponent<Bullet>();
     ECS.RegisterComponent<Weapon>();
     ECS.RegisterComponent<BezierPath>();
@@ -120,6 +122,9 @@ void Application::Run()
     pathSig.set(ECS.GetComponentType<BezierPath>());
     auto pathSystem = ECS.RegisterSystem<PathFollowingSystem>(pathSig);
 
+    Signature collisionDetectionSig;
+    collisionDetectionSig.set(ECS.GetComponentType<Collider>());
+    auto collisionSystem = ECS.RegisterSystem<CollisionSystem>(collisionDetectionSig);
 
     Signature debugSig;
     debugSig.set(ECS.GetComponentType<Transform>());
@@ -166,11 +171,12 @@ void Application::Run()
         ECS.AddComponent(enemy, Transform{glm::vec2(0,0), glm::vec2(1.f, 1.f), 0.f});
 
         Bezier::Bezier<2> curve({{-3.f, 6.f}, {3.f, 6.f}, {3.f, -6.f}});
-        float speed = 1.f/4.f;
+        float speed = 1.f/32.f;
         BezierPath path({curve, speed, 0.f});
 
         auto tex = Texture::CreateTexture("Assets/Textures/Enemy.png");
         ECS.AddComponent(enemy, path);
+        ECS.AddComponent(enemy, Collider());
         ECS.AddComponent(enemy, Renderable({glm::vec4(1,1,1,1), tex }));
     }
     //creates the enemy entity
@@ -179,11 +185,12 @@ void Application::Run()
         ECS.AddComponent(enemy, Transform{glm::vec2(0,0), glm::vec2(1.f, 1.f), 0.f});
 
         Bezier::Bezier<2> curve({{3.f, 6.f}, {-3.f, 6.f}, {-3.f, -6.f}});
-        float speed = 1.f/4.f;
+        float speed = 1.f/32.f;
         BezierPath path({curve, speed, 0.f});
 
         auto tex = Texture::CreateTexture("Assets/Textures/Enemy.png");
         ECS.AddComponent(enemy, path);
+        ECS.AddComponent(enemy, Collider());
         ECS.AddComponent(enemy, Renderable({glm::vec4(1,1,1,1), tex }));
     }
 
@@ -205,6 +212,8 @@ void Application::Run()
         weaponSystem->Update(dt);
         pathSystem->Update(dt);
         bulletSystem->Update(dt);
+        collisionSystem->Update(dt);
+    
         cameraSystem->Update(dt);
 
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);

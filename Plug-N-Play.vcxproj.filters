@@ -1250,6 +1250,9 @@
     <ClInclude Include="Src\Graphics\OpenGL\SpriteBatch_GL.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Game\Systems\CollisionSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="vendor\glm\detail\func_common.inl">
