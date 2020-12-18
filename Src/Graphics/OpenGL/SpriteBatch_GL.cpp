@@ -98,70 +98,7 @@ SpriteBatch_GL::~SpriteBatch_GL()
 void SpriteBatch_GL::Draw(Texture const* const tex, float const x, float const y, float const w, float const h)
 {
 
-    if (current_texture == nullptr)
-    {
-        current_texture = tex;
-    }
-    if (tex != current_texture)
-    {
-        Flush();
-        Clear();
-
-        current_texture = tex;
-    }
-
-    if (current_pos_index >= position_buffer.size() - 1)
-    {
-        Flush();
-        Clear();
-    }
-
-    position_buffer[current_pos_index++] = x - w / 2.f;
-    position_buffer[current_pos_index++] = y - h / 2.f;
-    position_buffer[current_pos_index++] = 0;
-
-    position_buffer[current_pos_index++] = x + w / 2.f;
-    position_buffer[current_pos_index++] = y - h / 2.f;
-    position_buffer[current_pos_index++] = 0;
-
-    position_buffer[current_pos_index++] = x + w / 2.f;
-    position_buffer[current_pos_index++] = y + h / 2.f;
-    position_buffer[current_pos_index++] = 0;
-
-    position_buffer[current_pos_index++] = x - w / 2.f;
-    position_buffer[current_pos_index++] = y + h / 2.f;
-    position_buffer[current_pos_index++] = 0;
-
-    for (int i = 0; i < 4; i++)
-    {
-        color_buffer[current_col_index++] = current_color.r;
-        color_buffer[current_col_index++] = current_color.g;
-        color_buffer[current_col_index++] = current_color.b;
-    }
-
-    texcoord_buffer[current_tex_index++] = 0;
-    texcoord_buffer[current_tex_index++] = 1;
-
-    texcoord_buffer[current_tex_index++] = 1;
-    texcoord_buffer[current_tex_index++] = 1;
-
-    texcoord_buffer[current_tex_index++] = 1;
-    texcoord_buffer[current_tex_index++] = 0;
-
-    texcoord_buffer[current_tex_index++] = 0;
-    texcoord_buffer[current_tex_index++] = 0;
-
-
-
-    index_buffer[current_idx_index + 0] = current_vertex_index + 0;
-    index_buffer[current_idx_index + 1] = current_vertex_index + 1;
-    index_buffer[current_idx_index + 2] = current_vertex_index + 3;
-
-    index_buffer[current_idx_index + 3] = current_vertex_index + 3;
-    index_buffer[current_idx_index + 4] = current_vertex_index + 1;
-    index_buffer[current_idx_index + 5] = current_vertex_index + 2;
-    current_idx_index += 6;
-    current_vertex_index += 4;
+    Draw(tex, x, y, w, h, 0);
 }
 
 void SpriteBatch_GL::Draw(Texture const* const tex, float const x, float const y, float const w, float const h, float rotation)

@@ -16,7 +16,7 @@ struct Transform
 { 
     glm::vec2 position = glm::vec2(0,0);
     glm::vec2 scale = glm::vec2(1,1);
-    float rotation = 0;
+    float rotation = 0.f;
 };
 
 struct BezierPath
@@ -45,7 +45,7 @@ struct Collider
 
     std::uint16_t category = 0;
     std::uint16_t collides_with = 0;
-    float radius = 0;
+    float radius = 1;
 };
 
 struct Collision
@@ -84,7 +84,7 @@ struct PlayerInput
 
 struct Weapon
 {
-    float cooldown = 0;
+    float cooldown = 0.01f;
     float cooldown_timer = 0;
 };
 

@@ -9,7 +9,7 @@
  * @param entity 
  */
 void SystemManager::EntityDestroyed(Entity entity)
-{
+    {
     for(const auto& pair : systems)
     {
         const auto& system = pair.second;
