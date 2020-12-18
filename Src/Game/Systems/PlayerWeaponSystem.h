@@ -42,7 +42,7 @@ public:
                         Entity bullet = ECS->CreateEntity();
                      
                         glm::vec2 pos = trans.position + glm::vec2(i/2.f, trans.scale.y / 2.f + scaleY / 2.f);
-                        Transform t{ pos, glm::vec2(scaleX, scaleY), -glm::pi<float>() / 2 };
+                        Transform t{ pos, glm::vec2(scaleX, scaleY), glm::pi<float>() / 2 };
                         ECS->AddComponent<Transform>(bullet, t);
                         
                         ECS->AddComponent<Bullet>(bullet, Bullet({ 0.25f }));

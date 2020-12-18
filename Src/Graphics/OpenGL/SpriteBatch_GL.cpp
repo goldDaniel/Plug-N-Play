@@ -184,7 +184,7 @@ void SpriteBatch_GL::Draw(Texture const* const tex, float const x, float const y
         Clear();
     }
 
-    glm::mat4 rot = glm::rotate(glm::mat4(1.f), rotation, glm::vec3(0, 0, 1));
+    glm::mat4 rot = glm::rotate(glm::mat4(1.f), rotation, glm::vec3(0, 0, -1));
 
     glm::vec4 p0(-w / 2.f, -h / 2.f, 0, 1);
     glm::vec4 p1( w / 2.f, -h / 2.f, 0, 1);
