@@ -160,4 +160,84 @@ void SpriteBatch_ES::Draw(Texture const* const tex, float const x, float const y
     current_vertex_index += 4;
 }
 
+void SpriteBatch_ES::Draw(Texture const* const tex, float const x, float const y, float const w, float const h, float rotation)
+{
+    if (current_texture == nullptr)
+    {
+        current_texture = tex;
+    }
+    if (tex != current_texture)
+    {
+        Flush();
+        Clear();
+
+        current_texture = tex;
+    }
+
+    if (current_pos_index >= position_buffer.size() - 1)
+    {
+        Flush();
+        Clear();
+    }
+
+    glm::mat4 rot = glm::rotate(glm::mat4(1.f), rotation, glm::vec3(0, 0, 1));
+
+    glm::vec4 p0(-w / 2.f, -h / 2.f, 0, 1);
+    glm::vec4 p1(w / 2.f, -h / 2.f, 0, 1);
+    glm::vec4 p2(w / 2.f, h / 2.f, 0, 1);
+    glm::vec4 p3(-w / 2.f, h / 2.f, 0, 1);
+
+    p0 = p0 * rot;
+    p1 = p1 * rot;
+    p2 = p2 * rot;
+    p3 = p3 * rot;
+
+    position_buffer[current_pos_index++] = x + p0.x;
+    position_buffer[current_pos_index++] = y + p0.y;
+    position_buffer[current_pos_index++] = 0;
+
+    position_buffer[current_pos_index++] = x + p1.x;
+    position_buffer[current_pos_index++] = y + p1.y;
+    position_buffer[current_pos_index++] = 0;
+
+    position_buffer[current_pos_index++] = x + p2.x;
+    position_buffer[current_pos_index++] = y + p2.y;
+    position_buffer[current_pos_index++] = 0;
+
+    position_buffer[current_pos_index++] = x + p3.x;
+    position_buffer[current_pos_index++] = y + p3.y;
+    position_buffer[current_pos_index++] = 0;
+
+    for (int i = 0; i < 4; i++)
+    {
+        color_buffer[current_col_index++] = current_color.r;
+        color_buffer[current_col_index++] = current_color.g;
+        color_buffer[current_col_index++] = current_color.b;
+    }
+
+    texcoord_buffer[current_tex_index++] = 0;
+    texcoord_buffer[current_tex_index++] = 1;
+
+    texcoord_buffer[current_tex_index++] = 1;
+    texcoord_buffer[current_tex_index++] = 1;
+
+    texcoord_buffer[current_tex_index++] = 1;
+    texcoord_buffer[current_tex_index++] = 0;
+
+    texcoord_buffer[current_tex_index++] = 0;
+    texcoord_buffer[current_tex_index++] = 0;
+
+
+
+    index_buffer[current_idx_index + 0] = current_vertex_index + 0;
+    index_buffer[current_idx_index + 1] = current_vertex_index + 1;
+    index_buffer[current_idx_index + 2] = current_vertex_index + 3;
+
+    index_buffer[current_idx_index + 3] = current_vertex_index + 3;
+    index_buffer[current_idx_index + 4] = current_vertex_index + 1;
+    index_buffer[current_idx_index + 5] = current_vertex_index + 2;
+    current_idx_index += 6;
+    current_vertex_index += 4;
+}
+
 #endif
