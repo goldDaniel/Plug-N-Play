@@ -9,6 +9,7 @@
 #include "Game/Systems/InputSystem.h"
 #include "Game/Systems/CameraSystem.h"
 #include "Game/Systems/CollisionSystem.h"
+#include "Game/Systems/CollisionResolutionSystem.h"
 #include "Game/Systems/MovementSystem.h"
 #include "Game/Systems/PathFollowingSystem.h"
 #include "Game/Systems/PlayerWeaponSystem.h"
@@ -68,6 +69,7 @@ void Application::Run()
     ECS.RegisterComponent<Velocity>();
     ECS.RegisterComponent<Camera>();
     ECS.RegisterComponent<Collider>();
+    ECS.RegisterComponent<Collision>();
     ECS.RegisterComponent<Bullet>();
     ECS.RegisterComponent<Weapon>();
     ECS.RegisterComponent<BezierPath>();
@@ -127,6 +129,10 @@ void Application::Run()
     collisionDetectionSig.set(ECS.GetComponentType<Transform>());
     collisionDetectionSig.set(ECS.GetComponentType<Collider>());
     auto collisionSystem = ECS.RegisterSystem<CollisionSystem>(collisionDetectionSig);
+
+    Signature resolutionSig;
+    resolutionSig.set(ECS.GetComponentType<Collision>());
+    auto resolutionSystem = ECS.RegisterSystem<CollisionResolutionSystem>(resolutionSig);
 
  
     Signature debugSig;
@@ -208,8 +214,7 @@ void Application::Run()
         float dt = (currTime - prevTicks) / 1000.f;
         prevTicks = currTime;
         elapsed += dt;
-
-        dt /= 10.f;
+       
 
         inputSystem->Update(dt);      
         playerSystem->Update(dt);     
@@ -218,9 +223,9 @@ void Application::Run()
         pathSystem->Update(dt);
         bulletSystem->Update(dt);
         collisionSystem->Update(dt);
-    
+        resolutionSystem->Update(dt);
         cameraSystem->Update(dt);
-
+        
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 

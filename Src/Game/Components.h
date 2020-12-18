@@ -37,15 +37,26 @@ struct Velocity
 
 struct Collider
 {
-    static const std::uint16_t None   = 0;
-    static const std::uint16_t Player = 1;
-    static const std::uint16_t Bullet = 2;
-    static const std::uint16_t Enemy  = 4;
+    using Type = std::uint16_t;
+    static const Type None   = 0;
+    static const Type Player = 1;
+    static const Type Bullet = 2;
+    static const Type Enemy  = 4;
 
     std::uint16_t category = 0;
     std::uint16_t collides_with = 0;
     float radius = 0;
 };
+
+struct Collision
+{
+    Entity e0;
+    Collider::Type type0;
+
+    Entity e1;
+    Collider::Type type1;
+};
+
 
 struct InputSet
 {

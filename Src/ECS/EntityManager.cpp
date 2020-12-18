@@ -29,7 +29,6 @@ Entity EntityManager::CreateEntity()
     available_entities.pop();
 
     current_entity_count++;
-
     return id;
 }
 

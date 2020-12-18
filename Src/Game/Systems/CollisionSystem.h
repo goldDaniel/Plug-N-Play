@@ -15,9 +15,6 @@ public:
 
 	void Update(float dt)
 	{
-
-		std::set<Entity> to_remove;
-
 		for (const auto& e0 : entities)
 		{
 			const auto& trans0 = ECS->GetComponent<Transform>(e0);
@@ -32,14 +29,16 @@ public:
 				{
 					if (glm::length(trans0.position - trans1.position) < collider0.radius + collider1.radius)
 					{
-						to_remove.insert(e1);
-					}
+						Collision col = 
+						{
+							e0, collider0.category, 
+							e1, collider1.category 
+						};
+						Entity collision = ECS->CreateEntity();
+						ECS->AddComponent<Collision>(collision, col);
+					}	
 				}
 			}
-		}
-		for (const auto& entity : to_remove)
-		{
-			ECS->DestroyEntity(entity);
 		}
 	}
 };
