@@ -25,7 +25,6 @@ public:
 			if (collision.type0 == Collider::Bullet &&
 				collision.type1 == Collider::Enemy)
 			{
-				std::cout << "collision" << std::endl;
 				to_remove.insert(collision.e0);
 				to_remove.insert(collision.e1);
 				
