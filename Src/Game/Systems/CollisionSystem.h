@@ -28,11 +28,10 @@ public:
 				const auto& trans1 = ECS->GetComponent<Transform>(e1);
 				const auto& collider1 = ECS->GetComponent<Collider>(e1);
 
-				if ( (collider0.category & collider1.collides_with) != Collider::None)
+				if ( (collider1.category & collider0.collides_with) != Collider::None)
 				{
 					if (glm::length(trans0.position - trans1.position) < collider0.radius + collider1.radius)
 					{
-						to_remove.insert(e0);
 						to_remove.insert(e1);
 					}
 				}

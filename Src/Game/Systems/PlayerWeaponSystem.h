@@ -48,7 +48,7 @@ public:
                     Velocity v{ glm::vec2(0, 24) };
                     ECS->AddComponent<Velocity>(bullet, v);
                         
-                    Collider collider{ Collider::Bullet, Collider::None, 1.f };
+                    Collider collider{ Collider::Bullet, Collider::Enemy, 1.f };
                     ECS->AddComponent(bullet, collider);
 
                     Renderable r{ glm::vec4(1.f,1.f,1.f,1.f), texture };
