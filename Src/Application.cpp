@@ -123,9 +123,11 @@ void Application::Run()
     auto pathSystem = ECS.RegisterSystem<PathFollowingSystem>(pathSig);
 
     Signature collisionDetectionSig;
+    collisionDetectionSig.set(ECS.GetComponentType<Transform>());
     collisionDetectionSig.set(ECS.GetComponentType<Collider>());
     auto collisionSystem = ECS.RegisterSystem<CollisionSystem>(collisionDetectionSig);
 
+ 
     Signature debugSig;
     debugSig.set(ECS.GetComponentType<Transform>());
     debugSig.set(ECS.GetComponentType<DebugRenderable>());
@@ -161,6 +163,7 @@ void Application::Run()
         ECS.AddComponent(player, PlayerInput());
         ECS.AddComponent(player, InputSet{SDLK_LEFT, SDLK_RIGHT, SDLK_UP, SDLK_DOWN, SDLK_SPACE});
         ECS.AddComponent(player, Weapon({0.1f}));
+        ECS.AddComponent(player, Collider{Collider::Player, Collider::Enemy, 1});
         ECS.AddComponent(player, Renderable{glm::vec4(1,1,1,1), texture });        
         ECS.AddComponent(player, DebugRenderable{DebugRenderable::ShapeType::CIRCLE, glm::vec4(1,0,0,1)});        
     }
@@ -176,7 +179,7 @@ void Application::Run()
 
         auto tex = Texture::CreateTexture("Assets/Textures/Enemy.png");
         ECS.AddComponent(enemy, path);
-        ECS.AddComponent(enemy, Collider());
+        ECS.AddComponent(enemy, Collider{ Collider::Enemy, Collider::Bullet | Collider::Player, 1.f });
         ECS.AddComponent(enemy, Renderable({glm::vec4(1,1,1,1), tex }));
     }
     //creates the enemy entity
@@ -190,7 +193,7 @@ void Application::Run()
 
         auto tex = Texture::CreateTexture("Assets/Textures/Enemy.png");
         ECS.AddComponent(enemy, path);
-        ECS.AddComponent(enemy, Collider());
+        ECS.AddComponent(enemy, Collider{Collider::Enemy, Collider::Bullet | Collider::Player, 1.f});
         ECS.AddComponent(enemy, Renderable({glm::vec4(1,1,1,1), tex }));
     }
 

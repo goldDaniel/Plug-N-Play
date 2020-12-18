@@ -37,6 +37,12 @@ struct Velocity
 
 struct Collider
 {
+    static const std::uint16_t None   = 0;
+    static const std::uint16_t Player = 1;
+    static const std::uint16_t Bullet = 2;
+    static const std::uint16_t Enemy  = 4;
+
+    std::uint16_t category = 0;
     std::uint16_t collides_with = 0;
     float radius = 0;
 };
