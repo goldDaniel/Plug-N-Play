@@ -93,6 +93,7 @@ struct DebugRenderable
 
     ShapeType type = ShapeType::CIRCLE;
     glm::vec4 color = glm::vec4(1,1,1,1);
+    float scale = 1.f;
 };
 
 #endif

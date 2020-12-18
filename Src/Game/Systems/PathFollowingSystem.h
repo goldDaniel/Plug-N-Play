@@ -11,6 +11,7 @@ public:
     
     void Update(float dt)
     {
+        std::set<Entity> to_remove;
         for(const auto& entity : entities)
         {
             auto& trans = ECS->GetComponent<Transform>(entity);   
@@ -20,15 +21,21 @@ public:
             if(path.time < 1)
             {
                 path.time += path.speed * dt;
+
+                Bezier::Point p_current = path.curve.valueAt(path.time);
+                trans.position.x = p_current.x;
+                trans.position.y = p_current.y;
             }
             else
             {
-                path.time = 1;
+                //path following is complete, destroy the entity
+                to_remove.insert(entity);
             }
+        }
 
-            Bezier::Point p_current = path.curve.valueAt(path.time);
-            trans.position.x = p_current.x;
-            trans.position.y = p_current.y;
+        for (const auto& entity : to_remove)
+        {
+            ECS->DestroyEntity(entity);
         }
     }
 };

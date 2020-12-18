@@ -164,9 +164,8 @@ void Application::Run()
         ECS.AddComponent(player, PlayerInput());
         ECS.AddComponent(player, InputSet{SDLK_LEFT, SDLK_RIGHT, SDLK_UP, SDLK_DOWN, SDLK_SPACE});
         ECS.AddComponent(player, Weapon({0.1f}));
-        ECS.AddComponent(player, Collider{Collider::Player, Collider::None, 1});
+        ECS.AddComponent(player, Collider{Collider::Player, Collider::None, 0.1f});
         ECS.AddComponent(player, Renderable{glm::vec4(1,1,1,1), texture });        
-        ECS.AddComponent(player, DebugRenderable{DebugRenderable::ShapeType::CIRCLE, glm::vec4(1,0,0,1)});        
     }
 
     //creates the enemy entity
@@ -174,13 +173,13 @@ void Application::Run()
         Entity enemy = ECS.CreateEntity();
         ECS.AddComponent(enemy, Transform{glm::vec2(0,0), glm::vec2(1.f, 1.f), 0.f});
 
-        Bezier::Bezier<2> curve({{-3.f, 6.f}, {3.f, 6.f}, {3.f, -6.f}});
-        float speed = 1.f/32.f;
+        Bezier::Bezier<2> curve({{-4.5f, 6.f}, {3.f, 6.f}, {3.5f, -8.f}});
+        float speed = 1.f/4.f;
         BezierPath path({curve, speed, 0.f});
 
         auto tex = Texture::CreateTexture("Assets/Textures/Enemy.png");
         ECS.AddComponent(enemy, path);
-        ECS.AddComponent(enemy, Collider{ Collider::Enemy, Collider::Player, 1.f });
+        ECS.AddComponent(enemy, Collider{ Collider::Enemy, Collider::Player, 0.5f });
         ECS.AddComponent(enemy, Renderable({glm::vec4(1,1,1,1), tex }));
     }
     //creates the enemy entity
@@ -188,13 +187,13 @@ void Application::Run()
         Entity enemy = ECS.CreateEntity();
         ECS.AddComponent(enemy, Transform{glm::vec2(0,0), glm::vec2(1.f, 1.f), 0.f});
 
-        Bezier::Bezier<2> curve({{3.f, 6.f}, {-3.f, 6.f}, {-3.f, -6.f}});
-        float speed = 1.f/32.f;
+        Bezier::Bezier<2> curve({{4.5f, 6.f}, {-3.f, 6.f}, {-3.5f, -8.f}});
+        float speed = 1.f/4.f;
         BezierPath path({curve, speed, 0.f});
 
         auto tex = Texture::CreateTexture("Assets/Textures/Enemy.png");
         ECS.AddComponent(enemy, path);
-        ECS.AddComponent(enemy, Collider{Collider::Enemy, Collider::Player, 1.f});
+        ECS.AddComponent(enemy, Collider{Collider::Enemy, Collider::Player, 0.5f});
         ECS.AddComponent(enemy, Renderable({glm::vec4(1,1,1,1), tex }));
     }
 
@@ -209,6 +208,8 @@ void Application::Run()
         float dt = (currTime - prevTicks) / 1000.f;
         prevTicks = currTime;
         elapsed += dt;
+
+        dt /= 10.f;
 
         inputSystem->Update(dt);      
         playerSystem->Update(dt);     
