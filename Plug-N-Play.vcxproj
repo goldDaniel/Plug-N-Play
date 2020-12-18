@@ -119,8 +119,12 @@
     <ClCompile Include="src\game\systems\DebugRenderSystem.cpp" />
     <ClCompile Include="src\game\systems\RenderSystem.cpp" />
     <ClCompile Include="Src\Graphics\glad.c" />
-    <ClCompile Include="src\graphics\ShapeRenderer.cpp" />
-    <ClCompile Include="src\graphics\SpriteBatch.cpp" />
+    <ClCompile Include="Src\Graphics\GLES\ShapeRenderer_ES.cpp" />
+    <ClCompile Include="Src\Graphics\GLES\SpriteBatch_ES.cpp" />
+    <ClCompile Include="Src\Graphics\OpenGL\ShapeRenderer_GL.cpp" />
+    <ClCompile Include="Src\Graphics\OpenGL\SpriteBatch_GL.cpp" />
+    <ClCompile Include="Src\Graphics\ShapeRenderer.cpp" />
+    <ClCompile Include="Src\Graphics\SpriteBatch.cpp" />
     <ClCompile Include="src\graphics\Texture.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="vendor\glm\detail\glm.cpp" />
@@ -144,6 +148,10 @@
     <ClInclude Include="src\game\systems\PlayerMovementSystem.h" />
     <ClInclude Include="src\game\systems\PlayerWeaponSystem.h" />
     <ClInclude Include="src\game\systems\RenderSystem.h" />
+    <ClInclude Include="Src\Graphics\GLES\ShapeRenderer_ES.h" />
+    <ClInclude Include="Src\Graphics\GLES\SpriteBatch_ES.h" />
+    <ClInclude Include="Src\Graphics\OpenGL\ShapeRenderer_GL.h" />
+    <ClInclude Include="Src\Graphics\OpenGL\SpriteBatch_GL.h" />
     <ClInclude Include="src\graphics\Shader.h" />
     <ClInclude Include="src\graphics\ShapeRenderer.h" />
     <ClInclude Include="src\graphics\SpriteBatch.h" />

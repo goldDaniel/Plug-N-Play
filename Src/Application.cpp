@@ -37,14 +37,15 @@ Application::Application()
 
     context = SDL_GL_CreateContext(window);
     SDL_GL_SetSwapInterval(1);
-    
-#ifndef GL_ES_VERSION_2_0
+
+
+#ifndef __arm__
     if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress))
     {
         std::cout << "Failed to initialize GLAD" << std::endl;
     }
 #endif
-
+    
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -155,7 +156,7 @@ void Application::Run()
         ECS.AddComponent(player, PlayerInput());
         ECS.AddComponent(player, InputSet{SDLK_LEFT, SDLK_RIGHT, SDLK_UP, SDLK_DOWN, SDLK_SPACE});
         ECS.AddComponent(player, Weapon({0.06f}));
-        ECS.AddComponent(player, Renderable{glm::vec4(1,1,1,1), texture.get() });        
+        ECS.AddComponent(player, Renderable{glm::vec4(1,1,1,1), texture });        
         ECS.AddComponent(player, DebugRenderable{DebugRenderable::ShapeType::CIRCLE, glm::vec4(1,0,0,1)});        
     }
 
@@ -168,8 +169,9 @@ void Application::Run()
         float speed = 1.f/4.f;
         BezierPath path({curve, speed, 0.f});
 
+        auto tex = Texture::CreateTexture("Assets/Textures/Enemy.png");
         ECS.AddComponent(enemy, path);
-        ECS.AddComponent(enemy, Renderable({glm::vec4(1,1,1,1), Texture::CreateTexture("Assets/Textures/Enemy.png").get() }));
+        ECS.AddComponent(enemy, Renderable({glm::vec4(1,1,1,1), tex }));
     }
     //creates the enemy entity
     {
@@ -180,8 +182,9 @@ void Application::Run()
         float speed = 1.f/4.f;
         BezierPath path({curve, speed, 0.f});
 
+        auto tex = Texture::CreateTexture("Assets/Textures/Enemy.png");
         ECS.AddComponent(enemy, path);
-        ECS.AddComponent(enemy, Renderable({glm::vec4(1,1,1,1), Texture::CreateTexture("Assets/Textures/Enemy.png").get() }));
+        ECS.AddComponent(enemy, Renderable({glm::vec4(1,1,1,1), tex }));
     }
 
     float elapsed = 0;
@@ -205,7 +208,8 @@ void Application::Run()
         cameraSystem->Update(dt);
 
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);        
+        glClear(GL_COLOR_BUFFER_BIT);
+
         renderSystem->Update(dt);
         debugRenderSystem->Update(dt);
 

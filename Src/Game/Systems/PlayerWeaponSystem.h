@@ -32,7 +32,7 @@ public:
 
                     Entity bullet = ECS->CreateEntity();
 
-                    auto texture = Texture::CreateTexture("Assets/Textures/Bullet.png").get();
+                    auto texture = Texture::CreateTexture("Assets/Textures/Bullet.png");
 
                     float ratio = (float)texture->GetWidth() / (float)texture->GetHeight();
                     float scaleX = ratio;

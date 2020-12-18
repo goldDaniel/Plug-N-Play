@@ -16,7 +16,7 @@ private:
     const int height;
 
 public:
-    static std::shared_ptr<Texture> CreateTexture(const std::string& filepath);
+    static Texture* CreateTexture(const std::string& filepath);
 
     Texture(unsigned int ID, int w, int h);
 

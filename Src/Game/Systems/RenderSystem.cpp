@@ -2,7 +2,7 @@
 
 RenderSystem::RenderSystem(ECSController* ECS) : System::System(ECS)
 {
-    s = std::make_unique<SpriteBatch>();
+    s = SpriteBatch::CreateSpriteBatch();
 }
 
 void RenderSystem::SetCamera(Entity entity)

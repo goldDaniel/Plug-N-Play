@@ -7,11 +7,11 @@
 
 std::unordered_map<std::string, std::shared_ptr<Texture>> Texture::loaded_textures;
 
-std::shared_ptr<Texture> Texture::CreateTexture(const std::string& filepath)
+Texture* Texture::CreateTexture(const std::string& filepath)
 {
     if(loaded_textures.find(filepath) != loaded_textures.end())
     {
-        return loaded_textures[filepath];
+        return loaded_textures[filepath].get();
     }
 
     unsigned int ID;
@@ -52,7 +52,7 @@ std::shared_ptr<Texture> Texture::CreateTexture(const std::string& filepath)
     }
     stbi_image_free(data);
 
-    return loaded_textures[filepath];
+    return loaded_textures[filepath].get();
 }
 
 Texture::Texture(unsigned int ID, int w, int h) : ID(ID), width(w), height(h)
