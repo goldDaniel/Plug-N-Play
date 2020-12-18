@@ -31,11 +31,11 @@ public:
                 auto texture = Texture::CreateTexture("Assets/Textures/Bullet.png");
 
                 float ratio = (float)texture->GetHeight() / (float)texture->GetWidth();
-                float scaleX = 1;
-                float scaleY = ratio;
+                float scaleX = 1 / 2.f;
+                float scaleY = ratio / 2.f;
 
-
-                for (int i = -1; i <= 1; i++)
+                float spacing = 0.5f;
+                for (float i = -spacing; i <= spacing; i += spacing)
                 {
                     Entity bullet = ECS->CreateEntity();
                      
@@ -48,7 +48,7 @@ public:
                     Velocity v{ glm::vec2(0, 24) };
                     ECS->AddComponent<Velocity>(bullet, v);
                         
-                    Collider collider{ Collider::Bullet, Collider::Enemy, 1.f };
+                    Collider collider{ Collider::Bullet, Collider::Enemy, 0.1f };
                     ECS->AddComponent(bullet, collider);
 
                     Renderable r{ glm::vec4(1.f,1.f,1.f,1.f), texture };

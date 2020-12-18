@@ -30,5 +30,11 @@
 #include "ECS/ECSController.h"
 #include "Game/Components.h"
 
+struct Constants
+{
+	static const int WORLD_WIDTH = 3;
+	static const int WORLD_HEIGHT = 6;
+};
+
 
 #endif

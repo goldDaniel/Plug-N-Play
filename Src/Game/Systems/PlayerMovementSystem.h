@@ -15,6 +15,7 @@ public:
     {
         for(const auto& entity : entities)
         {
+            auto& trans = ECS->GetComponent<Transform>(entity);
             auto& vel = ECS->GetComponent<Velocity>(entity);
             const auto& input = ECS->GetComponent<PlayerInput>(entity);   
 
@@ -32,6 +33,24 @@ public:
             if(glm::length(input_velocity) > 0)
             {
                 vel.velocity = glm::normalize(input_velocity) * speed;
+            }
+
+            if (trans.position.x < -Constants::WORLD_WIDTH)
+            {
+                trans.position.x = -Constants::WORLD_WIDTH;
+            }
+            if (trans.position.x > Constants::WORLD_WIDTH)
+            {
+                trans.position.x = Constants::WORLD_WIDTH;
+            } 
+
+            if (trans.position.y < -Constants::WORLD_HEIGHT)
+            {
+                trans.position.y = -Constants::WORLD_HEIGHT;
+            }
+            if (trans.position.y > Constants::WORLD_HEIGHT)
+            {
+                trans.position.y = Constants::WORLD_HEIGHT;
             }
         }
     }

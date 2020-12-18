@@ -89,6 +89,7 @@ void Application::Run()
     
     Signature playerMoveSig;
     playerMoveSig.set(ECS.GetComponentType<Transform>());
+    playerMoveSig.set(ECS.GetComponentType<Velocity>());
     playerMoveSig.set(ECS.GetComponentType<PlayerInput>());
     auto playerSystem = ECS.RegisterSystem<PlayerMovementSystem>(playerMoveSig);
 
