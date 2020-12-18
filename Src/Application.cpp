@@ -155,7 +155,7 @@ void Application::Run()
         ECS.AddComponent(player, Velocity());
         ECS.AddComponent(player, PlayerInput());
         ECS.AddComponent(player, InputSet{SDLK_LEFT, SDLK_RIGHT, SDLK_UP, SDLK_DOWN, SDLK_SPACE});
-        ECS.AddComponent(player, Weapon({0.06f}));
+        ECS.AddComponent(player, Weapon({0.1f}));
         ECS.AddComponent(player, Renderable{glm::vec4(1,1,1,1), texture });        
         ECS.AddComponent(player, DebugRenderable{DebugRenderable::ShapeType::CIRCLE, glm::vec4(1,0,0,1)});        
     }

@@ -62,6 +62,7 @@ public:
     }
 
     virtual void Draw(Texture const * const tex, float const x, float const y, float const w, float const h) = 0;
+    virtual void Draw(Texture const* const tex, float const x, float const y, float const w, float const h, float rotation) = 0;
 
     void End()
     {

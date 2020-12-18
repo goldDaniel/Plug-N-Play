@@ -62,6 +62,11 @@ public:
     void Draw(Texture const* const tex,
         float const x, float const y,
         float const w, float const h) override;
+
+    void Draw(Texture const* const tex,
+        float const x, float const y,
+        float const w, float const h,
+        float rotation) override;
 };
 
 #endif

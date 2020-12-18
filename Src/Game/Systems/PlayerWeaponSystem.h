@@ -30,25 +30,29 @@ public:
                 {
                     weapon.cooldown_timer = weapon.cooldown;
 
-                    Entity bullet = ECS->CreateEntity();
-
                     auto texture = Texture::CreateTexture("Assets/Textures/Bullet.png");
 
-                    float ratio = (float)texture->GetWidth() / (float)texture->GetHeight();
-                    float scaleX = ratio;
-                    float scaleY = 1;
+                    float ratio = (float)texture->GetHeight() / (float)texture->GetWidth();
+                    float scaleX = 1;
+                    float scaleY = ratio;
 
-                    glm::vec2 pos = trans.position + glm::vec2(0, trans.scale.y / 2.f + scaleY / 2.f);
-                    Transform t { pos, glm::vec2(scaleX, scaleY), 0 };
-                    ECS->AddComponent<Transform>(bullet, t);
 
-                    ECS->AddComponent<Bullet>(bullet, Bullet({0.25f}));
-
-                    Velocity v { glm::vec2(0, 24) };
-                    ECS->AddComponent<Velocity>(bullet, v); 
-
-                    Renderable r { glm::vec4(1.f,1.f,1.f,1.f), texture };
-                    ECS->AddComponent<Renderable>(bullet, r);
+                    for (int i = -1; i <= 1; i++)
+                    {
+                        Entity bullet = ECS->CreateEntity();
+                     
+                        glm::vec2 pos = trans.position + glm::vec2(i/2.f, trans.scale.y / 2.f + scaleY / 2.f);
+                        Transform t{ pos, glm::vec2(scaleX, scaleY), -glm::pi<float>() / 2 };
+                        ECS->AddComponent<Transform>(bullet, t);
+                        
+                        ECS->AddComponent<Bullet>(bullet, Bullet({ 0.25f }));
+                        
+                        Velocity v{ glm::vec2(0, 24) };
+                        ECS->AddComponent<Velocity>(bullet, v);
+                        
+                        Renderable r{ glm::vec4(1.f,1.f,1.f,1.f), texture };
+                        ECS->AddComponent<Renderable>(bullet, r);
+                    }
                 }                
             }
         }

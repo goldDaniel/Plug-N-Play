@@ -4,10 +4,6 @@
 #include <Core.h>
 #include <Graphics/SpriteBatch.h>
 
-
-class ECSController;
-
-
 class RenderSystem : public System
 {
 private:
@@ -30,4 +26,4 @@ public:
     void Update(float dt);
 };
 
-#endif
+#endif 

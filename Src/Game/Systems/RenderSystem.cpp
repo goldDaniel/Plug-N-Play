@@ -31,7 +31,8 @@ void RenderSystem::Update(float dt)
         s->SetColor(renderable.color);
         s->Draw(    renderable.texture, 
                     transform.position.x, transform.position.y, 
-                    transform.scale.x,  transform.scale.y);
+                    transform.scale.x,  transform.scale.y,
+                    transform.rotation);
     }
 
     s->End();
