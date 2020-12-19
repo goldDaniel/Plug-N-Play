@@ -4,7 +4,6 @@
 #include <Core.h>
 #include "Graphics/Texture.h"
 
-
 class PlayerMovementSystem : public System
 {
 public:

@@ -57,18 +57,3 @@ Texture* Texture::CreateTexture(const std::string& filepath)
 
 Texture::Texture(unsigned int ID, int w, int h) : ID(ID), width(w), height(h)
 {}
-
-unsigned int Texture::GetID() const
-{
-    return ID;
-}
-
-int Texture::GetWidth() const
-{
-    return width;
-}
-
-int Texture::GetHeight() const
-{
-    return height;
-}

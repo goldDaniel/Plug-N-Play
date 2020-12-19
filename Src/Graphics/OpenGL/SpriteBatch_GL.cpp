@@ -63,7 +63,7 @@ void SpriteBatch_GL::Flush()
     shader->SetMat4("u_view", view);
 
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, current_texture->GetID());
+    glBindTexture(GL_TEXTURE_2D, current_texture->ID);
     shader->SetInt("u_texture", 0);
 
     //we divide by 3 as there are 3 values per index (x,y,z) or (r,g,b)

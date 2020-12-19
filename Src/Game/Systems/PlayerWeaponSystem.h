@@ -30,7 +30,7 @@ public:
 
                 auto texture = Texture::CreateTexture("Assets/Textures/Bullet.png");
 
-                float ratio = (float)texture->GetHeight() / (float)texture->GetWidth();
+                float ratio = (float)texture->height / (float)texture->width;
                 float scaleX = 1 / 2.f;
                 float scaleY = ratio / 2.f;
 
