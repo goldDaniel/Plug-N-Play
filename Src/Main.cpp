@@ -67,7 +67,7 @@ void Shutdown()
 
 std::unique_ptr<Application> ChooseApplication()
 {
-    std::unique_ptr<Application> result;
+    std::unique_ptr<Application> result = nullptr;
 
     bool application_chosen = false;
     while (!application_chosen)
@@ -76,6 +76,10 @@ std::unique_ptr<Application> ChooseApplication()
         while (SDL_PollEvent(&event))
         {
             ImGui_ImplSDL2_ProcessEvent(&event);
+            if (event.type == SDL_QUIT)
+            {
+                application_chosen = true;
+            }
         }
 
         // Start the Dear ImGui frame
@@ -94,7 +98,6 @@ std::unique_ptr<Application> ChooseApplication()
             if (ImGui::Button("Editor", ImVec2(100, 50)))
             {
                 application_chosen = true;
-                result = nullptr;
             }
         }
         ImGui::End();
