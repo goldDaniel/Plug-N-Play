@@ -37,6 +37,7 @@ public:
         SDL_GL_SetSwapInterval(1);
 
 
+        //We need glad to init openGL for desktop platforms
 #ifndef __arm__
         if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress))
         {
@@ -44,6 +45,12 @@ public:
         }
 #endif
 
+        //IMGUI
+        IMGUI_CHECKVERSION();
+        ImGui::CreateContext();
+        ImGui::StyleColorsDark();
+        ImGui_ImplSDL2_InitForOpenGL(window, context);
+        ImGui_ImplOpenGL3_Init("#version 130");
 
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -51,6 +58,11 @@ public:
 
     virtual ~Application()
     {
+        // Cleanup
+        ImGui_ImplOpenGL3_Shutdown();
+        ImGui_ImplSDL2_Shutdown();
+        ImGui::DestroyContext();
+
         SDL_GL_DeleteContext(context);
         SDL_DestroyWindow(window);
         SDL_Quit();

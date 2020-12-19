@@ -127,6 +127,13 @@
     <ClCompile Include="src\graphics\Texture.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="vendor\glm\detail\glm.cpp" />
+    <ClCompile Include="Vendor\imgui\imgui.cpp" />
+    <ClCompile Include="Vendor\imgui\imgui_demo.cpp" />
+    <ClCompile Include="Vendor\imgui\imgui_draw.cpp" />
+    <ClCompile Include="Vendor\imgui\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="Vendor\imgui\imgui_impl_sdl.cpp" />
+    <ClCompile Include="Vendor\imgui\imgui_tables.cpp" />
+    <ClCompile Include="Vendor\imgui\imgui_widgets.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Application.h" />

@@ -8,7 +8,7 @@
 	#define GL_VERSION_MAJOR 2
 	#define GL_VERSION_MINOR 0
 #else
-	#include <glad/glad/glad.h>
+	#include <glad/glad.h>
 	#define GL_VERSION_MAJOR 3
 	#define GL_VERSION_MINOR 3
 #endif
@@ -17,6 +17,10 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/constants.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+
+#include <imgui/imgui.h>
+#include <imgui/imgui_impl_sdl.h>
+#include <imgui/imgui_impl_opengl3.h>
 
 
 #include <array>
