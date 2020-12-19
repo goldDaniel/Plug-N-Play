@@ -7,66 +7,17 @@
 class Application
 {
 protected:
-    int window_width = 1920;
-    int window_height = 1080;
+    int window_width;
+    int window_height;
 
     SDL_Window* window;
     SDL_GLContext context;
 
 public:
-    Application()
-    {
-        SDL_Init(SDL_INIT_VIDEO);
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, GL_VERSION_MAJOR);
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, GL_VERSION_MINOR);
-        SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
-        SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+    Application(SDL_Window* window, SDL_GLContext context, int window_width, int window_height)
+        : window(window), context(context), window_width(window_width), window_height(window_height) {}
 
-        SDL_DisplayMode DM;
-        SDL_GetCurrentDisplayMode(0, &DM);
-        window_width = 576; //DM.w;
-        window_height = 1024; //DM.h;
-
-        window = SDL_CreateWindow("Plug N Play",
-            SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-            window_width, window_height,
-            SDL_WINDOW_OPENGL);
-
-
-        context = SDL_GL_CreateContext(window);
-        SDL_GL_SetSwapInterval(1);
-
-
-        //We need glad to init openGL for desktop platforms
-#ifndef __arm__
-        if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress))
-        {
-            std::cout << "Failed to initialize GLAD" << std::endl;
-        }
-#endif
-
-        //IMGUI
-        IMGUI_CHECKVERSION();
-        ImGui::CreateContext();
-        ImGui::StyleColorsDark();
-        ImGui_ImplSDL2_InitForOpenGL(window, context);
-        ImGui_ImplOpenGL3_Init("#version 130");
-
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    }
-
-    virtual ~Application()
-    {
-        // Cleanup
-        ImGui_ImplOpenGL3_Shutdown();
-        ImGui_ImplSDL2_Shutdown();
-        ImGui::DestroyContext();
-
-        SDL_GL_DeleteContext(context);
-        SDL_DestroyWindow(window);
-        SDL_Quit();
-    }
+    virtual ~Application() {}
 
     virtual void Run() = 0;
 };

@@ -24,13 +24,10 @@
 class GameApplication : public Application
 {
 public:
-	GameApplication() : Application::Application()
-	{}
+	GameApplication(SDL_Window* window, SDL_GLContext context, int window_width, int window_height) : 
+        Application::Application(window, context, window_width, window_height) {}
 
-	virtual ~GameApplication()
-	{
-
-	}
+	virtual ~GameApplication() {}
 
 	virtual void Run() override
 	{
