@@ -11,8 +11,6 @@ static int window_height;
 
 void Init()
 {
-
-
     SDL_Init(SDL_INIT_VIDEO);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, GL_VERSION_MAJOR);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, GL_VERSION_MINOR);
@@ -25,9 +23,9 @@ void Init()
     window_height = 1024; //DM.h;
 
     window = SDL_CreateWindow("Plug N Play",
-        SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-        window_width, window_height,
-        SDL_WINDOW_OPENGL);
+                        SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+                        window_width, window_height,
+                        SDL_WINDOW_OPENGL);
 
 
     context = SDL_GL_CreateContext(window);
@@ -119,7 +117,15 @@ int main(int argc, char** argv)
 {
     Init();
 
-    auto app = ChooseApplication();
+
+    std::unique_ptr<Application> app;
+
+
+#ifdef __arm__
+    app = std::make_unique<GameApplication>();
+#else
+    app = ChooseApplication();
+#endif
 
     if (app)
     {
