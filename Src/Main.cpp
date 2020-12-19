@@ -1,10 +1,10 @@
 
-#include "Application.h"
+#include <Game/GameApplication.h>
 
 
 int main(int argc, char** argv)
 {
-    Application app;
+    GameApplication app;
     app.Run();
 
     return 0;

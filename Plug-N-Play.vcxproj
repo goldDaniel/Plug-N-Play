@@ -111,7 +111,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\Application.cpp" />
     <ClCompile Include="src\ecs\ComponentManager.cpp" />
     <ClCompile Include="src\ecs\ECSController.cpp" />
     <ClCompile Include="src\ecs\EntityManager.cpp" />
@@ -139,6 +138,7 @@
     <ClInclude Include="src\ecs\EntityManager.h" />
     <ClInclude Include="src\ecs\SystemManager.h" />
     <ClInclude Include="src\game\Components.h" />
+    <ClInclude Include="Src\Game\GameApplication.h" />
     <ClInclude Include="src\game\systems\BulletSystem.h" />
     <ClInclude Include="src\game\systems\CameraSystem.h" />
     <ClInclude Include="Src\Game\Systems\CollisionResolutionSystem.h" />
