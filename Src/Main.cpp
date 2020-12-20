@@ -96,6 +96,7 @@ std::unique_ptr<Application> ChooseApplication()
             if (ImGui::Button("Editor", ImVec2(100, 50)))
             {
                 application_chosen = true;
+                result = std::make_unique<EditorApplication>(window, context, window_width, window_height);
             }
         }
         ImGui::End();
@@ -117,9 +118,7 @@ int main(int argc, char** argv)
 {
     Init();
 
-
     std::unique_ptr<Application> app;
-
 
 #ifdef __arm__
     app = std::make_unique<GameApplication>();
