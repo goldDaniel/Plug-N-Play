@@ -7,7 +7,7 @@
 
 namespace PathIO
 {
-    static Bezier::Bezier<3> LoadPathFromFile(const std::string& filepath)
+    Bezier::Bezier<3> LoadPathFromFile(const std::string& filepath)
     {
         std::string json_string;
 
@@ -44,7 +44,7 @@ namespace PathIO
         return Bezier::Bezier<3>(control_points);
     }
 
-    static void SavePathToFile(const std::string& data, const std::string& filepath)
+    void SavePathToFile(const std::string& data, const std::string& filepath)
     {
         std::ofstream out(filepath);
         out << data;
