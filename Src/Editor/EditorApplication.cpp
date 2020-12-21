@@ -113,7 +113,7 @@ void EditorApplication::Run()
 
         //RENDERING
         glViewport(0, 0, (int)window_width, (int)window_height);
-        glClearColor(0.05f, 0.05f, 0.2f, 1);
+        glClearColor(0.01f, 0.01f, 0.05f, 1);
         glClear(GL_COLOR_BUFFER_BIT);
 
         // Start the Dear ImGui frame
@@ -125,11 +125,11 @@ void EditorApplication::Run()
 
         int grid_size_x = 6;
         int grid_size_y = 8;
+        sh->SetColor(glm::vec4(0.1f, 0.4f, 0.1f, 1));
         for (int i = -grid_size_x; i < grid_size_x; i++)
         {
             for (int j = -grid_size_y; j < grid_size_y; j++)
             {
-                sh->SetColor(glm::vec4(0, 1, 0, 1));
                 glm::vec2 min(i - 0.5f, j - 0.5f);
                 glm::vec2 max(i + 0.5f, j + 0.5f);
                 sh->Rect(min, max);

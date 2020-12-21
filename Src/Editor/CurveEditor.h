@@ -9,7 +9,7 @@ private:
 	Bezier::Bezier<3> current_curve;
 	Bezier::Point* held_point = nullptr;
 
-	glm::vec2 mouse_world_pos;
+	glm::vec2 mouse_world_pos = glm::vec2(0,0);
 
 	float selection_radius = 0.2f;
 	bool mouse_down = false;
@@ -24,7 +24,15 @@ public:
 
 	void OnMouseButtonDown()
 	{
-		mouse_down = true;
+		auto& control_points = current_curve.getControlPoints();
+		for (auto& control_point : control_points)
+		{
+			glm::vec2 p{ control_point.x, control_point.y };
+			if (glm::distance(mouse_world_pos, p) < selection_radius * 2)
+			{
+				held_point = &control_point;
+			}
+		}
 	}
 
 	void OnMouseButtonUp()
@@ -43,26 +51,10 @@ public:
 	void Update(glm::vec2 mouse_world_pos)
 	{
 		this->mouse_world_pos = mouse_world_pos;
-
-		auto& control_points = current_curve.getControlPoints();
 		if (held_point)
 		{
 			held_point->x = mouse_world_pos.x;
 			held_point->y = mouse_world_pos.y;
-		}
-		else
-		{
-			if (mouse_down)
-			{
-				for (auto& control_point : control_points)
-				{
-					glm::vec2 p{ control_point.x, control_point.y };
-					if (glm::distance(mouse_world_pos, p) < selection_radius * 2)
-					{
-						held_point = &control_point;
-					}
-				}
-			}
 		}
 	}
 
