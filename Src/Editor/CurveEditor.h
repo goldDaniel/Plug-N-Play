@@ -3,26 +3,61 @@
 
 #include <Core.h>
 
+/// <summary>
+/// This class is responsible for manipulating a bezier curve 
+/// </summary>
 class CurveEditor
 {
 private:	
+
+	/// <summary>
+	/// The curve that is being edited 
+	/// </summary>
 	Bezier::Bezier<3> current_curve;
+
+	/// <summary>
+	/// The control point that is currently selected.
+	/// This will be null if no selected point.
+	/// </summary>
 	Bezier::Point* held_point = nullptr;
 
+	/// <summary>
+	/// The position of the mouse.
+	/// This is used to move points around & select them
+	/// </summary>
 	glm::vec2 mouse_world_pos = glm::vec2(0,0);
 
+	/// <summary>
+	/// The radius used for the control points.
+	///
+	/// Control points will be drawn at this size.
+	///
+	/// This is also the radius for the control points collision detection
+	/// </summary>
 	float selection_radius = 0.2f;
+
+	/// <summary>
+	/// If the mouse is held down.
+	/// </summary>
 	bool mouse_down = false;
 
 public:
 	
+	/// <summary>
+	/// Constructs our editor.
+	/// Sets a default curve.
+	/// </summary>
 	CurveEditor()
 	{
 		current_curve = Bezier::Bezier<3>({ {-3, 6},{3, 0},{-3, 0},{-3, -6} });
 	}
 
-
-	void OnMouseButtonDown()
+	/// <summary>
+	/// This will check if the mouse is colliding with a control point.
+	/// 
+	/// Call this when a mouse button is pressed down.
+	/// </summary>
+	void OnMouseButtonDown() 
 	{
 		auto& control_points = current_curve.getControlPoints();
 		for (auto& control_point : control_points)
@@ -35,6 +70,10 @@ public:
 		}
 	}
 
+	/// <summary>
+	/// This will release a held control point
+	/// Call this when a mouse button is lifed.
+	/// </summary>
 	void OnMouseButtonUp()
 	{
 		//we want the point to be locked to the grid
@@ -48,6 +87,15 @@ public:
 		mouse_down = false;
 	}
 
+	/// <summary>
+	/// Call this every frame. 
+	/// If we are holding a point, this will update the position
+	/// </summary>
+	/// <param name="mouse_world_pos">
+	/// The mouse point projected onto the xy0-Plane.
+	/// The matrices used to unproject should be the ones 
+	/// setting the shaperenderer view & proj
+	/// </param>
 	void Update(glm::vec2 mouse_world_pos)
 	{
 		this->mouse_world_pos = mouse_world_pos;
@@ -58,6 +106,12 @@ public:
 		}
 	}
 
+	/// <summary>
+	/// Renders the Curve and control points
+	/// </summary>
+	/// <param name="sh">
+	/// The shaperenderer that will do the rendering
+	/// </param>
 	void DrawCurve(ShapeRenderer& sh)
 	{
 		const auto& control_points = current_curve.getControlPoints();
@@ -95,6 +149,13 @@ public:
 		}
 	}
 
+	/// <summary>
+	/// Gets the control points for the bezier curve.
+	/// Returns a copy, we dont want to expose the curve externally
+	/// </summary>
+	/// <returns>
+	/// A copy of the control points for the bezier curve.
+	/// </returns>
 	const std::array<glm::vec2, 4> GetControlPoints()
 	{
 		std::array<glm::vec2, 4> result{};
@@ -108,11 +169,20 @@ public:
 		return result;
 	}
 
+	/// <summary>
+	/// Sets the curve we are working on.
+	/// </summary>
+	/// <param name="curve">
+	/// The bezier curve that we want to edit
+	/// </param>
 	void SetCurve(const Bezier::Bezier<3>& curve)
 	{
 		this->current_curve = curve; 
 	}
 
+	/// <summary>
+	/// Sets the curve back to a default
+	/// </summary>
 	void ResetCurve()
 	{
 		current_curve = Bezier::Bezier<3>({ {-3, 6},{3, 0},{-3, 0},{-3, -6} });
