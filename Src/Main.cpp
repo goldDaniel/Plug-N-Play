@@ -34,8 +34,8 @@ void Init()
 
     SDL_DisplayMode DM;
     SDL_GetCurrentDisplayMode(0, &DM);
-    window_width = 576; //DM.w;
-    window_height = 1024; //DM.h;
+    window_width = 1280; //DM.w;
+    window_height = 720; //DM.h;
 
     window = SDL_CreateWindow("Plug N Play",
                         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
