@@ -31,6 +31,8 @@
 #include <string>
 #include <cstring>
 
+#include <json.hpp>
+
 #include "ECS/ECSController.h"
 #include "Game/Components.h"
 

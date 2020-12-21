@@ -1,13 +1,15 @@
 #include <Editor/EditorApplication.h>
 
-Bezier::Bezier<2> current_path;
+Bezier::Bezier<3> current_path;
 static int mouseX;
 static int mouseY;
 static bool mouse_down = false;
 
+static Bezier::Point* held_point = nullptr;
+
 static void ResetCurve()
 {
-    current_path = Bezier::Bezier<2>({ {-3, 6},{3, 0},{-3, -6} });
+    current_path = Bezier::Bezier<3>({ {-3, 6},{3, 0},{-3, 0},{-3, -6} });
 }
 
 
@@ -50,7 +52,14 @@ void EditorApplication::Run()
             {
                 if (event.button.button == SDL_BUTTON_LEFT)
                 {
+                    if (held_point)
+                    {
+                        held_point->x = glm::round(held_point->x);
+                        held_point->y = glm::round(held_point->y);
+                    }
+
                     mouse_down = false;
+                    held_point = nullptr;
                 }
             }
             if (event.type == SDL_KEYDOWN)
@@ -69,10 +78,8 @@ void EditorApplication::Run()
 
 
         //INTERACTION
-        
-
         const glm::mat4 proj = glm::perspective(glm::radians(67.f), (float)window_width / (float)window_height, 1.f, 100.f);
-        const glm::mat4 view = glm::lookAt(glm::vec3(0, 0, 10.f), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+        const glm::mat4 view = glm::lookAt(glm::vec3(0, 0, 11.f), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 
         const glm::vec4 viewport{ 0, 0, window_width, window_height };
 
@@ -93,7 +100,6 @@ void EditorApplication::Run()
         glm::vec3 L = glm::normalize(modelPoint2 - modelPoint1);
         glm::vec3 L0 = modelPoint1;
 
-
         //Solve for d where dot((d * L + L0 - P0), n) = 0
         float d = glm::dot(-L0, plane_normal) / glm::dot(L, plane_normal);
 
@@ -103,9 +109,6 @@ void EditorApplication::Run()
         
 
 
-
-
-
         float selection_radius = 0.2f;
         auto& control_points = current_path.getControlPoints();
         if (mouse_down)
@@ -113,13 +116,16 @@ void EditorApplication::Run()
             for (auto& control_point : control_points)
             {
                 glm::vec2 p{ control_point.x, control_point.y };
-                if (glm::distance(selection_point, p) < selection_radius)
+                if (glm::distance(selection_point, p) < selection_radius*2)
                 {
-                    control_point.x = selection_point.x;
-                    control_point.y = selection_point.y;
-
+                    held_point = &control_point;
                 }
             }
+        }
+        if (held_point)
+        {
+            held_point->x = selection_point.x;
+            held_point->y = selection_point.y;
         }
 
 
@@ -134,16 +140,13 @@ void EditorApplication::Run()
         ImGui_ImplSDL2_NewFrame(window);
         ImGui::NewFrame();
 
-        
-
-
         sh->Begin(proj, view);
 
-
-        int grid_size = 8;
-        for (int i = -grid_size; i < grid_size; i++)
+        int grid_size_x = 6;
+        int grid_size_y = 8;
+        for (int i = -grid_size_x; i < grid_size_x; i++)
         {
-            for (int j = -grid_size; j < grid_size; j++)
+            for (int j = -grid_size_y; j < grid_size_y; j++)
             {
                 sh->SetColor(glm::vec4(0, 1, 0, 1));
                 glm::vec2 min(i - 0.5f, j - 0.5f);
@@ -202,7 +205,7 @@ void EditorApplication::Run()
                 {
                     ResetCurve();
                 }
-                if (ImGui::MenuItem("Open Path"))
+                if (ImGui::MenuItem("Save Path"))
                 {
 
                 }
