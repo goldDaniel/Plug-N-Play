@@ -5,42 +5,7 @@
 
 static imgui_addons::ImGuiFileBrowser file_dialog; 
 
-static Bezier::Bezier<3> LoadPathFromFile(const std::string& filepath)
-{
-    std::string json_string;
 
-    try
-    {
-        std::ifstream in_stream(filepath);
-
-        json_string = std::string((std::istreambuf_iterator<char>(in_stream)),
-            std::istreambuf_iterator<char>());
-
-        in_stream.close();
-    }
-    catch (std::ifstream::failure& e)
-    {
-        std::cout << "ERROR::PATH::FILE_NOT_SUCCESFULLY_READ" << std::endl;
-        std::cout << filepath << std::endl;
-    }
-
-    auto output = nlohmann::json::parse(json_string);
-    assert(output["path"].is_array());
-    assert(output["path"].size() == 4);
-
-    std::vector<Bezier::Point> control_points;
-
-    for (std::size_t i = 0; i < output["path"].size(); i++)
-    {
-        Bezier::Point p;
-        p.x = output["path"][i][0];
-        p.y = output["path"][i][1];
-
-        control_points.push_back(p);
-    }
-
-    return Bezier::Bezier<3>(control_points);
-}
 
 static glm::vec2 ProjectToXY0Plane(glm::vec2 mouse_pos, 
                                    const glm::mat4& view, 
@@ -205,7 +170,7 @@ void EditorApplication::Run()
         {
             std::string file_path = file_dialog.selected_path;
 
-            Bezier::Bezier<3> path = LoadPathFromFile(file_path);
+            Bezier::Bezier<3> path = PathIO::LoadPathFromFile(file_path);
 
             curve_editor->SetCurve(path);
         }
@@ -226,9 +191,7 @@ void EditorApplication::Run()
                 output["path"][i++] = { point.x, point.y };
             }
             
-            std::ofstream out(file_path + file_ext);
-            out << output;
-            out.close();
+            PathIO::SavePathToFile(output.dump(), file_path + file_ext);
         }
 
 

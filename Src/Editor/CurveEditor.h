@@ -60,7 +60,7 @@ public:
 
 	void DrawCurve(ShapeRenderer& sh)
 	{
-		auto& control_points = current_curve.getControlPoints();
+		const auto& control_points = current_curve.getControlPoints();
 		sh.SetColor(glm::vec4(1.f, 1.f, 1.f, 1.f));
 		float step = 0.05f;
 		for (float t = 0.f; t < 1; t += step)
@@ -97,14 +97,13 @@ public:
 
 	const std::array<glm::vec2, 4> GetControlPoints()
 	{
-		std::array<glm::vec2, 4> result;
+		std::array<glm::vec2, 4> result{};
 
 		const auto& points = current_curve.getControlPoints();
-		int i = 0;
-		for (const auto& p : points)
+		for (std::size_t i = 0; i < 4; i++)
 		{
-			result[i++] = { p.x, p.y };
-		}
+			result[i] = { points[i].x, points[i].y };
+		} 
 
 		return result;
 	}
