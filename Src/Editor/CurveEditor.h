@@ -74,7 +74,7 @@ public:
 			sh.Line(p01, p11);
 		}
 
-		sh.SetColor(glm::vec4(0.3f, 0.3f, 0.8f, 1.f));
+		sh.SetColor(glm::vec4(0.8f, 0.8f, 0.3f, 1.f));
 		for (std::size_t i = 1; i < control_points.size(); i++)
 		{
 			glm::vec2 p0(control_points[i - 1].x, control_points[i - 1].y);
@@ -95,8 +95,19 @@ public:
 		}
 	}
 
-	
-	
+	const std::array<glm::vec2, 4> GetControlPoints()
+	{
+		std::array<glm::vec2, 4> result;
+
+		const auto& points = current_curve.getControlPoints();
+		int i = 0;
+		for (const auto& p : points)
+		{
+			result[i++] = { p.x, p.y };
+		}
+
+		return result;
+	}
 
 	void ResetCurve()
 	{

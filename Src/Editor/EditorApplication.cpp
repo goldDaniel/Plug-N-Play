@@ -3,6 +3,7 @@
 #include <imgui/ImGuiFileBrowser.h>
 
 
+static imgui_addons::ImGuiFileBrowser file_dialog; 
 
 static glm::vec2 ProjectToXY0Plane(glm::vec2 mouse_pos, 
                                    const glm::mat4& view, 
@@ -45,14 +46,10 @@ EditorApplication::EditorApplication(SDL_Window* window, SDL_GLContext context, 
                   : Application::Application(window, context, window_width, window_height)
 {
     sh = ShapeRenderer::CreateShapeRenderer();
-
     curve_editor = std::make_unique<CurveEditor>();
 }
 
-EditorApplication::~EditorApplication() 
-{
-
-}
+EditorApplication::~EditorApplication() {}
 
 void EditorApplication::Run()
 {
@@ -69,32 +66,21 @@ void EditorApplication::Run()
         while (SDL_PollEvent(&event))
         {
             ImGui_ImplSDL2_ProcessEvent(&event);
-            if (event.type == SDL_QUIT)
-            {
-                running = false;
-            }
+            
+            if (event.type == SDL_QUIT) running = false;
+            
             if (event.type == SDL_KEYDOWN)
-            {
                 if (event.key.keysym.sym == SDLK_ESCAPE)
-                {
                     running = false;
-                }
-            }
             
             if (event.type == SDL_MOUSEBUTTONDOWN)
-            {
                 if (event.button.button == SDL_BUTTON_LEFT)
-                {
                     curve_editor->OnMouseButtonDown();
-                }
-            }
+
             if (event.type == SDL_MOUSEBUTTONUP)
-            {
                 if (event.button.button == SDL_BUTTON_LEFT)
-                {
                     curve_editor->OnMouseButtonUp();
-                }
-            }
+            
             
             if (event.type == SDL_MOUSEMOTION)
             {
@@ -126,7 +112,7 @@ void EditorApplication::Run()
         int grid_size_x = 6;
         int grid_size_y = 8;
         sh->SetColor(glm::vec4(0.1f, 0.4f, 0.1f, 1));
-        for (int i = -grid_size_x; i < grid_size_x; i++)
+        for (int i = -grid_size_x; i <= grid_size_x; i++)
         {
             for (int j = -grid_size_y; j < grid_size_y; j++)
             {
@@ -136,12 +122,13 @@ void EditorApplication::Run()
             }
         }
         //draw blue rectangle at the origin tile
-        sh->SetColor(glm::vec4(0.2f, 0.2f, 1.f, 1.f));
+        sh->SetColor(glm::vec4(0.5f, 0.5f, 0.9f, 1.f));
         glm::vec2 min(-0.5f, -0.5f);
         glm::vec2 max(0.5f, 0.5f);
         sh->Rect(min, max);
 
-        sh->SetColor(glm::vec4(1.f, 0.2f, 0.2f, 1.f));
+        //draws border for gameplay window
+        sh->SetColor(glm::vec4(0.6f, 0.2f, 0.2f, 1.f));
         min = glm::vec2(-3.5, -6.5);
         max = glm::vec2(+3.5, +6.5);
         sh->Rect(min, max);
@@ -150,6 +137,7 @@ void EditorApplication::Run()
 
         sh->End();
 
+        bool save_dialog = false;
         ImGui::BeginMainMenuBar();
         {
             if (ImGui::BeginMenu("File"))
@@ -160,13 +148,35 @@ void EditorApplication::Run()
                 }
                 if (ImGui::MenuItem("Save Path"))
                 {
-                    
+                    save_dialog = true;
                 }
                 ImGui::EndMenu();
             }
         }
         ImGui::EndMainMenuBar();
 
+        if (save_dialog) ImGui::OpenPopup("Save Path");
+
+        if (file_dialog.showFileDialog("Save Path", imgui_addons::ImGuiFileBrowser::DialogMode::SAVE, ImVec2(700, 310), ".path"))        
+        {
+            std::string file_name = file_dialog.selected_fn; 
+            std::string file_path = file_dialog.selected_path;
+            std::string file_ext = file_dialog.ext;
+            
+            const auto control_points = curve_editor->GetControlPoints();
+
+            nlohmann::json output; 
+
+            int i = 0;
+            for (const auto& point : control_points)
+            {
+                output["path"][i++] = { point.x, point.y };
+            }
+            
+            std::ofstream out(file_path + file_ext);
+            out << output;
+            out.close();
+        }
 
 
         ImGui::Render();        
