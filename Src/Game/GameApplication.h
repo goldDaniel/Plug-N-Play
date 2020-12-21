@@ -20,6 +20,43 @@
 #include <Game/Systems/RenderSystem.h>
 #include <Game/Systems/DebugRenderSystem.h>
 
+static Bezier::Bezier<3> LoadPathFromFile(const std::string& filepath)
+{
+    std::string json_string;
+
+    try
+    {
+        std::ifstream in_stream(filepath);
+
+        json_string = std::string((std::istreambuf_iterator<char>(in_stream)),
+                                   std::istreambuf_iterator<char>());
+
+        in_stream.close();
+    }
+    catch (std::ifstream::failure& e)
+    {
+        std::cout << "ERROR::PATH::FILE_NOT_SUCCESFULLY_READ" << std::endl;
+        std::cout << filepath << std::endl;
+    }
+
+    auto output = nlohmann::json::parse(json_string);
+    assert(output["path"].is_array());
+    assert(output["path"].size() == 4);
+
+    std::vector<Bezier::Point> control_points;
+    
+    for (std::size_t i = 0; i < output["path"].size(); i++)
+    {
+        Bezier::Point p;
+        p.x = output["path"][i][0];
+        p.y = output["path"][i][1];
+
+        control_points.push_back(p);
+    }
+       
+    return Bezier::Bezier<3>(control_points);
+}
+
 
 class GameApplication : public Application
 {
@@ -148,11 +185,13 @@ public:
             Entity enemy = ECS.CreateEntity();
             ECS.AddComponent(enemy, Transform{ glm::vec2(0,0), glm::vec2(1.f, 1.f), 0.f });
 
-            Bezier::Bezier<2> curve({ {-4.5f, 6.f}, {3.f, 6.f}, {3.5f, -8.f} });
-            float speed = 1.f / 4.f;
-            BezierPath path({ curve, speed, 0.f });
 
             auto tex = Texture::CreateTexture("Assets/Textures/Enemy.png");
+            BezierPath path
+            {
+                LoadPathFromFile("Assets/Paths/Path0.path"),
+                1.f / 4.f
+            };
             ECS.AddComponent(enemy, path);
             ECS.AddComponent(enemy, Collider{ Collider::Enemy, Collider::Player, 0.5f });
             ECS.AddComponent(enemy, Renderable({ glm::vec4(1,1,1,1), tex }));
@@ -162,11 +201,12 @@ public:
             Entity enemy = ECS.CreateEntity();
             ECS.AddComponent(enemy, Transform{ glm::vec2(0,0), glm::vec2(1.f, 1.f), 0.f });
 
-            Bezier::Bezier<2> curve({ {4.5f, 6.f}, {-3.f, 6.f}, {-3.5f, -8.f} });
-            float speed = 1.f / 4.f;
-            BezierPath path({ curve, speed, 0.f });
-
             auto tex = Texture::CreateTexture("Assets/Textures/Enemy.png");
+            BezierPath path
+            {
+                LoadPathFromFile("Assets/Paths/Path1.path"),
+                1.f / 4.f
+            };
             ECS.AddComponent(enemy, path);
             ECS.AddComponent(enemy, Collider{ Collider::Enemy, Collider::Player, 0.5f });
             ECS.AddComponent(enemy, Renderable({ glm::vec4(1,1,1,1), tex }));

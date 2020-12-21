@@ -5,6 +5,43 @@
 
 static imgui_addons::ImGuiFileBrowser file_dialog; 
 
+static Bezier::Bezier<3> LoadPathFromFile(const std::string& filepath)
+{
+    std::string json_string;
+
+    try
+    {
+        std::ifstream in_stream(filepath);
+
+        json_string = std::string((std::istreambuf_iterator<char>(in_stream)),
+            std::istreambuf_iterator<char>());
+
+        in_stream.close();
+    }
+    catch (std::ifstream::failure& e)
+    {
+        std::cout << "ERROR::PATH::FILE_NOT_SUCCESFULLY_READ" << std::endl;
+        std::cout << filepath << std::endl;
+    }
+
+    auto output = nlohmann::json::parse(json_string);
+    assert(output["path"].is_array());
+    assert(output["path"].size() == 4);
+
+    std::vector<Bezier::Point> control_points;
+
+    for (std::size_t i = 0; i < output["path"].size(); i++)
+    {
+        Bezier::Point p;
+        p.x = output["path"][i][0];
+        p.y = output["path"][i][1];
+
+        control_points.push_back(p);
+    }
+
+    return Bezier::Bezier<3>(control_points);
+}
+
 static glm::vec2 ProjectToXY0Plane(glm::vec2 mouse_pos, 
                                    const glm::mat4& view, 
                                    const glm::mat4& proj, 
@@ -137,6 +174,7 @@ void EditorApplication::Run()
 
         sh->End();
 
+        bool open_dialog = false;
         bool save_dialog = false;
         ImGui::BeginMainMenuBar();
         {
@@ -150,12 +188,27 @@ void EditorApplication::Run()
                 {
                     save_dialog = true;
                 }
+                if (ImGui::MenuItem("Open Path"))
+                {
+                    open_dialog = true;
+                }
                 ImGui::EndMenu();
             }
         }
         ImGui::EndMainMenuBar();
 
+        if (open_dialog) ImGui::OpenPopup("Open Path");
         if (save_dialog) ImGui::OpenPopup("Save Path");
+
+
+        if (file_dialog.showFileDialog("Open Path", imgui_addons::ImGuiFileBrowser::DialogMode::OPEN, ImVec2(700, 310), ".path"))
+        {
+            std::string file_path = file_dialog.selected_path;
+
+            Bezier::Bezier<3> path = LoadPathFromFile(file_path);
+
+            curve_editor->SetCurve(path);
+        }
 
         if (file_dialog.showFileDialog("Save Path", imgui_addons::ImGuiFileBrowser::DialogMode::SAVE, ImVec2(700, 310), ".path"))        
         {

@@ -21,7 +21,7 @@ struct Transform
 
 struct BezierPath
 {   
-    Bezier::Bezier<2> curve;
+    Bezier::Bezier<3> curve;
     
     //how much per second we increase time by
     float speed = 0;

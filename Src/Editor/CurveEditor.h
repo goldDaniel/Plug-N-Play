@@ -109,6 +109,11 @@ public:
 		return result;
 	}
 
+	void SetCurve(const Bezier::Bezier<3>& curve)
+	{
+		this->current_curve = curve; 
+	}
+
 	void ResetCurve()
 	{
 		current_curve = Bezier::Bezier<3>({ {-3, 6},{3, 0},{-3, 0},{-3, -6} });
