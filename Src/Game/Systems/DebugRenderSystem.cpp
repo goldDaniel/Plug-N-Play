@@ -23,7 +23,6 @@ void DebugRenderSystem::Update(float dt)
 {
     elapsed += dt;
 
-
     const auto& cam = ECS->GetComponent<Camera>(camera);
     sh->Begin(cam.proj, cam.view);
     
@@ -42,6 +41,11 @@ void DebugRenderSystem::Update(float dt)
     sh->SetColor(glm::vec4(0.2f, 0.2f, 1.f, 1.f));
     glm::vec2 min(-0.5f, -0.5f);
     glm::vec2 max( 0.5f,  0.5f);
+    sh->Rect(min, max);
+
+    sh->SetColor(glm::vec4(1.f, 0.2f, 0.2f, 1.f));
+    min = glm::vec2(-3.5, -6.5);
+    max = glm::vec2(+3.5, +6.5);
     sh->Rect(min, max);
 
     for (auto const& entity : entities)

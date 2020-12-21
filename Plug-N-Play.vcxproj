@@ -145,6 +145,7 @@
     <ClInclude Include="src\ecs\Entity.h" />
     <ClInclude Include="src\ecs\EntityManager.h" />
     <ClInclude Include="src\ecs\SystemManager.h" />
+    <ClInclude Include="Src\Editor\CurveEditor.h" />
     <ClInclude Include="Src\Editor\EditorApplication.h" />
     <ClInclude Include="src\game\Components.h" />
     <ClInclude Include="Src\Game\GameApplication.h" />

@@ -31,6 +31,10 @@ public:
         SDL_Event e;
         while(SDL_PollEvent(&e))
         {
+            if (e.type == SDL_QUIT)
+            {
+                quit_callback();
+            }
             if(e.type == SDL_KEYUP)
             {
                 keys_pressed[e.key.keysym.sym] = false;
