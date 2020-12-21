@@ -115,6 +115,7 @@
     <ClCompile Include="src\ecs\ECSController.cpp" />
     <ClCompile Include="src\ecs\EntityManager.cpp" />
     <ClCompile Include="src\ecs\SystemManager.cpp" />
+    <ClCompile Include="Src\Editor\EditorApplication.cpp" />
     <ClCompile Include="src\game\systems\DebugRenderSystem.cpp" />
     <ClCompile Include="src\game\systems\RenderSystem.cpp" />
     <ClCompile Include="Src\Graphics\glad.c" />

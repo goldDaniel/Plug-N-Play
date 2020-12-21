@@ -20,6 +20,12 @@ public:
     virtual ~Application() {}
 
     virtual void Run() = 0;
+
+    void Resize(int w, int h)
+    {
+        window_width = w;
+        window_height = h;
+    }
 };
 
 #endif

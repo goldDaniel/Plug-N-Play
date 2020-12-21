@@ -8,6 +8,21 @@ static SDL_GLContext context;
 static int window_width;
 static int window_height;
 
+static std::unique_ptr<Application> app;
+
+static int resizingEventWatcher(void* data, SDL_Event * event) 
+{
+    if (event->type == SDL_WINDOWEVENT &&
+        event->window.event == SDL_WINDOWEVENT_RESIZED) 
+    {
+        SDL_Window* win = SDL_GetWindowFromID(event->window.windowID);
+        if (win == (SDL_Window*)data) 
+        {
+            app->Resize(event->window.data1, event->window.data2);
+        }
+    }
+    return 0;
+}
 
 void Init()
 {
@@ -27,6 +42,7 @@ void Init()
                         window_width, window_height,
                         SDL_WINDOW_OPENGL);
 
+    SDL_AddEventWatch(resizingEventWatcher, window);
 
     context = SDL_GL_CreateContext(window);
     SDL_GL_SetSwapInterval(1);
@@ -117,8 +133,6 @@ std::unique_ptr<Application> ChooseApplication()
 int main(int argc, char** argv)
 {
     Init();
-
-    std::unique_ptr<Application> app;
 
 #ifdef __arm__
     app = std::make_unique<GameApplication>();
