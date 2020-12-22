@@ -100,7 +100,6 @@ void EditorApplication::Run()
         glClearColor(0.01f, 0.01f, 0.05f, 1);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        
 
         sh->Begin(proj, view);
 

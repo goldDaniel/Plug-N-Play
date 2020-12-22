@@ -80,7 +80,7 @@ public:
 
 	/// <summary>
 	/// This will release a held control point
-	/// Call this when a mouse button is lifed.
+	/// Call this when a mouse button is lifted.
 	/// </summary>
 	void OnMouseButtonUp()
 	{
@@ -96,13 +96,13 @@ public:
 	}
 
 	/// <summary>
-	/// Call this every frame. 
+	/// Call this every frame.
 	/// If we are holding a point, this will update the position
 	/// </summary>
 	/// <param name="mouse_world_pos">
-	/// The mouse point projected onto the xy0-Plane.
-	/// The matrices used to unproject should be the ones 
-	/// setting the shaperenderer view & proj
+	/// - The mouse point projected onto the xy0-Plane.
+	/// The matrices used to unproject should be the ones
+	/// setting the shaperenderer view and proj
 	/// </param>
 	void Update(glm::vec2 mouse_world_pos)
 	{
