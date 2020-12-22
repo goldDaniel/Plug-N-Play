@@ -73,6 +73,16 @@ public:
         has_begun = true;
     }
 
+    const glm::mat4& GetProjectionMatrix()
+    {
+        return proj;
+    }
+
+    const glm::mat4& GetViewMatrix()
+    {
+        return view;
+    }
+
     /**
      * @brief Adds a line shape to our buffer
      * 
