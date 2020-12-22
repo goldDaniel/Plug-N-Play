@@ -118,28 +118,26 @@ public:
 	{
 		bool open_dialog = false;
 		bool save_dialog = false;
-		ImGui::Begin("Curve Editor", 0, ImGuiWindowFlags_MenuBar);
+		ImGui::Begin("Curve Editor", 0, ImGuiWindowFlags_NoMove |
+									   ImGuiWindowFlags_NoCollapse |
+									   ImGuiWindowFlags_NoResize);
 		{
-			if(ImGui::BeginMenuBar())
+			
+			if (ImGui::Button("New Path"))
 			{
-				if (ImGui::BeginMenu("File"))
-				{
-					if (ImGui::MenuItem("New Path"))
-					{
-						ResetCurve();
-					}
-					if (ImGui::MenuItem("Save Path"))
-					{
-						save_dialog = true;
-					}
-					if (ImGui::MenuItem("Open Path"))
-					{
-						open_dialog = true;
-					}
-					ImGui::EndMenu();
-				}
-				ImGui::EndMenuBar();
+				ResetCurve();
 			}
+			ImGui::SameLine();
+			if (ImGui::Button("Save Path"))
+			{
+				save_dialog = true;
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("Open Path"))
+			{
+				open_dialog = true;
+			}
+			
 			
 			ImGui::NewLine();
 			ImGui::Text(curve_name.c_str());

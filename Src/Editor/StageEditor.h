@@ -43,14 +43,17 @@ private:
 public:
 	StageEditor()
 	{
-
-		std::string path = "Assets/Textures";
+		
+		
+		std::filesystem::path path("Assets/Textures");
+		path.make_preferred();
 		for (const auto& file : std::filesystem::directory_iterator(path))
 		{
 			texture_filepaths.push_back(file.path().string());
 		}
 
-		path = "Assets/Paths";
+		path = std::filesystem::path("Assets/Paths");
+		path.make_preferred();
 		for (const auto& file : std::filesystem::directory_iterator(path))
 		{
 			const auto& path_str = file.path().string();
@@ -64,32 +67,29 @@ public:
 	{
 		bool open_dialog = false;
 		bool save_dialog = false;
-		ImGui::Begin("Curve Editor", 0, ImGuiWindowFlags_MenuBar);
+		ImGui::Begin("Stage Editor", 0, ImGuiWindowFlags_NoMove     |
+									    ImGuiWindowFlags_NoCollapse |
+									    ImGuiWindowFlags_NoResize);
 		{
-			if (ImGui::BeginMenuBar())
+			if (ImGui::Button("New Stage"))
 			{
-				if (ImGui::BeginMenu("File"))
-				{
-					if (ImGui::MenuItem("New Stage"))
-					{
 
-					}
-					if (ImGui::MenuItem("Save Stage"))
-					{
-						save_dialog = true;
-					}
-					if (ImGui::MenuItem("Open Stage"))
-					{
-						open_dialog = true;
-					}
-					ImGui::EndMenu();
-				}
-				ImGui::EndMenuBar();
 			}
+			ImGui::SameLine();
+			if (ImGui::Button("Save Stage"))
+			{
+				save_dialog = true;
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("Open Stage"))
+			{
+				open_dialog = true;
+			}
+			ImGui::Separator();
 
 			ImGui::Text("Stage Info");
 			ImGui::InputText("Stage Name", stage_name, name_buffer_size);
-			ImGui::SliderFloat("Stage Length", &stage_length, 0, 999, 0, 1);
+			ImGui::SliderFloat("Stage Length", &stage_length, 0, 120, 0, 1);
 			ImGui::SliderFloat("Current Stage Time", &current_stage_time, 0, stage_length, 0, 1);
 
 			ImGui::Separator();
@@ -141,7 +141,6 @@ public:
 
 				if (ImGui::Button("OK", ImVec2(120, 0))) 
 				{ 
-
 					EnemyData data;
 					data.time_start = spawn_time;
 					data.path_filepath = current_path;
@@ -169,29 +168,39 @@ public:
 			}
 
 
-			ImGui::Text("Enemies");
+
+			
+		}
+		ImGui::End();
+		
+		ImGui::Begin("Stage Data", 0, ImGuiWindowFlags_NoMove     | 
+									  ImGuiWindowFlags_NoCollapse | 
+		                              ImGuiWindowFlags_NoResize);
+		{
+			ImGui::BeginTable("Enemies", 3);
 			for (const auto& data : enemies)
 			{
-				ImGui::Text("Spawn Time: %1.f", data.time_start);
-				ImGui::Text("Path: %s", data.path_filepath.c_str()); 
-				ImGui::Text("Texture: %s", data.texture_filepath.c_str());
-
+				ImGui::TableNextColumn();
+				ImGui::Text("%.1f", data.time_start);
+				ImGui::TableNextColumn();
+				ImGui::Text("%s", data.path_filepath.c_str());
+				ImGui::TableNextColumn();
+				ImGui::Text("%s", data.texture_filepath.c_str());
 			}
+			ImGui::EndTable();
 		}
 		ImGui::End();
 		
 
-		ImGui::ShowDemoWindow();
-
-
+		ImGui::ShowDemoWindow(); 
 		
-		if (open_dialog) ImGui::OpenPopup("Open Path");
-		if (save_dialog) ImGui::OpenPopup("Save Path");
+		if (open_dialog) ImGui::OpenPopup("Open Stage");
+		if (save_dialog) ImGui::OpenPopup("Save Stage");
 
-		if (file_dialog.showFileDialog("Open Path", imgui_addons::ImGuiFileBrowser::DialogMode::OPEN, ImVec2(700, 310), ".path"))
+		if (file_dialog.showFileDialog("Open Stage", imgui_addons::ImGuiFileBrowser::DialogMode::OPEN, ImVec2(700, 310), ".path"))
 		{
 		}
-		if (file_dialog.showFileDialog("Save Path", imgui_addons::ImGuiFileBrowser::DialogMode::SAVE, ImVec2(700, 310), ".path"))
+		if (file_dialog.showFileDialog("Save Stage", imgui_addons::ImGuiFileBrowser::DialogMode::SAVE, ImVec2(700, 310), ".path"))
 		{
 		}
 	}
