@@ -5,14 +5,25 @@
 #include <Application.h>
 #include <Graphics/ShapeRenderer.h>
 
-#include "CurveEditor.h"
+class Editor
+{
+public:
+    virtual void OnGUIRender() = 0;
+
+    virtual void Render(ShapeRenderer& sh) = 0;
+
+    virtual void OnMouseButtonDown() = 0;
+    virtual void OnMouseButtonUp() = 0;
+
+    virtual void Update(glm::vec2 mouse_world_pos) = 0;
+};
 
 class EditorApplication : public Application
 {
 private:
     std::unique_ptr<ShapeRenderer> sh;
 
-    std::unique_ptr<CurveEditor> curve_editor;
+    std::unique_ptr<Editor> editor;
 
 public:
     EditorApplication(SDL_Window* window, SDL_GLContext context, int window_width, int window_height);

@@ -2,13 +2,16 @@
 #define CURVE_EDITOR_H
 
 #include <Core.h>
+#include <Editor/EditorApplication.h>
 
 /// <summary>
 /// This class is responsible for manipulating a bezier curve 
 /// </summary>
-class CurveEditor
+class CurveEditor : public Editor
 {
 private:	
+
+	std::string curve_name;
 
 	/// <summary>
 	/// The curve that is being edited 
@@ -41,6 +44,11 @@ private:
 	/// </summary>
 	bool mouse_down = false;
 
+	/// <summary>
+	/// Used for file dialog UI
+	/// </summary>
+	imgui_addons::ImGuiFileBrowser file_dialog;
+
 public:
 	
 	/// <summary>
@@ -49,7 +57,7 @@ public:
 	/// </summary>
 	CurveEditor()
 	{
-		current_curve = Bezier::Bezier<3>({ {-3, 6},{3, 0},{-3, 0},{-3, -6} });
+		ResetCurve();
 	}
 
 	/// <summary>
@@ -106,13 +114,94 @@ public:
 		}
 	}
 
+	void OnGUIRender() override 
+	{
+		bool open_dialog = false;
+		bool save_dialog = false;
+		ImGui::Begin("Curve Editor", 0, ImGuiWindowFlags_MenuBar);
+		{
+			if(ImGui::BeginMenuBar())
+			{
+				if (ImGui::BeginMenu("File"))
+				{
+					if (ImGui::MenuItem("New Path"))
+					{
+						ResetCurve();
+					}
+					if (ImGui::MenuItem("Save Path"))
+					{
+						save_dialog = true;
+					}
+					if (ImGui::MenuItem("Open Path"))
+					{
+						open_dialog = true;
+					}
+					ImGui::EndMenu();
+				}
+				ImGui::EndMenuBar();
+			}
+			
+			ImGui::NewLine();
+			ImGui::Text(curve_name.c_str());
+
+			const auto& control_points = current_curve.getControlPoints();
+			for (const auto& p : control_points)
+			{
+				ImGui::Text("X: %.1f : Y: %.1f", p.x, p.y);
+			}
+		}
+		ImGui::End();
+
+		if (open_dialog) ImGui::OpenPopup("Open Path");
+		if (save_dialog) ImGui::OpenPopup("Save Path");
+
+
+		if (file_dialog.showFileDialog("Open Path", imgui_addons::ImGuiFileBrowser::DialogMode::OPEN, ImVec2(700, 310), ".path"))
+		{
+			std::string file_path = file_dialog.selected_path;
+
+			Bezier::Bezier<3> path = LoadPathFromFile(file_path);
+
+			curve_name = file_path;
+
+			SetCurve(path);
+		}
+
+		if (file_dialog.showFileDialog("Save Path", imgui_addons::ImGuiFileBrowser::DialogMode::SAVE, ImVec2(700, 310), ".path"))
+		{
+			std::string file_name = file_dialog.selected_fn;
+			std::string file_path = file_dialog.selected_path;
+			std::string file_ext = file_dialog.ext;
+
+			const auto control_points = GetControlPoints();
+
+			nlohmann::json output;
+
+			int i = 0;
+			for (const auto& point : control_points)
+			{
+				output["path"][i++] = { point.x, point.y };
+			}
+
+			if (curve_name == "Default")
+			{
+				SavePathToFile(output.dump(), curve_name);
+			}
+			else
+			{
+				SavePathToFile(output.dump(), file_path + file_ext);
+			}
+			
+		}
+	}
+
 	/// <summary>
 	/// Renders the Curve and control points
 	/// </summary>
 	/// <param name="sh">
 	/// The shaperenderer that will do the rendering
 	/// </param>
-	void DrawCurve(ShapeRenderer& sh)
+	void Render(ShapeRenderer& sh)
 	{
 		const auto& control_points = current_curve.getControlPoints();
 		sh.SetColor(glm::vec4(1.f, 1.f, 1.f, 1.f));
@@ -186,6 +275,7 @@ public:
 	void ResetCurve()
 	{
 		current_curve = Bezier::Bezier<3>({ {-3, 6},{3, 0},{-3, 0},{-3, -6} });
+		curve_name = "Default";
 	}
 };
 

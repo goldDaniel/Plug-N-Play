@@ -152,7 +152,7 @@ public:
             auto tex = Texture::CreateTexture("Assets/Textures/Enemy.png");
             BezierPath path
             {
-                PathIO::LoadPathFromFile("Assets/Paths/Path0.path"),
+                LoadPathFromFile("Assets/Paths/Path0.path"),
                 1.f / 4.f
             };
             ECS.AddComponent(enemy, path);
@@ -167,7 +167,7 @@ public:
             auto tex = Texture::CreateTexture("Assets/Textures/Enemy.png");
             BezierPath path
             {
-                PathIO::LoadPathFromFile("Assets/Paths/Path1.path"),
+                LoadPathFromFile("Assets/Paths/Path1.path"),
                 1.f / 4.f
             };
             ECS.AddComponent(enemy, path);

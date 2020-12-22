@@ -2,10 +2,9 @@
 #define APPLICATION_H
 
 #include <Core.h>
-
 #include <fstream>
 
-namespace PathIO
+namespace
 {
     Bezier::Bezier<3> LoadPathFromFile(const std::string& filepath)
     {

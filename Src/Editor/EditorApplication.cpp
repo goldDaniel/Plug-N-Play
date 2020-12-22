@@ -2,9 +2,8 @@
 
 #include <imgui/ImGuiFileBrowser.h>
 
-
-static imgui_addons::ImGuiFileBrowser file_dialog; 
-
+#include "CurveEditor.h"
+#include "EnemyEditor.h"
 
 
 static glm::vec2 ProjectToXY0Plane(glm::vec2 mouse_pos, 
@@ -48,7 +47,7 @@ EditorApplication::EditorApplication(SDL_Window* window, SDL_GLContext context, 
                   : Application::Application(window, context, window_width, window_height)
 {
     sh = ShapeRenderer::CreateShapeRenderer();
-    curve_editor = std::make_unique<CurveEditor>();
+    editor = std::make_unique<CurveEditor>();
 }
 
 EditorApplication::~EditorApplication() {}
@@ -71,17 +70,13 @@ void EditorApplication::Run()
             
             if (event.type == SDL_QUIT) running = false;
             
-            if (event.type == SDL_KEYDOWN)
-                if (event.key.keysym.sym == SDLK_ESCAPE)
-                    running = false;
-            
             if (event.type == SDL_MOUSEBUTTONDOWN)
                 if (event.button.button == SDL_BUTTON_LEFT)
-                    curve_editor->OnMouseButtonDown();
+                    editor->OnMouseButtonDown();
 
             if (event.type == SDL_MOUSEBUTTONUP)
                 if (event.button.button == SDL_BUTTON_LEFT)
-                    curve_editor->OnMouseButtonUp();
+                    editor->OnMouseButtonUp();
             
             
             if (event.type == SDL_MOUSEMOTION)
@@ -96,7 +91,8 @@ void EditorApplication::Run()
 
         //INTERACTION
         glm::vec2 selection_point = ProjectToXY0Plane({ mouseX, mouseY }, view, proj, window_width, window_height);
-        curve_editor->Update(selection_point);
+        
+        editor->Update(selection_point);
 
 
         //RENDERING
@@ -104,10 +100,7 @@ void EditorApplication::Run()
         glClearColor(0.01f, 0.01f, 0.05f, 1);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        // Start the Dear ImGui frame
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplSDL2_NewFrame(window);
-        ImGui::NewFrame();
+        
 
         sh->Begin(proj, view);
 
@@ -135,64 +128,45 @@ void EditorApplication::Run()
         max = glm::vec2(+3.5, +6.5);
         sh->Rect(min, max);
 
-        curve_editor->DrawCurve(*sh);
+        editor->Render(*sh);
 
         sh->End();
 
-        bool open_dialog = false;
-        bool save_dialog = false;
-        ImGui::BeginMainMenuBar();
+
+        // Start the Dear ImGui frame
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplSDL2_NewFrame(window);
+        ImGui::NewFrame();
+
+        if (ImGui::BeginMainMenuBar())
         {
             if (ImGui::BeginMenu("File"))
             {
-                if (ImGui::MenuItem("New Path"))
+                if (ImGui::MenuItem("Quit"))
                 {
-                    curve_editor->ResetCurve();
-                }
-                if (ImGui::MenuItem("Save Path"))
-                {
-                    save_dialog = true;
-                }
-                if (ImGui::MenuItem("Open Path"))
-                {
-                    open_dialog = true;
+                    running = false;
                 }
                 ImGui::EndMenu();
             }
-        }
-        ImGui::EndMainMenuBar();
-
-        if (open_dialog) ImGui::OpenPopup("Open Path");
-        if (save_dialog) ImGui::OpenPopup("Save Path");
-
-
-        if (file_dialog.showFileDialog("Open Path", imgui_addons::ImGuiFileBrowser::DialogMode::OPEN, ImVec2(700, 310), ".path"))
-        {
-            std::string file_path = file_dialog.selected_path;
-
-            Bezier::Bezier<3> path = PathIO::LoadPathFromFile(file_path);
-
-            curve_editor->SetCurve(path);
-        }
-
-        if (file_dialog.showFileDialog("Save Path", imgui_addons::ImGuiFileBrowser::DialogMode::SAVE, ImVec2(700, 310), ".path"))        
-        {
-            std::string file_name = file_dialog.selected_fn; 
-            std::string file_path = file_dialog.selected_path;
-            std::string file_ext = file_dialog.ext;
-            
-            const auto control_points = curve_editor->GetControlPoints();
-
-            nlohmann::json output; 
-
-            int i = 0;
-            for (const auto& point : control_points)
+            if (ImGui::BeginMenu("Editor"))
             {
-                output["path"][i++] = { point.x, point.y };
+                if (ImGui::MenuItem("Curve Editor"))
+                {
+                    editor = std::make_unique<CurveEditor>();
+                }
+                if (ImGui::MenuItem("Enemy Editor"))
+                {
+                    editor = std::make_unique<EnemyEditor>();
+                }
+                ImGui::EndMenu();
             }
-            
-            PathIO::SavePathToFile(output.dump(), file_path + file_ext);
+
+
+            ImGui::EndMainMenuBar();
         }
+
+        editor->OnGUIRender();
+
 
 
         ImGui::Render();        
