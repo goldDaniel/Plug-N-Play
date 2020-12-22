@@ -26,24 +26,26 @@ void DebugRenderSystem::Update(float dt)
     const auto& cam = ECS->GetComponent<Camera>(camera);
     sh->Begin(cam.proj, cam.view);
     
-    int grid_size = 8;
-    for(int i = -grid_size; i < grid_size; i++)
+    int grid_size_x = 6;
+    int grid_size_y = 8;
+    sh->SetColor(glm::vec4(0.1f, 0.4f, 0.1f, 1));
+    for (int i = -grid_size_x; i <= grid_size_x; i++)
     {
-        for(int j = -grid_size; j < grid_size; j++)
+        for (int j = -grid_size_y; j < grid_size_y; j++)
         {
-            sh->SetColor(glm::vec4(0,1,0,1));
             glm::vec2 min(i - 0.5f, j - 0.5f);
             glm::vec2 max(i + 0.5f, j + 0.5f);
             sh->Rect(min, max);
         }
     }
     //draw blue rectangle at the origin tile
-    sh->SetColor(glm::vec4(0.2f, 0.2f, 1.f, 1.f));
+    sh->SetColor(glm::vec4(0.5f, 0.5f, 0.9f, 1.f));
     glm::vec2 min(-0.5f, -0.5f);
-    glm::vec2 max( 0.5f,  0.5f);
+    glm::vec2 max(0.5f, 0.5f);
     sh->Rect(min, max);
 
-    sh->SetColor(glm::vec4(1.f, 0.2f, 0.2f, 1.f));
+    //draws border for gameplay window
+    sh->SetColor(glm::vec4(0.6f, 0.2f, 0.2f, 1.f));
     min = glm::vec2(-3.5, -6.5);
     max = glm::vec2(+3.5, +6.5);
     sh->Rect(min, max);
