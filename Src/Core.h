@@ -23,6 +23,7 @@
 #include <imgui/imgui_impl_opengl3.h>
 
 
+#include <algorithm>
 #include <array>
 #include <cassert>
 #include <iostream>

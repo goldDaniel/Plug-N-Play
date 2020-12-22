@@ -3,7 +3,7 @@
 #include <imgui/ImGuiFileBrowser.h>
 
 #include "CurveEditor.h"
-#include "EnemyEditor.h"
+#include "StageEditor.h"
 
 
 static glm::vec2 ProjectToXY0Plane(glm::vec2 mouse_pos, 
@@ -153,14 +153,12 @@ void EditorApplication::Run()
                 {
                     editor = std::make_unique<CurveEditor>();
                 }
-                if (ImGui::MenuItem("Enemy Editor"))
+                if (ImGui::MenuItem("Stage Editor"))
                 {
-                    editor = std::make_unique<EnemyEditor>();
+                    editor = std::make_unique<StageEditor>();
                 }
                 ImGui::EndMenu();
             }
-
-
             ImGui::EndMainMenuBar();
         }
 

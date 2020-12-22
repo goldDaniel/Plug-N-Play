@@ -105,12 +105,12 @@ public:
 
 
     /**
-     * @brief Adds a circle shape consisting of line segments
+     * @brief Adds an ellipse shape consisting of line segments
      * 
      * @param position the center of the circle
      * @param rX the radius along the X-axis
      * @param rY the radius along the Y-axis
-     * @param segments how many segments make up the circle
+     * @param segments how many segments make up the ellipse
      */
     void Ellipse(const glm::vec2& position, float rX, float rY, int segments = 32)
     {

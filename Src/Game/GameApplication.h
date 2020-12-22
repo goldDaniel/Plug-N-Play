@@ -121,7 +121,19 @@ public:
         {
             Entity camera = ECS.CreateEntity();
             Camera cam_comp;
-            cam_comp.proj = glm::perspective(glm::radians(67.f), (float)window_width / (float)window_height, 1.f, 100.f);;
+
+            //because this is not the editor, we want to assure that we only see the game world
+            //We want a 9:16 aspect ratio ideally, so we flip the width and height 
+            if (window_width < window_height)
+            {
+                cam_comp.proj = glm::perspective(glm::radians(67.f), (float)window_width / (float)window_height, 1.f, 100.f);
+            }
+            else
+            {
+                cam_comp.proj = glm::perspective(glm::radians(67.f), (float)window_height / (float)window_width, 1.f, 100.f);
+            }
+            
+            
             cam_comp.view = glm::lookAt(glm::vec3(0, 0, 10), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
             ECS.AddComponent(camera, cam_comp);
 
@@ -198,6 +210,20 @@ public:
             resolutionSystem->Update(dt);
             cameraSystem->Update(dt);
 
+            float ratio;
+            if (window_width < window_height)
+            {
+                ratio = (float)window_width / (float)window_height;
+            }
+            else
+            {
+                ratio = (float)window_height / (float)window_width;
+            }
+            float viewport_width = window_height * ratio;
+            float viewport_x = (window_width - viewport_width) / 2.f;
+            glViewport(viewport_x, 0, viewport_width, window_height);
+
+            
             glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
 

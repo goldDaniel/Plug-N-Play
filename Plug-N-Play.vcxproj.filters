@@ -1289,7 +1289,7 @@
     <ClInclude Include="Src\Editor\CurveEditor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Editor\EnemyEditor.h">
+    <ClInclude Include="Src\Editor\StageEditor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
