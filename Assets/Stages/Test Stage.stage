@@ -1,9 +1,1 @@
-{"enemy data":
-	{
-		"paths":["Assets\\Paths\\Path0.path"],
-	        "textures":["Assets\\Textures\\Enemy.png"],
-		"times":[0.30000001192092896]
-	},
- "length":30,
- "name":"Stage"
-}
+{"enemy data":{"paths":["Assets\\Paths\\Path0.path","Assets\\Paths\\Path0.path","Assets\\Paths\\Path1.path","Assets\\Paths\\Path1.path"],"textures":["Assets\\Textures\\Enemy.png","Assets\\Textures\\Player.png","Assets\\Textures\\Bullet.png","Assets\\Textures\\Enemy.png"],"times":[0.0,1.0,1.0,1.2339999675750732]},"length":30,"name":"Stage"}

@@ -6,6 +6,59 @@
 
 namespace
 {
+    struct StageData
+    {
+        int stage_length;
+        float current_time;
+
+        std::string stage_name;
+
+        //these are parallel arrays
+        std::vector<float> enemy_start_times;
+        std::vector<std::string> enemy_paths;
+        std::vector<std::string> enemy_textures;
+    };
+
+    
+
+    StageData LoadStageFromFile(const std::string& filepath)
+    {
+        std::string json_string;
+        try
+        {
+            std::ifstream in_stream(filepath);
+
+            json_string = std::string((std::istreambuf_iterator<char>(in_stream)),
+                std::istreambuf_iterator<char>());
+
+            in_stream.close();
+        }
+        catch (std::ifstream::failure& e)
+        {
+            std::cout << "ERROR::PATH::FILE_NOT_SUCCESFULLY_READ" << std::endl;
+            std::cout << filepath << std::endl;
+        }
+
+        auto output = nlohmann::json::parse(json_string);
+
+        StageData result;
+        result.stage_name = output["name"];
+        result.stage_length = output["length"];
+        
+
+        for (std::size_t i = 0; 
+             i < output["enemy data"]["times"].size(); 
+             i++)
+        {
+            result.enemy_start_times.push_back(output["enemy data"]["times"][i]);
+            result.enemy_paths.push_back(output["enemy data"]["paths"][i]);
+            result.enemy_textures.push_back(output["enemy data"]["textures"][i]);
+        }
+
+        return result;
+    }
+
+
     Bezier::Bezier<3> LoadPathFromFile(const std::string& filepath)
     {
         std::string json_string;
