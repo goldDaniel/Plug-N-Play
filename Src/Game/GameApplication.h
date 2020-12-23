@@ -155,36 +155,20 @@ public:
             ECS.AddComponent(player, Renderable{ glm::vec4(1,1,1,1), texture });
         }
 
-        //creates the enemy entity
+        StageData stage = LoadStageFromFile("Assets/Stages/Test Stage.stage");
+
+        for (std::size_t i = 0; i < stage.enemy_start_times.size(); i++)
         {
             Entity enemy = ECS.CreateEntity();
             ECS.AddComponent(enemy, Transform{ glm::vec2(0,0), glm::vec2(1.f, 1.f), 0.f });
 
+            BezierPath path;
+            path.speed = 1.f / 8.f;
+            path.curve = LoadPathFromFile(stage.enemy_paths[i]);
 
-            auto tex = Texture::CreateTexture("Assets/Textures/Enemy.png");
-            BezierPath path
-            {
-                LoadPathFromFile("Assets/Paths/Path0.path"),
-                1.f / 4.f
-            };
             ECS.AddComponent(enemy, path);
             ECS.AddComponent(enemy, Collider{ Collider::Enemy, Collider::Player, 0.5f });
-            ECS.AddComponent(enemy, Renderable({ glm::vec4(1,1,1,1), tex }));
-        }
-        //creates the enemy entity
-        {
-            Entity enemy = ECS.CreateEntity();
-            ECS.AddComponent(enemy, Transform{ glm::vec2(0,0), glm::vec2(1.f, 1.f), 0.f });
-
-            auto tex = Texture::CreateTexture("Assets/Textures/Enemy.png");
-            BezierPath path
-            {
-                LoadPathFromFile("Assets/Paths/Path1.path"),
-                1.f / 4.f
-            };
-            ECS.AddComponent(enemy, path);
-            ECS.AddComponent(enemy, Collider{ Collider::Enemy, Collider::Player, 0.5f });
-            ECS.AddComponent(enemy, Renderable({ glm::vec4(1,1,1,1), tex }));
+            ECS.AddComponent(enemy, Renderable({ glm::vec4(1,1,1,1), Texture::CreateTexture(stage.enemy_textures[i]) }));
         }
 
         float elapsed = 0;
