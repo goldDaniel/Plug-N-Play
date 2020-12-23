@@ -49,6 +49,7 @@ Texture* Texture::CreateTexture(const std::string& filepath)
     else
     {
         std::cout << "Failed to load texture" << std::endl;
+        std::cout << filepath << std::endl;
     }
     stbi_image_free(data);
 

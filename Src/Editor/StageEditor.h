@@ -24,7 +24,7 @@ private:
 	char stage_name[name_buffer_size] = "Stage";
 	
 	
-	float stage_length = 30;
+	int stage_length = 30;
 	float current_stage_time = 0;
 
 	
@@ -35,6 +35,9 @@ private:
 	std::vector<std::string> texture_filepaths;
 	std::vector<EnemyData> enemies; 
 
+
+	std::unique_ptr<SpriteBatch> s;
+
 	/// <summary>
 	/// Used for file dialog UI
 	/// </summary>
@@ -43,7 +46,7 @@ private:
 public:
 	StageEditor()
 	{
-		
+		s = SpriteBatch::CreateSpriteBatch();
 		
 		std::filesystem::path path("Assets/Textures");
 		path.make_preferred();
@@ -89,8 +92,10 @@ public:
 
 			ImGui::Text("Stage Info");
 			ImGui::InputText("Stage Name", stage_name, name_buffer_size);
-			ImGui::SliderFloat("Stage Length", &stage_length, 0, 120, 0, 1);
+			ImGui::InputInt("Stage Length", &stage_length, 1, 5);
 			ImGui::SliderFloat("Current Stage Time", &current_stage_time, 0, stage_length, 0, 1);
+			if (current_stage_time > stage_length) current_stage_time = stage_length;
+			if (current_stage_time < 0) current_stage_time = 0;
 
 			ImGui::Separator();
 
@@ -163,6 +168,7 @@ public:
 				{ 
 					ImGui::CloseCurrentPopup(); 
 					current_path = "";
+					current_texture = "";
 				}					
 				ImGui::EndPopup();
 			}
@@ -223,6 +229,14 @@ public:
 
 				sh.Line(p0, p1);
 			}
+		}
+
+		if (current_texture != "")
+		{
+			s->Begin(sh.GetProjectionMatrix(), sh.GetViewMatrix());
+			//the texture system manages allocation, this wont leak memory
+			s->Draw(Texture::CreateTexture(current_texture), 0, 0, 2, 2);
+			s->End();
 		}
 	}
 
