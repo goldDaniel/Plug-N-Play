@@ -7,7 +7,7 @@ class MovementSystem : public System
 {
 public:
 
-    MovementSystem(ECSController* ECS) : System::System(ECS) {}
+    MovementSystem(ECSController * const ECS) : System::System(ECS) {}
     
     void Update(float dt)
     {

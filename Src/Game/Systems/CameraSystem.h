@@ -8,7 +8,7 @@ class CameraSystem : public System
 
 public:
 
-    CameraSystem(ECSController* ECS) : System::System(ECS) {}
+    CameraSystem(ECSController * const ECS) : System::System(ECS) {}
     
     void Update(float dt)
     {

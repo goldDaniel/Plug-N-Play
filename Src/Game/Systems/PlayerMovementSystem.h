@@ -8,7 +8,7 @@ class PlayerMovementSystem : public System
 {
 public:
 
-    PlayerMovementSystem(ECSController* ECS) : System::System(ECS) {}
+    PlayerMovementSystem(ECSController * const ECS) : System::System(ECS) {}
     
     void Update(float dt)
     {

@@ -7,7 +7,7 @@ class BulletSystem : public System
 {
 public:
 
-    BulletSystem(ECSController* ECS) : System::System(ECS) {}
+    BulletSystem(ECSController * const ECS) : System::System(ECS) {}
     
     void Update(float dt)
     {

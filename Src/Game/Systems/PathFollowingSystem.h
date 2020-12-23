@@ -11,7 +11,7 @@ private:
 
 public:
 
-    PathFollowingSystem(ECSController* ECS) : System::System(ECS) {}
+    PathFollowingSystem(ECSController * const ECS) : System::System(ECS) {}
     
 
     void Update(float dt)

@@ -10,7 +10,7 @@ private:
 
 public:
 
-	CollisionResolutionSystem(ECSController* ECS) : System::System(ECS) {}
+	CollisionResolutionSystem(ECSController * const  ECS) : System::System(ECS) {}
 
 
 	void Update(float dt)

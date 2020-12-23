@@ -9,7 +9,7 @@ class PlayerWeaponSystem : public System
 {
 public:
 
-    PlayerWeaponSystem(ECSController* ECS) : System::System(ECS) {}
+    PlayerWeaponSystem(ECSController * const ECS) : System::System(ECS) {}
     
     void Update(float dt)
     {

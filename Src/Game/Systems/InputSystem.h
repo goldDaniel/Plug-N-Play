@@ -13,7 +13,7 @@ private:
 
 
 public:
-    InputSystem(ECSController* ECS) : System::System(ECS) 
+    InputSystem(ECSController * const ECS) : System::System(ECS)
     {
         for(int i = 'a'; i < 'z'; i++)
         {

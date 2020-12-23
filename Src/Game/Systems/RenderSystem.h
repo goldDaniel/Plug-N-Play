@@ -18,7 +18,7 @@ private:
 
 public:
 
-    RenderSystem(ECSController* ECS);
+    RenderSystem(ECSController * const ECS);
 
     void SetCamera(Entity entity);
 

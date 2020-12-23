@@ -24,7 +24,7 @@ private:
 
 public:
 
-    DebugRenderSystem(ECSController* ECS);
+    DebugRenderSystem(ECSController * const ECS);
 
     void SetCamera(Entity entity);
 
