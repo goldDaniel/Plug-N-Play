@@ -160,11 +160,15 @@ public:
         for (std::size_t i = 0; i < stage.enemy_start_times.size(); i++)
         {
             Entity enemy = ECS.CreateEntity();
-            ECS.AddComponent(enemy, Transform{ glm::vec2(0,0), glm::vec2(1.f, 1.f), 0.f });
+            
 
             BezierPath path;
-            path.speed = 1.f / 8.f;
+            path.time_start = stage.enemy_start_times[i];
+            path.speed = 1.f / 6.f;
             path.curve = LoadPathFromFile(stage.enemy_paths[i]);
+
+            glm::vec2 pos({ path.curve.valueAt(0).x, path.curve.valueAt(0).y });
+            ECS.AddComponent(enemy, Transform{pos, glm::vec2(1.f, 1.f), 0.f });
 
             ECS.AddComponent(enemy, path);
             ECS.AddComponent(enemy, Collider{ Collider::Enemy, Collider::Player, 0.5f });
