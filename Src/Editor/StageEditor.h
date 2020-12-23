@@ -24,15 +24,22 @@ private:
 	char stage_name[name_buffer_size] = "Stage";
 	
 	
+	//the stage will last stage_length seconds
 	int stage_length = 30;
+	//the current time in the stage, used to scrub through 
 	float current_stage_time = 0;
-
 	
-	std::string current_path;
+	
+	//stores the filepath of the currently selected texture
 	std::string current_texture;
-
-	std::map<std::string, Bezier::Bezier<3>> paths;
+	//all the textures we can select for enemies
 	std::vector<std::string> texture_filepaths;
+
+	//stores the filepath of the currently selected path
+	std::string current_path;
+	//all the paths we can select
+	std::map<std::string, Bezier::Bezier<3>> paths;
+	
 	std::vector<EnemyData> enemies; 
 
 
@@ -94,6 +101,7 @@ public:
 			ImGui::InputText("Stage Name", stage_name, name_buffer_size);
 			ImGui::InputInt("Stage Length", &stage_length, 1, 5);
 			ImGui::SliderFloat("Current Stage Time", &current_stage_time, 0, stage_length, 0, 1);
+
 			if (current_stage_time > stage_length) current_stage_time = stage_length;
 			if (current_stage_time < 0) current_stage_time = 0;
 
@@ -160,6 +168,7 @@ public:
 					});
 
 					current_path = "";
+					current_texture = "";
 					ImGui::CloseCurrentPopup(); 
 				}
 				ImGui::SetItemDefaultFocus();
@@ -183,17 +192,31 @@ public:
 									  ImGuiWindowFlags_NoCollapse | 
 		                              ImGuiWindowFlags_NoResize);
 		{
-			ImGui::BeginTable("Enemies", 3);
+			
+			ImGui::NewLine();
+
+			ImVec4 time_color({ .6f, .2f, .2f, 1.f });
+			ImVec4 path_color({ 0.4f, 0.6f, 0.4f, 1.f });
+			ImVec4 tex_color({ 0.4f, 0.4f, 0.6f, 1.f });
+
+
+			ImGui::TextColored(time_color, "Start Time");
+			ImGui::SameLine();
+			ImGui::TextColored(path_color, "Path to follow");
+			ImGui::SameLine();
+			ImGui::TextColored(tex_color, "Texture");
+
 			for (const auto& data : enemies)
 			{
-				ImGui::TableNextColumn();
-				ImGui::Text("%.1f", data.time_start);
-				ImGui::TableNextColumn();
-				ImGui::Text("%s", data.path_filepath.c_str());
-				ImGui::TableNextColumn();
-				ImGui::Text("%s", data.texture_filepath.c_str());
+				
+				ImGui::NewLine();
+				
+				ImGui::TextColored(time_color, "%.1f", data.time_start);
+				ImGui::SameLine();
+				ImGui::TextColored(path_color, "%s", data.path_filepath.c_str());
+				ImGui::SameLine();
+				ImGui::TextColored(tex_color, "%s", data.texture_filepath.c_str());
 			}
-			ImGui::EndTable();
 		}
 		ImGui::End();
 		
@@ -205,9 +228,37 @@ public:
 
 		if (file_dialog.showFileDialog("Open Stage", imgui_addons::ImGuiFileBrowser::DialogMode::OPEN, ImVec2(700, 310), ".path"))
 		{
+
 		}
-		if (file_dialog.showFileDialog("Save Stage", imgui_addons::ImGuiFileBrowser::DialogMode::SAVE, ImVec2(700, 310), ".path"))
+		if (file_dialog.showFileDialog("Save Stage", imgui_addons::ImGuiFileBrowser::DialogMode::SAVE, ImVec2(700, 310), ".stage"))
 		{
+
+			std::string file_path = file_dialog.selected_path;
+			
+			nlohmann::json output;
+
+			output["name"] = std::string(stage_name);
+			output["length"] = stage_length;
+			
+
+			// our json library stores arrays interally as vectors
+			// adding the values manually to the json object was not working
+			// so I accumulated them in my own vectors
+			std::vector<float> start_times;
+			std::vector<std::string> paths;
+			std::vector<std::string> textures;
+
+			for (const auto& data : enemies)
+			{
+				start_times.push_back(data.time_start);
+				paths.push_back(data.path_filepath);
+				textures.push_back(data.texture_filepath);
+			}
+			output["enemy data"]["times"] = start_times;
+			output["enemy data"]["paths"] = paths;
+			output["enemy data"]["textures"] = textures;
+
+			SaveStringToFile(output.dump(), file_path + ".stage");
 		}
 	}
 

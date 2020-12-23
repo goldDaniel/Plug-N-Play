@@ -122,7 +122,6 @@ public:
 									   ImGuiWindowFlags_NoCollapse |
 									   ImGuiWindowFlags_NoResize);
 		{
-			
 			if (ImGui::Button("New Path"))
 			{
 				ResetCurve();
@@ -137,8 +136,7 @@ public:
 			{
 				open_dialog = true;
 			}
-			
-			
+
 			ImGui::NewLine();
 			ImGui::Text(curve_name.c_str());
 
@@ -183,11 +181,11 @@ public:
 
 			if (curve_name == "Default")
 			{
-				SavePathToFile(output.dump(), curve_name);
+				SaveStringToFile(output.dump(), curve_name);
 			}
 			else
 			{
-				SavePathToFile(output.dump(), file_path + file_ext);
+				SaveStringToFile(output.dump(), file_path + file_ext);
 			}
 			
 		}

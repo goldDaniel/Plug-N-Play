@@ -43,7 +43,7 @@ namespace
         return Bezier::Bezier<3>(control_points);
     }
 
-    void SavePathToFile(const std::string& data, const std::string& filepath)
+    void SaveStringToFile(const std::string& data, const std::string& filepath)
     {
         std::ofstream out(filepath);
         out << data;
