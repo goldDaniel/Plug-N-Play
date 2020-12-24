@@ -25,6 +25,8 @@ private:
 
     std::unique_ptr<Editor> editor;
 
+    bool show_console = false;
+
 public:
     EditorApplication(SDL_Window* window, SDL_GLContext context, int window_width, int window_height);
     

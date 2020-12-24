@@ -103,8 +103,8 @@ void EditorApplication::Run()
 
         sh->Begin(proj, view);
 
-        int grid_size_x = 6;
-        int grid_size_y = 8;
+        int grid_size_x = 2 * Constants::WORLD_WIDTH;
+        int grid_size_y = 2 * Constants::WORLD_HEIGHT;
         sh->SetColor(glm::vec4(0.1f, 0.4f, 0.1f, 1));
         for (int i = -grid_size_x; i <= grid_size_x; i++)
         {
@@ -157,6 +157,13 @@ void EditorApplication::Run()
                 {
                     editor = std::make_unique<StageEditor>();
                 }
+                ImGui::EndMenu();
+            }
+            if (ImGui::BeginMenu("Window"))
+            {
+                ImGui::MenuItem("Console", 0, &show_console);
+                
+                
                 ImGui::EndMenu();
             }
             ImGui::EndMainMenuBar();

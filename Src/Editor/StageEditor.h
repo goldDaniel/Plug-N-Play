@@ -6,6 +6,7 @@
 #include <Graphics/SpriteBatch.h>
 #include <imgui/ImGuiFileBrowser.h>
 
+#include "EnemyCreator.h"
 
 class StageEditor : public Editor
 {
@@ -14,26 +15,13 @@ private:
 	static const std::size_t name_buffer_size = 80;
 	char stage_name[name_buffer_size] = "Stage";
 	
-	
-	StageData stage_data = { 30,0, "Stage", {},{},{} };
-	
-	
-	//stores the filepath of the currently selected texture
-	std::string current_texture;
-	//all the textures we can select for enemies
-	std::vector<std::string> texture_filepaths;
+	int stage_length = 30;
+	float current_stage_time = 0;
 
-	//stores the filepath of the currently selected path
-	std::string current_path;
-	//all the paths we can select
-	std::map<std::string, Bezier::Bezier<3>> paths;
-	
+	std::unique_ptr<EnemyCreator> enemy_creator;
 
-	std::unique_ptr<SpriteBatch> s;
 
-	/// <summary>
 	/// Used for file dialog UI
-	/// </summary>
 	imgui_addons::ImGuiFileBrowser file_dialog;
 	 
 public:
