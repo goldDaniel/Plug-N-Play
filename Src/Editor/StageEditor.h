@@ -6,6 +6,9 @@
 #include <Graphics/SpriteBatch.h>
 #include <imgui/ImGuiFileBrowser.h>
 
+#include <Game/Systems/PathFollowingSystem.h>
+#include <Game/Systems/RenderSystem.h>
+
 #include "EnemyCreator.h"
 
 class StageEditor : public Editor
@@ -20,10 +23,12 @@ private:
 
 	std::unique_ptr<EnemyCreator> enemy_creator;
 
-
 	/// Used for file dialog UI
 	imgui_addons::ImGuiFileBrowser file_dialog;
-	 
+
+	float previous_time;
+	bool run_sim = false;
+
 public:
 	StageEditor();
 

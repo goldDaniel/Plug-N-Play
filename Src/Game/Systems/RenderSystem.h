@@ -22,6 +22,11 @@ public:
 
     void SetCamera(Entity entity);
 
+    void SetElapsed(float elapsed)
+    {
+        this->elapsed = elapsed;
+    }
+
     void SetScreenDimensions(int w, int h);
     void Update(float dt);
 };

@@ -49,12 +49,13 @@ public:
 		}
 	}
 
-	void OnGUIRender()
+	void EnemyCreationGUI()
 	{
 		if (ImGui::Button("New Enemy"))
 		{
 			ImGui::OpenPopup("New Enemy");
 		}
+		
 		// Always center this window when appearing
 		ImVec2 center(ImGui::GetIO().DisplaySize.x * 0.5f, ImGui::GetIO().DisplaySize.y * 0.5f);
 		ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
@@ -147,12 +148,12 @@ public:
 			auto& curve = paths[current_path];
 
 			float step = 0.05f;
-			for (float t = step; t <= 1; t += step)
+			for (float t = 0; t < 1; t += step)
 			{
-				const auto& p00 = curve.valueAt(t - step);
+				const auto& p00 = curve.valueAt(t);
 				glm::vec2 p0 = { p00.x, p00.y };
 
-				const auto& p10 = curve.valueAt(t);
+				const auto& p10 = curve.valueAt(t + step);
 				glm::vec2 p1 = { p10.x, p10.y };
 
 				sh.Line(p0, p1);

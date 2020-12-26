@@ -13,6 +13,10 @@ public:
 
     PathFollowingSystem(ECSController * const ECS) : System::System(ECS) {}
     
+    void SetElapsed(float elapsed)
+    {
+        this->elapsed = elapsed;
+    }
 
     void Update(float dt)
     {

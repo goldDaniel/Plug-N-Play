@@ -9,9 +9,7 @@
 /// </summary>
 class CurveEditor : public Editor
 {
-private:	
-
-	std::string curve_name;
+private:
 
 	/// <summary>
 	/// The curve that is being edited 
@@ -137,9 +135,6 @@ public:
 				open_dialog = true;
 			}
 
-			ImGui::NewLine();
-			ImGui::Text(curve_name.c_str());
-
 			const auto& control_points = current_curve.getControlPoints();
 			for (const auto& p : control_points)
 			{
@@ -157,8 +152,6 @@ public:
 			std::string file_path = file_dialog.selected_path;
 
 			Bezier::Bezier<3> path = LoadPathFromFile(file_path);
-
-			curve_name = file_path;
 
 			SetCurve(path);
 		}
@@ -179,15 +172,7 @@ public:
 				output["path"][i++] = { point.x, point.y };
 			}
 
-			if (curve_name == "Default")
-			{
-				SaveStringToFile(output.dump(), curve_name);
-			}
-			else
-			{
-				SaveStringToFile(output.dump(), file_path + file_ext);
-			}
-			
+			SaveStringToFile(output.dump(), file_path + file_ext);
 		}
 	}
 
@@ -271,7 +256,6 @@ public:
 	void ResetCurve()
 	{
 		current_curve = Bezier::Bezier<3>({ {-3, 6},{3, 0},{-3, 0},{-3, -6} });
-		curve_name = "Default";
 	}
 };
 

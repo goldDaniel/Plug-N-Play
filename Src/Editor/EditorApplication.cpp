@@ -100,12 +100,12 @@ void EditorApplication::Run()
         glClearColor(0.01f, 0.01f, 0.05f, 1);
         glClear(GL_COLOR_BUFFER_BIT);
 
-
+    
         sh->Begin(proj, view);
 
         int grid_size_x = 2 * Constants::WORLD_WIDTH;
         int grid_size_y = 2 * Constants::WORLD_HEIGHT;
-        sh->SetColor(glm::vec4(0.1f, 0.4f, 0.1f, 1));
+        sh->SetColor(glm::vec4(0.05f, 0.3f, 0.05f, 1));
         for (int i = -grid_size_x; i <= grid_size_x; i++)
         {
             for (int j = -grid_size_y; j < grid_size_y; j++)
@@ -122,7 +122,7 @@ void EditorApplication::Run()
         sh->Rect(min, max);
 
         //draws border for gameplay window
-        sh->SetColor(glm::vec4(0.6f, 0.2f, 0.2f, 1.f));
+        sh->SetColor(glm::vec4(0.8f, 0.1f, 0.1f, 1.f));
         min = glm::vec2(-3.5, -6.5);
         max = glm::vec2(+3.5, +6.5);
         sh->Rect(min, max);
@@ -170,7 +170,6 @@ void EditorApplication::Run()
         }
 
         editor->OnGUIRender();
-
 
 
         ImGui::Render();        

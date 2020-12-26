@@ -3,6 +3,8 @@
 
 StageEditor::StageEditor()
 {
+	previous_time = SDL_GetTicks();
+
 	enemy_creator = std::make_unique<EnemyCreator>();
 }
 
@@ -16,37 +18,62 @@ void StageEditor::OnGUIRender()
 	{
 		if (ImGui::Button("New Stage"))
 		{
-
+			run_sim = false;
 		}
 		ImGui::SameLine();
 		if (ImGui::Button("Save Stage"))
 		{
 			save_dialog = true;
+			run_sim = false;
 		}
 		ImGui::SameLine();
 		if (ImGui::Button("Open Stage"))
 		{
 			open_dialog = true;
+			run_sim = false;
 		}
 		ImGui::Separator();
 
 		ImGui::Text("Stage Info");
+		
+		if (ImGui::Button("Play"))
+		{
+			//run the enemy sim
+			run_sim = true;
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Pause"))
+		{
+			//pause the enemy sim
+			run_sim = false;
+		}
+		ImGui::SameLine();
+		std::string running_text = run_sim ? "running " : "paused";
+		ImGui::Text(running_text.c_str());
+
+		ImGui::NewLine();
+		
 		ImGui::InputText("Stage Name", stage_name, name_buffer_size);
 		ImGui::InputInt("Stage Length", &stage_length, 1, 5);
-		ImGui::SliderFloat("Current Stage Time", &current_stage_time, 0, stage_length, 0, 1);
+
+		if (ImGui::SliderFloat("Current Stage Time", &current_stage_time, 0, stage_length, 0, 1))
+		{
+			run_sim = false;
+		}
 
 		if (current_stage_time > stage_length) current_stage_time = stage_length;
 		if (current_stage_time < 0) current_stage_time = 0;
 
 		ImGui::Separator();
 
-		enemy_creator->OnGUIRender();
+		
+		enemy_creator->EnemyCreationGUI();
 	}
 	ImGui::End();
-
-	ImGui::Begin("Stage Data", 0, ImGuiWindowFlags_NoMove |
-		ImGuiWindowFlags_NoCollapse |
-		ImGuiWindowFlags_NoResize);
+	
+	ImGui::Begin("Stage Data" , 0, ImGuiWindowFlags_NoMove |
+						    	   ImGuiWindowFlags_NoCollapse |
+								   ImGuiWindowFlags_NoResize);
 	{
 
 		ImGui::NewLine();
@@ -69,7 +96,7 @@ void StageEditor::OnGUIRender()
 		{
 
 			ImGui::NewLine();
-
+			
 			ImGui::TextColored(time_color, "%.2f", times[i]);
 			ImGui::SameLine();
 			ImGui::TextColored(path_color, "%s", enemy_paths[i].c_str());
@@ -133,5 +160,12 @@ void StageEditor::OnMouseButtonUp()
 
 void StageEditor::Update(glm::vec2 mouse_world_pos) 
 {
-
+	float current_time = SDL_GetTicks();
+	float dt = (current_time - previous_time) / 1000.f;
+	previous_time = current_time;
+	
+	if (run_sim)
+	{
+		current_stage_time += dt;
+	}
 }
