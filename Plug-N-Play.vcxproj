@@ -72,8 +72,8 @@
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>D:\Projects\Plug-N-Play\Plug-N-Play\Vendor;D:\Projects\Plug-N-Play\Plug-N-Play\Src;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\Projects\Plug-N-Play\Plug-N-Play\Vendor\SDL2\lib\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)Vendor;$(SolutionDir)Src;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Vendor\SDL2\lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
