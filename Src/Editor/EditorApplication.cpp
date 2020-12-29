@@ -86,6 +86,10 @@ void EditorApplication::Run()
             }
         }
 
+        glViewport(0, 0, (int)window_width, (int)window_height);
+        glClearColor(0.01f, 0.01f, 0.05f, 1);
+        glClear(GL_COLOR_BUFFER_BIT);
+
         const glm::mat4 proj = glm::perspective(glm::radians(67.f), (float)window_width / (float)window_height, 1.f, 100.f);
         const glm::mat4 view = glm::lookAt(glm::vec3(0, 0, 11.f), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 
@@ -94,13 +98,7 @@ void EditorApplication::Run()
         
         editor->Update(selection_point);
 
-
         //RENDERING
-        glViewport(0, 0, (int)window_width, (int)window_height);
-        glClearColor(0.01f, 0.01f, 0.05f, 1);
-        glClear(GL_COLOR_BUFFER_BIT);
-
-    
         sh->Begin(proj, view);
 
         int grid_size_x = 2 * Constants::WORLD_WIDTH;

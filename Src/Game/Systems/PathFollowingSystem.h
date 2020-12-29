@@ -16,6 +16,29 @@ public:
     void SetElapsed(float elapsed)
     {
         this->elapsed = elapsed;
+
+        for (const auto& entity : entities)
+        {
+            auto& trans = ECS->GetComponent<Transform>(entity);
+            auto& path = ECS->GetComponent<BezierPath>(entity);
+
+            if (elapsed < path.time_start)
+            {
+                path.time = 0;
+                auto p = path.curve.valueAt(0);
+                trans.position = { p.x, p.y };
+            }
+            else //if (elapsed >= path.time_start)
+            {
+                //calculate the percentage of the path we have gone through and 
+                //set the time appropriately
+                path.time = (elapsed - path.time_start) * path.speed;
+                if (path.time > 1) path.time = 1;
+
+                auto p = path.curve.valueAt(path.time);
+                trans.position = { p.x, p.y };
+            }
+        }
     }
 
     void Update(float dt)
@@ -41,6 +64,8 @@ public:
                 }
                 else
                 {
+                    path.time = 1;
+
                     //path following is complete, destroy the entity
                     to_remove.insert(entity);
                 }
@@ -49,7 +74,10 @@ public:
 
         for (const auto& entity : to_remove)
         {
-            ECS->DestroyEntity(entity);
+            //We arent destroying entities because of the path editor, we must keep 
+            //path followers in the system in order to scrub through the level
+
+            //ECS->DestroyEntity(entity);
         }
     }
 };

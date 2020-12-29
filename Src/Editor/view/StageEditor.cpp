@@ -88,5 +88,5 @@ void StageEditor::OnMouseButtonUp()
 
 void StageEditor::Update(glm::vec2 mouse_world_pos)
 {
-
+	simulation->Update();
 }
