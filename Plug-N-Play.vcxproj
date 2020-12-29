@@ -120,7 +120,7 @@
     <ClCompile Include="src\ecs\EntityManager.cpp" />
     <ClCompile Include="src\ecs\SystemManager.cpp" />
     <ClCompile Include="Src\Editor\EditorApplication.cpp" />
-    <ClCompile Include="Src\Editor\StageEditor.cpp" />
+    <ClCompile Include="Src\Editor\view\StageEditor.cpp" />
     <ClCompile Include="src\game\systems\DebugRenderSystem.cpp" />
     <ClCompile Include="src\game\systems\RenderSystem.cpp" />
     <ClCompile Include="Src\Graphics\glad.c" />
@@ -154,7 +154,8 @@
     <ClInclude Include="Src\Editor\CurveEditor.h" />
     <ClInclude Include="Src\Editor\EditorApplication.h" />
     <ClInclude Include="Src\Editor\EnemyCreator.h" />
-    <ClInclude Include="Src\Editor\StageEditor.h" />
+    <ClInclude Include="Src\Editor\logic\StageSimulation.h" />
+    <ClInclude Include="Src\Editor\view\StageEditor.h" />
     <ClInclude Include="src\game\Components.h" />
     <ClInclude Include="Src\Game\GameApplication.h" />
     <ClInclude Include="src\game\systems\BulletSystem.h" />

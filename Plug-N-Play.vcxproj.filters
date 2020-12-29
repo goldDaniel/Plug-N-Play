@@ -90,7 +90,7 @@
     <ClCompile Include="Vendor\imgui\ImGuiFileBrowser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Editor\StageEditor.cpp">
+    <ClCompile Include="Src\Editor\view\StageEditor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1292,10 +1292,13 @@
     <ClInclude Include="Src\Editor\CurveEditor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Editor\StageEditor.h">
+    <ClInclude Include="Src\Editor\EnemyCreator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Editor\EnemyCreator.h">
+    <ClInclude Include="Src\Editor\view\StageEditor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Editor\logic\StageSimulation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

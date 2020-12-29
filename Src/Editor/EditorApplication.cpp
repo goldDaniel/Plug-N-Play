@@ -3,7 +3,7 @@
 #include <imgui/ImGuiFileBrowser.h>
 
 #include "CurveEditor.h"
-#include "StageEditor.h"
+#include "view/StageEditor.h"
 
 
 static glm::vec2 ProjectToXY0Plane(glm::vec2 mouse_pos, 

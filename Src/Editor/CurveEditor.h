@@ -69,7 +69,7 @@ public:
 		for (auto& control_point : control_points)
 		{
 			glm::vec2 p{ control_point.x, control_point.y };
-			if (glm::distance(mouse_world_pos, p) < selection_radius * 2)
+			if (glm::distance(mouse_world_pos, p) < selection_radius)
 			{
 				held_point = &control_point;
 			}
