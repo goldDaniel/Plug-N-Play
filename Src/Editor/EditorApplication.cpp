@@ -16,29 +16,21 @@ static glm::vec2 ProjectToXY0Plane(glm::vec2 mouse_pos,
 
     const glm::vec4 viewport{ 0, 0, window_width, window_height };
 
-    //You have your screen space coordinates as x and y
+    //TODO: we assume the near & far planes here, fix this assumption later
     glm::vec3 screenPoint1(mouse_pos.x, mouse_pos.y, 0.f);
     glm::vec3 screenPoint2(mouse_pos.x, mouse_pos.y, 100.f);
-
-    //Unproject both these points
     glm::vec3 modelPoint1 = glm::unProject(screenPoint1, view, proj, viewport);
     glm::vec3 modelPoint2 = glm::unProject(screenPoint2, view, proj, viewport);
 
-    //normalOfPlane is the normal of the plane. If it's a xy plane then the normal is vec3(0,0,1)
-    //P0 is a point on the plane
-
     glm::vec3 plane_normal(0, 0, 1);
-    //L is the direction of your ray
-    //L0 is a point on the ray
-    glm::vec3 L = glm::normalize(modelPoint2 - modelPoint1);
-    glm::vec3 L0 = modelPoint1;
+    glm::vec3 ray_direction = glm::normalize(modelPoint2 - modelPoint1);
+    glm::vec3 origin = modelPoint1;
 
     //Solve for d where dot((d * L + L0 - P0), n) = 0
-    float d = glm::dot(-L0, plane_normal) / glm::dot(L, plane_normal);
+    float d = glm::dot(-origin, plane_normal) / glm::dot(ray_direction, plane_normal);
 
     //Use d to get back to point on plane
-    glm::vec3 point_on_plane = d * L + L0;
-    
+    glm::vec3 point_on_plane = origin + d * ray_direction;
     
     return glm::vec2(point_on_plane.x, point_on_plane.y);
 }

@@ -7,16 +7,16 @@
 
 #include <bezier.h>
 
-struct SimulationData
-{
-	std::map<std::size_t, Entity> entity_map;
-	
-	StageData stage_data;
-};
-
 class StageSimulation
 {
 private:
+
+	struct SimulationData
+	{
+		std::map<std::size_t, Entity> entity_map;
+
+		StageData stage_data;
+	};
 
 	bool running = false;
 
