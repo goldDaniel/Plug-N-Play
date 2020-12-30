@@ -7,6 +7,13 @@
 
 #include <bezier.h>
 
+struct SimulationData
+{
+	std::map<std::size_t, Entity> entity_map;
+	
+	StageData stage_data;
+};
+
 class StageSimulation
 {
 private:
@@ -24,14 +31,11 @@ private:
 	std::shared_ptr<PathFollowingSystem> path_system;
 	std::shared_ptr<RenderSystem> render_system;
 
-	//we need a reference to all entities in the simulation
-	//so we can remove/add them on level loading/saving
-	std::vector<Entity> active_entities;
 
 	
 	std::map<std::string, Bezier::Bezier<3>> path_cache;
 
-	StageData stage_data;
+	SimulationData sim_data;
 
 public:
 
@@ -76,33 +80,37 @@ public:
 
 	void LoadStage(const std::string& filepath)
 	{
-		active_entities.clear();
+		for (const auto& pair : sim_data.entity_map)
+		{
+			ECS->DestroyEntity(pair.second);
+		}
+		
 
-		stage_data = LoadStageFromFile(filepath);
+		sim_data.entity_map.clear();
+
+		sim_data.stage_data = LoadStageFromFile(filepath);
 
 		std::map<std::string, Bezier::Bezier<3>> path_cache;
 
-		for (std::size_t i = 0; i < stage_data.enemy_start_times.size(); i++)
+		for (std::size_t i = 0; i < sim_data.stage_data.enemy_start_times.size(); i++)
 		{
 			Entity enemy = ECS->CreateEntity();
-
+			sim_data.entity_map.insert({ i, enemy });
 
 			BezierPath path;
-			path.time_start = stage_data.enemy_start_times[i];
-			
-			//TODO: add speed in later
-			path.speed = 1.f / 6.f;
+			path.time_start = sim_data.stage_data.enemy_start_times[i];
+			path.speed = sim_data.stage_data.enemy_speeds[i];
 			
 			Bezier::Bezier<3> curve;
-			if (path_cache.find(stage_data.enemy_paths[i]) != path_cache.end())
+			if (path_cache.find(sim_data.stage_data.enemy_paths[i]) != path_cache.end())
 			{
-				curve = path_cache[stage_data.enemy_paths[i]];
+				curve = path_cache[sim_data.stage_data.enemy_paths[i]];
 			}
 			else
 			{
-				curve = LoadPathFromFile(stage_data.enemy_paths[i]);
+				curve = LoadPathFromFile(sim_data.stage_data.enemy_paths[i]);
 				
-				path_cache[stage_data.enemy_paths[i]] = curve;
+				path_cache[sim_data.stage_data.enemy_paths[i]] = curve;
 			}
 			path.curve = curve;
 			ECS->AddComponent(enemy, path);
@@ -111,15 +119,15 @@ public:
 			ECS->AddComponent(enemy, Transform{ pos, glm::vec2(1.f, 1.f), 0.f });
 
 			
-			Texture* tex = Texture::CreateTexture(stage_data.enemy_textures[i]);
+			Texture* tex = Texture::CreateTexture(sim_data.stage_data.enemy_textures[i]);
 			ECS->AddComponent(enemy, Renderable({ glm::vec4(1,1,1,1), tex }));
 		}
 	}
 
 
-	const StageData& GetStageData() const
+	SimulationData& GetStageData() 
 	{
-		return stage_data;
+		return sim_data;
 	}
 
 	void Start() 
@@ -143,6 +151,17 @@ public:
 		float current_time = SDL_GetTicks();
 		float dt = (current_time - previous_time) / 1000.f;
 		previous_time = current_time;
+
+		for (const auto& pair : sim_data.entity_map)
+		{
+			Entity e = pair.second;
+
+			auto& path = ECS->GetComponent<BezierPath>(e);
+			path.time_start = sim_data.stage_data.enemy_start_times[pair.first];
+			path.speed = sim_data.stage_data.enemy_speeds[pair.first];
+
+			path_system->SetElapsed(stage_timer);
+		}
 
 		if (running)
 		{

@@ -15,6 +15,7 @@ namespace
 
         //these are parallel arrays
         std::vector<float> enemy_start_times;
+        std::vector<float> enemy_speeds;
         std::vector<std::string> enemy_paths;
         std::vector<std::string> enemy_textures;
     };
@@ -51,6 +52,7 @@ namespace
              i++)
         {
             result.enemy_start_times.push_back(output["enemy data"]["times"][i]);
+            result.enemy_speeds.push_back(output["enemy data"]["speeds"][i]);
             result.enemy_paths.push_back(output["enemy data"]["paths"][i]);
             result.enemy_textures.push_back(output["enemy data"]["textures"][i]);
         }

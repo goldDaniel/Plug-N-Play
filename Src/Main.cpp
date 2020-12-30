@@ -64,7 +64,7 @@ void Init()
     ImGui_ImplSDL2_InitForOpenGL(window, context);
     ImGui_ImplOpenGL3_Init("#version 130");
 
-    ImGui::GetStyle().ScaleAllSizes(2.0f);
+    ImGui::GetStyle().ScaleAllSizes(1.5f);
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
