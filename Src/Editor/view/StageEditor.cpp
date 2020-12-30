@@ -69,15 +69,17 @@ void StageEditor::OnGUIRender()
 	{
 		auto& sim_data = simulation->GetStageData();
 
+		ImGuiTableFlags flags = ImGuiTableFlags_ScrollX |
+								ImGuiTableFlags_ScrollY |
+								ImGuiTableFlags_RowBg |
+								ImGuiTableFlags_BordersOuter |
+								ImGuiTableFlags_BordersV |
+								ImGuiTableFlags_Resizable |
+								ImGuiTableFlags_Reorderable |
+								ImGuiTableFlags_Hideable;
+
 		ImVec2 outer_size = ImVec2(-FLT_MIN, 16 * 16);
-		if (ImGui::BeginTable("##table1", 4, ImGuiTableFlags_ScrollX | 
-											 ImGuiTableFlags_ScrollY | 
-											 ImGuiTableFlags_RowBg | 
-											 ImGuiTableFlags_BordersOuter | 
-											 ImGuiTableFlags_BordersV | 
-											 ImGuiTableFlags_Resizable | 
-											 ImGuiTableFlags_Reorderable | 
-										     ImGuiTableFlags_Hideable, outer_size))
+		if (ImGui::BeginTable("##table1", 4, flags, outer_size))
 		{
 			ImGui::TableSetupColumn("ID");
 			ImGui::TableSetupColumn("Start Time");
@@ -88,14 +90,14 @@ void StageEditor::OnGUIRender()
 			for (std::size_t i = 0; i < sim_data.stage_data.enemy_paths.size(); i++)
 			{
 				ImGui::TableNextRow();
-				
+
 				ImGui::PushID(i);
 				{
 
 					ImGui::PushID(i * 1000 + 0);
 					ImGui::TableSetColumnIndex(0);
 					ImGui::Text("%i", sim_data.entity_map[i]);
-					ImGui::PopID();
+					ImGui::PopID();					
 
 					ImGui::PushID(i * 1000 + 1);
 					ImGui::TableSetColumnIndex(1);

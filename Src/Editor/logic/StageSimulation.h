@@ -80,6 +80,7 @@ public:
 
 	void LoadStage(const std::string& filepath)
 	{
+		stage_timer = 0;
 		for (const auto& pair : sim_data.entity_map)
 		{
 			ECS->DestroyEntity(pair.second);
@@ -109,7 +110,6 @@ public:
 			else
 			{
 				curve = LoadPathFromFile(sim_data.stage_data.enemy_paths[i]);
-				
 				path_cache[sim_data.stage_data.enemy_paths[i]] = curve;
 			}
 			path.curve = curve;
@@ -195,6 +195,5 @@ public:
 	}
 
 };
-
 
 #endif
