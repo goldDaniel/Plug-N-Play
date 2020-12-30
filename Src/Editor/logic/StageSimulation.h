@@ -5,6 +5,8 @@
 #include <Game/Systems/PathFollowingSystem.h>
 #include <Game/Systems/RenderSystem.h>
 
+#include <bezier.h>
+
 class StageSimulation
 {
 private:
@@ -21,6 +23,15 @@ private:
 
 	std::shared_ptr<PathFollowingSystem> path_system;
 	std::shared_ptr<RenderSystem> render_system;
+
+	//we need a reference to all entities in the simulation
+	//so we can remove/add them on level loading/saving
+	std::vector<Entity> active_entities;
+
+	
+	std::map<std::string, Bezier::Bezier<3>> path_cache;
+
+	StageData stage_data;
 
 public:
 
@@ -61,30 +72,57 @@ public:
 			ECS->AddComponent(camera, cam_comp);
 			render_system->SetCamera(camera);
 		}
+	}
 
-		//test stage
-		StageData stage = LoadStageFromFile("Assets/Stages/Test Stage.stage");
+	void LoadStage(const std::string& filepath)
+	{
+		active_entities.clear();
 
-		for (std::size_t i = 0; i < stage.enemy_start_times.size(); i++)
+		stage_data = LoadStageFromFile(filepath);
+
+		std::map<std::string, Bezier::Bezier<3>> path_cache;
+
+		for (std::size_t i = 0; i < stage_data.enemy_start_times.size(); i++)
 		{
 			Entity enemy = ECS->CreateEntity();
 
 
 			BezierPath path;
-			path.time_start = stage.enemy_start_times[i];
+			path.time_start = stage_data.enemy_start_times[i];
+			
+			//TODO: add speed in later
 			path.speed = 1.f / 6.f;
-			path.curve = LoadPathFromFile(stage.enemy_paths[i]);
-
+			
+			Bezier::Bezier<3> curve;
+			if (path_cache.find(stage_data.enemy_paths[i]) != path_cache.end())
+			{
+				curve = path_cache[stage_data.enemy_paths[i]];
+			}
+			else
+			{
+				curve = LoadPathFromFile(stage_data.enemy_paths[i]);
+				
+				path_cache[stage_data.enemy_paths[i]] = curve;
+			}
+			path.curve = curve;
+			ECS->AddComponent(enemy, path);
+			
 			glm::vec2 pos({ path.curve.valueAt(0).x, path.curve.valueAt(0).y });
 			ECS->AddComponent(enemy, Transform{ pos, glm::vec2(1.f, 1.f), 0.f });
 
-			ECS->AddComponent(enemy, path);
-			ECS->AddComponent(enemy, Renderable({ glm::vec4(1,1,1,1), Texture::CreateTexture(stage.enemy_textures[i]) }));
+			
+			Texture* tex = Texture::CreateTexture(stage_data.enemy_textures[i]);
+			ECS->AddComponent(enemy, Renderable({ glm::vec4(1,1,1,1), tex }));
 		}
 	}
 
 
-	void Start()
+	const StageData& GetStageData() const
+	{
+		return stage_data;
+	}
+
+	void Start() 
 	{
 		running = true;
 	}

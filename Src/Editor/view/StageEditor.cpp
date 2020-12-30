@@ -69,6 +69,32 @@ void StageEditor::OnGUIRender()
 
 	if (open_dialog) ImGui::OpenPopup("Open Stage");
 	if (save_dialog) ImGui::OpenPopup("Save Stage");
+
+	if (file_dialog.showFileDialog("Open Stage", imgui_addons::ImGuiFileBrowser::DialogMode::OPEN, ImVec2(700, 310), ".stage"))
+	{
+		std::string file_path = file_dialog.selected_path;
+		simulation->LoadStage(file_path);
+		
+	}
+	if (file_dialog.showFileDialog("Save Stage", imgui_addons::ImGuiFileBrowser::DialogMode::SAVE, ImVec2(700, 310), ".stage"))
+	{
+
+		std::string file_path = file_dialog.selected_path;
+
+		nlohmann::json output;
+
+		output["name"] = "Stage";
+		output["length"] = simulation->GetStageLength();
+
+
+		const auto& stage_data = simulation->GetStageData();
+
+		output["enemy data"]["times"] = stage_data.enemy_start_times;
+		output["enemy data"]["paths"] = stage_data.enemy_paths;
+		output["enemy data"]["textures"] = stage_data.enemy_textures;
+
+		SaveStringToFile(output.dump(), file_path + ".stage");
+	}
 }
 
 void StageEditor::Render(ShapeRenderer& sh)
