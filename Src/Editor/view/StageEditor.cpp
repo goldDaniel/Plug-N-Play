@@ -85,7 +85,6 @@ void StageEditor::OnGUIRender()
 								ImGuiTableFlags_Hideable | 
 							    ImGuiTableFlags_Sortable;
 
-		std::size_t remove_index = -1;
 		ImVec2 outer_size = ImVec2(-FLT_MIN, 16 * 16);
 		if (ImGui::BeginTable("##table1", 5, flags, outer_size))
 		{
@@ -157,7 +156,7 @@ void StageEditor::OnGUIRender()
 					ImGui::TableSetColumnIndex(4);
 					if (ImGui::Button("Delete"))
 					{
-						//delete entity 
+						
 					}
 					ImGui::PopID();
 				}

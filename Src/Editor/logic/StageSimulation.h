@@ -4,8 +4,9 @@
 #include <Core.h>
 #include <Game/Systems/PathFollowingSystem.h>
 #include <Game/Systems/RenderSystem.h>
-
 #include <bezier.h>
+
+#include <filesystem>
 
 class StageSimulation
 {
@@ -40,6 +41,18 @@ public:
 	StageSimulation()
 	{
 		previous_time = SDL_GetTicks();
+
+		//caching paths 
+		auto path = std::filesystem::path("Assets/Paths");
+		path.make_preferred();
+		for (const auto& file : std::filesystem::directory_iterator(path))
+		{
+			const auto& path_str = file.path().string();
+			Bezier::Bezier<3> curve = LoadPathFromFile(path_str);
+
+			path_cache.insert({ path_str, curve });
+		}
+
 
 		ECS = std::make_unique<ECSController>();
 
@@ -96,18 +109,7 @@ public:
 			BezierPath path;
 			path.time_start = sim_data.stage_data.enemy_start_times[i];
 			path.speed = sim_data.stage_data.enemy_speeds[i];
-			
-			Bezier::Bezier<3> curve;
-			if (path_cache.find(sim_data.stage_data.enemy_paths[i]) != path_cache.end())
-			{
-				curve = path_cache[sim_data.stage_data.enemy_paths[i]];
-			}
-			else
-			{
-				curve = LoadPathFromFile(sim_data.stage_data.enemy_paths[i]);
-				path_cache[sim_data.stage_data.enemy_paths[i]] = curve;
-			}
-			path.curve = curve;
+			path.curve = path_cache[sim_data.stage_data.enemy_paths[i]];
 			ECS->AddComponent(enemy, path);
 			
 			glm::vec2 pos({ path.curve.valueAt(0).x, path.curve.valueAt(0).y });
