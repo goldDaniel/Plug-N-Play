@@ -6,11 +6,11 @@
 #include "view/StageEditor.h"
 
 
-static glm::vec2 ProjectToXY0Plane(glm::vec2 mouse_pos, 
+static glm::vec2 ProjectToXY0Plane(const glm::vec2& mouse_pos, 
                                    const glm::mat4& view, 
                                    const glm::mat4& proj, 
-                                   float window_width, 
-                                   float window_height)
+                                   const float window_width, 
+                                   const float window_height)
 {
     
 
@@ -105,16 +105,10 @@ void EditorApplication::Run()
                 sh->Rect(min, max);
             }
         }
-        //draw blue rectangle at the origin tile
-        sh->SetColor(glm::vec4(0.5f, 0.5f, 0.9f, 1.f));
-        glm::vec2 min(-0.5f, -0.5f);
-        glm::vec2 max(0.5f, 0.5f);
-        sh->Rect(min, max);
-
         //draws border for gameplay window
         sh->SetColor(glm::vec4(0.8f, 0.1f, 0.1f, 1.f));
-        min = glm::vec2(-3.5, -6.5);
-        max = glm::vec2(+3.5, +6.5);
+        glm::vec2 min = glm::vec2(-3.5, -6.5);
+        glm::vec2 max = glm::vec2(+3.5, +6.5);
         sh->Rect(min, max);
 
         editor->Render(*sh);

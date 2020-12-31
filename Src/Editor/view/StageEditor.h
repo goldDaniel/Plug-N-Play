@@ -18,6 +18,8 @@ private:
 
 	std::unique_ptr<StageSimulation> simulation;
 
+	Entity selected_entity = -1;
+
 public:
 	StageEditor();
 

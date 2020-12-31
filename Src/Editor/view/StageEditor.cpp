@@ -81,12 +81,14 @@ void StageEditor::OnGUIRender()
 		ImVec2 outer_size = ImVec2(-FLT_MIN, 16 * 16);
 		if (ImGui::BeginTable("##table1", 4, flags, outer_size))
 		{
-			ImGui::TableSetupColumn("ID");
+			ImGui::TableSetupScrollFreeze(1, 1);
+			ImGui::TableSetupColumn("ID", ImGuiTableColumnFlags_NoHide);
 			ImGui::TableSetupColumn("Start Time");
 			ImGui::TableSetupColumn("Speed");
 			ImGui::TableSetupColumn("Path");
 			ImGui::TableHeadersRow();
 
+			
 			for (std::size_t i = 0; i < sim_data.stage_data.enemy_paths.size(); i++)
 			{
 				ImGui::TableNextRow();
@@ -96,7 +98,15 @@ void StageEditor::OnGUIRender()
 
 					ImGui::PushID(i * 1000 + 0);
 					ImGui::TableSetColumnIndex(0);
-					ImGui::Text("%i", sim_data.entity_map[i]);
+					
+					bool selected = sim_data.entity_map[i] == selected_entity;
+					std::string selected_text = std::to_string(sim_data.entity_map[i]);
+					ImGui::Selectable(selected_text.c_str(), &selected, false);
+					if (selected)
+					{
+						selected_entity = sim_data.entity_map[i];
+					}
+
 					ImGui::PopID();					
 
 					ImGui::PushID(i * 1000 + 1);
@@ -158,7 +168,16 @@ void StageEditor::OnGUIRender()
 
 void StageEditor::Render(ShapeRenderer& sh)
 {
+	if (selected_entity != -1)
+	{
+		const auto& transform = simulation->GetComponent<Transform>(selected_entity);
 
+		glm::vec2 min = transform.position - transform.scale / 2.f;
+		glm::vec2 max = transform.position + transform.scale / 2.f;
+
+		sh.SetColor({0.4f, 0.2f, 0.9f, 1.f});
+		sh.Rect(min, max);
+	}
 }
 
 void StageEditor::OnMouseButtonDown() 

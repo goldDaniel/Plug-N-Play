@@ -72,7 +72,7 @@ public:
 			Camera cam_comp;
 
 			cam_comp.proj = glm::perspective(glm::radians(67.f), (float)window_width / (float)window_height, 1.f, 100.f);
-			cam_comp.view = glm::lookAt(glm::vec3(0, 0, 10), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+			cam_comp.view = glm::lookAt(glm::vec3(0, 0, 11), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 			ECS->AddComponent(camera, cam_comp);
 			render_system->SetCamera(camera);
 		}
@@ -122,6 +122,12 @@ public:
 			Texture* tex = Texture::CreateTexture(sim_data.stage_data.enemy_textures[i]);
 			ECS->AddComponent(enemy, Renderable({ glm::vec4(1,1,1,1), tex }));
 		}
+	}
+
+	template<typename T>
+	const T& GetComponent(Entity entity) const
+	{
+		return ECS->GetComponent<T>(entity);
 	}
 
 
