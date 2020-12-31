@@ -130,6 +130,22 @@ public:
 		return ECS->GetComponent<T>(entity);
 	}
 
+	void SelectEntity(Entity& result, glm::vec2 mouse_world_pos)
+	{
+		for (const auto& pair : sim_data.entity_map)
+		{
+			Entity e = pair.second;
+
+			const auto& transform = ECS->GetComponent<Transform>(e);
+
+			float radius = transform.scale.x > transform.scale.y ? transform.scale.x : transform.scale.y;
+
+			if (glm::distance(transform.position, mouse_world_pos) < radius)
+			{
+				result = e;
+			}
+		}
+	}
 
 	SimulationData& GetStageData() 
 	{
@@ -199,7 +215,6 @@ public:
 		this->stage_timer = time;
 		path_system->SetElapsed(time);
 	}
-
 };
 
 #endif

@@ -18,6 +18,8 @@ private:
 
 	std::unique_ptr<StageSimulation> simulation;
 
+	glm::vec2 mouse_world_pos;
+
 	Entity selected_entity = -1;
 
 public:

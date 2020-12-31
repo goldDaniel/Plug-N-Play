@@ -132,7 +132,6 @@ void StageEditor::OnGUIRender()
 	ImGui::End();
 
 
-
 	ImGui::ShowDemoWindow();
 
 	if (open_dialog) ImGui::OpenPopup("Open Stage");
@@ -171,18 +170,30 @@ void StageEditor::Render(ShapeRenderer& sh)
 	if (selected_entity != -1)
 	{
 		const auto& transform = simulation->GetComponent<Transform>(selected_entity);
+		const auto& path = simulation->GetComponent<BezierPath>(selected_entity);
 
 		glm::vec2 min = transform.position - transform.scale / 2.f;
 		glm::vec2 max = transform.position + transform.scale / 2.f;
 
 		sh.SetColor({0.4f, 0.2f, 0.9f, 1.f});
 		sh.Rect(min, max);
+
+
+		sh.SetColor({ 1,1,1,1 });
+		float step = 0.05f;
+		for (float i = 0; i < 1; i += step)
+		{
+			const auto& p0 = path.curve.valueAt(i);
+			const auto& p1 = path.curve.valueAt(i + step);
+
+			sh.Line({ p0.x, p0.y }, { p1.x, p1.y });
+		}
 	}
 }
 
 void StageEditor::OnMouseButtonDown() 
 {
-
+	simulation->SelectEntity(selected_entity, mouse_world_pos);
 }
 
 void StageEditor::OnMouseButtonUp() 
@@ -192,5 +203,6 @@ void StageEditor::OnMouseButtonUp()
 
 void StageEditor::Update(glm::vec2 mouse_world_pos)
 {
+	this->mouse_world_pos = mouse_world_pos;
 	simulation->Update();
 }
