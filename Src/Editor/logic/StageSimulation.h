@@ -31,8 +31,6 @@ private:
 	std::shared_ptr<PathFollowingSystem> path_system;
 	std::shared_ptr<RenderSystem> render_system;
 
-
-	
 	std::map<std::string, Bezier::Bezier<3>> path_cache;
 
 	SimulationData sim_data;
@@ -88,7 +86,6 @@ public:
 		
 		sim_data.entity_map.clear();
 		sim_data.stage_data = LoadStageFromFile(filepath);
-		std::map<std::string, Bezier::Bezier<3>> path_cache;
 
 
 		for (std::size_t i = 0; i < sim_data.stage_data.enemy_start_times.size(); i++)
@@ -143,6 +140,27 @@ public:
 				result = e;
 			}
 		}
+	}
+
+	void UpdateEnemyPath(std::size_t index)
+	{
+		auto& path = ECS->GetComponent<BezierPath>(sim_data.entity_map[index]);
+
+		path.time_start = sim_data.stage_data.enemy_start_times[index];
+		path.speed = sim_data.stage_data.enemy_speeds[index];
+		path.curve = path_cache[sim_data.stage_data.enemy_paths[index]];
+	}
+
+	std::vector<std::string> GetCurveFilepaths()
+	{
+		std::vector<std::string> result;
+
+		for (const auto& pair : path_cache)
+		{
+			result.push_back(pair.first);
+		}
+
+		return result;
 	}
 
 	SimulationData& GetStageData() 

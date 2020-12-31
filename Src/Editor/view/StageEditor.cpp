@@ -69,6 +69,12 @@ void StageEditor::OnGUIRender()
 	{
 		auto& sim_data = simulation->GetStageData();
 
+		if (ImGui::Button("New Enemy"))
+		{
+
+		}
+
+
 		ImGuiTableFlags flags = ImGuiTableFlags_ScrollX |
 								ImGuiTableFlags_ScrollY |
 								ImGuiTableFlags_RowBg |
@@ -76,7 +82,8 @@ void StageEditor::OnGUIRender()
 								ImGuiTableFlags_BordersV |
 								ImGuiTableFlags_Resizable |
 								ImGuiTableFlags_Reorderable |
-								ImGuiTableFlags_Hideable;
+								ImGuiTableFlags_Hideable | 
+							    ImGuiTableFlags_Sortable;
 
 		std::size_t remove_index = -1;
 		ImVec2 outer_size = ImVec2(-FLT_MIN, 16 * 16);
@@ -127,7 +134,23 @@ void StageEditor::OnGUIRender()
 
 					ImGui::PushID(i * 1000 + 3);
 					ImGui::TableSetColumnIndex(3);
-					ImGui::Text("%s", sim_data.stage_data.enemy_paths[i].c_str());
+					if (ImGui::BeginCombo("Path", sim_data.stage_data.enemy_paths[i].c_str()))
+					{
+						for (const auto& path_option : simulation->GetCurveFilepaths())
+						{
+							bool is_selected = (sim_data.stage_data.enemy_paths[i] == path_option);
+							if (ImGui::Selectable(path_option.c_str(), is_selected))
+							{
+								sim_data.stage_data.enemy_paths[i] = path_option;
+								simulation->UpdateEnemyPath(i);
+							}
+							if (is_selected)
+							{
+								ImGui::SetItemDefaultFocus();
+							}
+						}
+						ImGui::EndCombo();
+					}
 					ImGui::PopID();
 
 					ImGui::PushID(i * 1000 + 4);
