@@ -4,6 +4,8 @@
 #include <Core.h>
 #include <Editor/EditorApplication.h>
 
+#include <imgui/ImGuiFileBrowser.h>
+
 /// <summary>
 /// This class is responsible for manipulating a bezier curve 
 /// </summary>
@@ -55,7 +57,7 @@ public:
 	/// </summary>
 	CurveEditor()
 	{
-		ResetCurve();
+		current_curve = Bezier::Bezier<3>({ {-3, 6},{3, 0},{-3, 0},{-3, -6} });
 	}
 
 	/// <summary>
@@ -122,7 +124,7 @@ public:
 		{
 			if (ImGui::Button("New Path"))
 			{
-				ResetCurve();
+				current_curve = Bezier::Bezier<3>({ {-3, 6},{3, 0},{-3, 0},{-3, -6} });
 			}
 			ImGui::SameLine();
 			if (ImGui::Button("Save Path"))
@@ -153,7 +155,7 @@ public:
 
 			Bezier::Bezier<3> path = LoadPathFromFile(file_path);
 
-			SetCurve(path);
+			current_curve = path;
 		}
 
 		if (file_dialog.showFileDialog("Save Path", imgui_addons::ImGuiFileBrowser::DialogMode::SAVE, ImVec2(700, 310), ".path"))
@@ -237,25 +239,6 @@ public:
 		} 
 
 		return result;
-	}
-
-	/// <summary>
-	/// Sets the curve we are working on.
-	/// </summary>
-	/// <param name="curve">
-	/// The bezier curve that we want to edit
-	/// </param>
-	void SetCurve(const Bezier::Bezier<3>& curve)
-	{
-		this->current_curve = curve; 
-	}
-
-	/// <summary>
-	/// Sets the curve back to a default
-	/// </summary>
-	void ResetCurve()
-	{
-		current_curve = Bezier::Bezier<3>({ {-3, 6},{3, 0},{-3, 0},{-3, -6} });
 	}
 };
 

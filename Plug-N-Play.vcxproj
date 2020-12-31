@@ -153,9 +153,8 @@
     <ClInclude Include="src\ecs\Entity.h" />
     <ClInclude Include="src\ecs\EntityManager.h" />
     <ClInclude Include="src\ecs\SystemManager.h" />
-    <ClInclude Include="Src\Editor\CurveEditor.h" />
+    <ClInclude Include="Src\Editor\view\CurveEditor.h" />
     <ClInclude Include="Src\Editor\EditorApplication.h" />
-    <ClInclude Include="Src\Editor\EnemyCreator.h" />
     <ClInclude Include="Src\Editor\logic\StageSimulation.h" />
     <ClInclude Include="Src\Editor\view\StageEditor.h" />
     <ClInclude Include="src\game\Components.h" />

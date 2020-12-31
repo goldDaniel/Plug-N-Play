@@ -2,7 +2,7 @@
 
 #include <imgui/ImGuiFileBrowser.h>
 
-#include "CurveEditor.h"
+#include "view/CurveEditor.h"
 #include "view/StageEditor.h"
 
 

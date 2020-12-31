@@ -1289,16 +1289,13 @@
     <ClInclude Include="Src\Editor\EditorApplication.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Editor\CurveEditor.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Editor\EnemyCreator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Editor\view\StageEditor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Src\Editor\logic\StageSimulation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Editor\view\CurveEditor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

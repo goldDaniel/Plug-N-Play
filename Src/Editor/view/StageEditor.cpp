@@ -133,7 +133,7 @@ void StageEditor::OnGUIRender()
 
 					ImGui::PushID(i * 1000 + 3);
 					ImGui::TableSetColumnIndex(3);
-					if (ImGui::BeginCombo("Path", sim_data.stage_data.enemy_paths[i].c_str()))
+					if (ImGui::BeginCombo("", sim_data.stage_data.enemy_paths[i].c_str()))
 					{
 						for (const auto& path_option : simulation->GetCurveFilepaths())
 						{
