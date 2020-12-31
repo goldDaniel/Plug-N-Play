@@ -78,14 +78,16 @@ void StageEditor::OnGUIRender()
 								ImGuiTableFlags_Reorderable |
 								ImGuiTableFlags_Hideable;
 
+		std::size_t remove_index = -1;
 		ImVec2 outer_size = ImVec2(-FLT_MIN, 16 * 16);
-		if (ImGui::BeginTable("##table1", 4, flags, outer_size))
+		if (ImGui::BeginTable("##table1", 5, flags, outer_size))
 		{
 			ImGui::TableSetupScrollFreeze(1, 1);
 			ImGui::TableSetupColumn("ID", ImGuiTableColumnFlags_NoHide);
 			ImGui::TableSetupColumn("Start Time");
 			ImGui::TableSetupColumn("Speed");
 			ImGui::TableSetupColumn("Path");
+			ImGui::TableSetupColumn("Functions");
 			ImGui::TableHeadersRow();
 
 			
@@ -106,6 +108,10 @@ void StageEditor::OnGUIRender()
 					{
 						selected_entity = sim_data.entity_map[i];
 					}
+					if (!selected && sim_data.entity_map[i] == selected_entity)
+					{
+						selected_entity = -1;
+					}
 
 					ImGui::PopID();					
 
@@ -122,6 +128,14 @@ void StageEditor::OnGUIRender()
 					ImGui::PushID(i * 1000 + 3);
 					ImGui::TableSetColumnIndex(3);
 					ImGui::Text("%s", sim_data.stage_data.enemy_paths[i].c_str());
+					ImGui::PopID();
+
+					ImGui::PushID(i * 1000 + 4);
+					ImGui::TableSetColumnIndex(4);
+					if (ImGui::Button("Delete"))
+					{
+						//delete entity 
+					}
 					ImGui::PopID();
 				}
 				ImGui::PopID();

@@ -86,12 +86,10 @@ public:
 			ECS->DestroyEntity(pair.second);
 		}
 		
-
 		sim_data.entity_map.clear();
-
 		sim_data.stage_data = LoadStageFromFile(filepath);
-
 		std::map<std::string, Bezier::Bezier<3>> path_cache;
+
 
 		for (std::size_t i = 0; i < sim_data.stage_data.enemy_start_times.size(); i++)
 		{
@@ -191,6 +189,12 @@ public:
 			path_system->Update(dt);
 		}
 		render_system->Update(dt);
+
+		if (stage_timer >= stage_length)
+		{
+			stage_timer = stage_length;
+			running = false;
+		}
 	}
 
 	bool IsRunning() const
