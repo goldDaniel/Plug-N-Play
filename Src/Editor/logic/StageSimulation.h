@@ -144,6 +144,33 @@ public:
 		}
 	}
 
+	void AddDefaultEnemy()
+	{
+		sim_data.stage_data.enemy_start_times.push_back(0);
+
+		auto key = path_cache.begin()->first;
+		sim_data.stage_data.enemy_paths.push_back(key);
+		sim_data.stage_data.enemy_textures.push_back("Assets/Textures/Enemy.png");
+		sim_data.stage_data.enemy_speeds.push_back(1.f/25.f);
+
+		float index = sim_data.stage_data.enemy_paths.size() - 1;
+
+		Entity e = ECS->CreateEntity();
+		sim_data.entity_map.insert({ index, e });
+
+		BezierPath path;
+		path.time_start = sim_data.stage_data.enemy_start_times[index];
+		path.speed = sim_data.stage_data.enemy_speeds[index];
+		path.curve = path_cache[sim_data.stage_data.enemy_paths[index]];
+		ECS->AddComponent(e, path);
+
+		glm::vec2 pos({ path.curve.valueAt(0).x, path.curve.valueAt(0).y });
+		ECS->AddComponent(e, Transform{ pos, glm::vec2(1.f, 1.f), 0.f });
+
+		Texture* tex = Texture::CreateTexture(sim_data.stage_data.enemy_textures[index]);
+		ECS->AddComponent(e, Renderable({ glm::vec4(1,1,1,1), tex }));
+	}
+
 	void UpdateEnemyPath(std::size_t index)
 	{
 		auto& path = ECS->GetComponent<BezierPath>(sim_data.entity_map[index]);
@@ -168,6 +195,13 @@ public:
 	SimulationData& GetStageData() 
 	{
 		return sim_data;
+	}
+
+	void SetStageLength(float l)
+	{
+		assert(l >= 30);
+
+		stage_length = l;
 	}
 
 	void Start() 

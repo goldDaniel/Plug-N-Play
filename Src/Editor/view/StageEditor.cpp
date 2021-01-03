@@ -10,9 +10,9 @@ void StageEditor::OnGUIRender()
 {
 	bool open_dialog = false;
 	bool save_dialog = false;
-	ImGui::Begin("Stage Editor", 0, ImGuiWindowFlags_NoMove |
-		ImGuiWindowFlags_NoCollapse |
-		ImGuiWindowFlags_NoResize);
+	ImGui::Begin("Stage Editor", 0, ImGuiWindowFlags_NoMove     |
+									ImGuiWindowFlags_NoCollapse |
+									ImGuiWindowFlags_NoResize);
 	{
 		if (ImGui::Button("New Stage"))
 		{
@@ -51,6 +51,11 @@ void StageEditor::OnGUIRender()
 
 		ImGui::NewLine();
 
+		float local_stage_length = simulation->GetStageLength();
+		ImGui::InputFloat("Stage Length", &local_stage_length, 1, 5);
+		simulation->SetStageLength(local_stage_length);
+
+
 		float local_stage_time = simulation->GetStageTime();
 		if (ImGui::SliderFloat("Current Stage Time", &local_stage_time, 0, simulation->GetStageLength(), 0, 1))
 		{
@@ -71,9 +76,8 @@ void StageEditor::OnGUIRender()
 
 		if (ImGui::Button("New Enemy"))
 		{
-
+			simulation->AddDefaultEnemy();
 		}
-
 
 		ImGuiTableFlags flags = ImGuiTableFlags_ScrollX |
 								ImGuiTableFlags_ScrollY |
@@ -96,14 +100,12 @@ void StageEditor::OnGUIRender()
 			ImGui::TableSetupColumn("Functions");
 			ImGui::TableHeadersRow();
 
-			
 			for (std::size_t i = 0; i < sim_data.stage_data.enemy_paths.size(); i++)
 			{
 				ImGui::TableNextRow();
 
 				ImGui::PushID(i);
 				{
-
 					ImGui::PushID(i * 1000 + 0);
 					ImGui::TableSetColumnIndex(0);
 					
