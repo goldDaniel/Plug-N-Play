@@ -47,7 +47,7 @@ void StageEditor::OnGUIRender()
 		ImGui::NewLine();
 
 		float local_stage_length = simulation->GetStageLength();
-		ImGui::InputFloat("Stage Length", &local_stage_length, 1, 5);
+		ImGui::InputFloat("Stage Length", &local_stage_length, 1, 5);                                                                      
 		simulation->SetStageLength(local_stage_length);
 
 
