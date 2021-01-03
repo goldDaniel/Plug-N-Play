@@ -22,7 +22,7 @@ namespace
 
     
 
-    StageData LoadStageFromFile(const std::string& filepath)
+    nlohmann::json LoadStageFromFile(const std::string& filepath)
     {
         std::string json_string;
         try
@@ -40,24 +40,7 @@ namespace
             std::cout << filepath << std::endl;
         }
 
-        auto output = nlohmann::json::parse(json_string);
-
-        StageData result;
-        result.stage_name = output["name"];
-        result.stage_length = output["length"];
-        
-
-        for (std::size_t i = 0; 
-             i < output["enemy data"]["times"].size(); 
-             i++)
-        {
-            result.enemy_start_times.push_back(output["enemy data"]["times"][i]);
-            result.enemy_speeds.push_back(output["enemy data"]["speeds"][i]);
-            result.enemy_paths.push_back(output["enemy data"]["paths"][i]);
-            result.enemy_textures.push_back(output["enemy data"]["textures"][i]);
-        }
-
-        return result;
+        return nlohmann::json::parse(json_string);
     }
 
 

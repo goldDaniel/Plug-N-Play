@@ -12,13 +12,6 @@ class StageSimulation
 {
 private:
 
-	struct SimulationData
-	{
-		std::map<std::size_t, Entity> entity_map;
-
-		StageData stage_data;
-	};
-
 	bool running = false;
 
 
@@ -34,7 +27,9 @@ private:
 
 	std::map<std::string, Bezier::Bezier<3>> path_cache;
 
-	SimulationData sim_data;
+	std::vector<Entity> active_entities;
+	std::vector<Entity> to_remove;
+	
 
 public:
 
@@ -56,10 +51,6 @@ public:
 
 		ECS = std::make_unique<ECSController>();
 
-		ECS->RegisterComponent<Transform>();
-		ECS->RegisterComponent<Camera>();
-		ECS->RegisterComponent<BezierPath>();
-		ECS->RegisterComponent<Renderable>();
 
 		Signature pathSig;
 		pathSig.set(ECS->GetComponentType<Transform>());
@@ -89,95 +80,163 @@ public:
 		}
 	}
 
+	void DestroyEntity(Entity entity)
+	{
+		to_remove.push_back(entity);
+	}
+
 	void LoadStage(const std::string& filepath)
 	{
 		stage_timer = 0;
-		for (const auto& pair : sim_data.entity_map)
+		for (const auto& entity : active_entities)
 		{
-			ECS->DestroyEntity(pair.second);
+			ECS->DestroyEntity(entity);
 		}
+		active_entities.clear();
+		to_remove.clear();
 		
-		sim_data.entity_map.clear();
-		sim_data.stage_data = LoadStageFromFile(filepath);
+		nlohmann::json data = LoadStageFromFile(filepath);
 
 
-		for (std::size_t i = 0; i < sim_data.stage_data.enemy_start_times.size(); i++)
+		for (std::size_t i = 0; i < data["entities"].size(); i++)
 		{
 			Entity enemy = ECS->CreateEntity();
-			sim_data.entity_map.insert({ i, enemy });
+			active_entities.push_back(enemy);
 
-			BezierPath path;
-			path.time_start = sim_data.stage_data.enemy_start_times[i];
-			path.speed = sim_data.stage_data.enemy_speeds[i];
-			path.curve = path_cache[sim_data.stage_data.enemy_paths[i]];
-			ECS->AddComponent(enemy, path);
+			if (!data["entities"][i]["transform"].is_null())
+			{
+				Transform trans;
+				trans.position.x = data["entities"][i]["transform"]["position"][0];
+				trans.position.y = data["entities"][i]["transform"]["position"][1];
+				trans.scale.x = data["entities"][i]["transform"]["scale"][0];
+				trans.scale.y = data["entities"][i]["transform"]["scale"][1];
+				trans.rotation = data["entities"][i]["transform"]["rotation"];
+
+				ECS->AddComponent(enemy, trans);
+			}
 			
-			glm::vec2 pos({ path.curve.valueAt(0).x, path.curve.valueAt(0).y });
-			ECS->AddComponent(enemy, Transform{ pos, glm::vec2(1.f, 1.f), 0.f });
+			if (!data["entities"][i]["path"].is_null())
+			{
+				BezierPath path;
+				path.time_start = data["entities"][i]["path"]["time_start"];
+				path.speed = data["entities"][i]["path"]["speed"];
+				path.time = 0;
+
+				std::vector<Bezier::Point> control_points;
+				for (std::size_t j = 0; j < 4; j++)
+				{
+					control_points.push_back({ data["entities"][i]["path"]["bezier"][j][0],
+											   data["entities"][i]["path"]["bezier"][j][1] });
+				}
+				path.curve = Bezier::Bezier<3>(control_points);
+
+				ECS->AddComponent(enemy, path);
+			}
 
 			
-			Texture* tex = Texture::CreateTexture(sim_data.stage_data.enemy_textures[i]);
-			ECS->AddComponent(enemy, Renderable({ glm::vec4(1,1,1,1), tex }));
+			if (!data["entities"][i]["renderable"].is_null())
+			{
+				//TODO: do we even use the alpha channel? Might not need to serialize it
+				Renderable renderable;
+				renderable.color = { data["entities"][i]["renderable"]["color"][0],
+									 data["entities"][i]["renderable"]["color"][1],
+									 data["entities"][i]["renderable"]["color"][2],
+									 data["entities"][i]["renderable"]["color"][3],
+				};
+				renderable.texture = Texture::CreateTexture(data["entities"][i]["renderable"]["texture"]);
+
+				ECS->AddComponent(enemy, renderable);
+			}
+			
+		}
+
+		path_system->SetElapsed(stage_timer);
+	}
+
+	void SaveStage(const std::string& filepath)
+	{
+		nlohmann::json output;
+
+		
+
+		for (std::size_t i = 0; i < active_entities.size(); i++)
+		{
+			Entity entity = active_entities[i];
+
+			if (const auto trans = GetComponent<Transform>(entity))
+			{
+				output["entities"][i]["transform"]["position"] = { trans->position.x, trans->position.y };
+				output["entities"][i]["transform"]["scale"] = { trans->scale.x, trans->scale.y };
+				output["entities"][i]["transform"]["rotation"] = trans->rotation;
+			}
+
+			if (const auto path = GetComponent<BezierPath>(entity))
+			{
+				output["entities"][i]["path"]["time_start"] = path->time_start;
+				output["entities"][i]["path"]["speed"] = path->speed;
+
+				const auto& control_points = path->curve.getControlPoints();
+				output["entities"][i]["path"]["bezier"] =
+				{
+					{control_points[0].x, control_points[0].y},
+					{control_points[1].x, control_points[1].y},
+					{control_points[2].x, control_points[2].y},
+					{control_points[3].x, control_points[3].y},
+				};
+			}
+
+			if (const auto renderable = GetComponent<Renderable>(entity))
+			{
+				output["entities"][i]["renderable"]["color"] = { 
+																 renderable->color.r, 
+																 renderable->color.g, 
+																 renderable->color.b, 
+																 renderable->color.a, 
+															   };
+
+				output["entities"][i]["renderable"]["texture"] = "Assets/Textures/Enemy.png";
+			}
+
+
+			SaveStringToFile(output.dump(), "Assets/Stages/NewFormat.stage");
 		}
 	}
 
 	template<typename T>
 	T* GetComponent(Entity entity) const
 	{
-		return &ECS->GetComponent<T>(entity);
+		if (ECS->HasComponent<T>(entity))
+		{
+			return &ECS->GetComponent<T>(entity);
+		}
+
+		return nullptr;
 	}
 
 	void SelectEntity(Entity& result, glm::vec2 mouse_world_pos)
 	{
-		for (const auto& pair : sim_data.entity_map)
+		for (const auto& entity: active_entities)
 		{
-			Entity e = pair.second;
-
-			const auto& transform = ECS->GetComponent<Transform>(e);
-
-			float radius = transform.scale.x > transform.scale.y ? transform.scale.x : transform.scale.y;
-
-			if (glm::distance(transform.position, mouse_world_pos) < radius)
+			if (const auto transform = GetComponent<Transform>(entity))
 			{
-				result = e;
+				float radius = transform->scale.x > transform->scale.y ? transform->scale.x : transform->scale.y;
+
+				if (glm::distance(transform->position, mouse_world_pos) < radius)
+				{
+					result = entity;
+				}
 			}
 		}
 	}
 
 	void AddDefaultEnemy()
 	{
-		sim_data.stage_data.enemy_start_times.push_back(0);
-
-		auto key = path_cache.begin()->first;
-		sim_data.stage_data.enemy_paths.push_back(key);
-		sim_data.stage_data.enemy_textures.push_back("Assets/Textures/Enemy.png");
-		sim_data.stage_data.enemy_speeds.push_back(1.f/25.f);
-
-		std::size_t index = sim_data.stage_data.enemy_paths.size() - 1;
-
-		Entity e = ECS->CreateEntity();
-		sim_data.entity_map.insert({ index, e });
-
-		BezierPath path;
-		path.time_start = sim_data.stage_data.enemy_start_times[index];
-		path.speed = sim_data.stage_data.enemy_speeds[index];
-		path.curve = path_cache[sim_data.stage_data.enemy_paths[index]];
-		ECS->AddComponent(e, path);
-
-		glm::vec2 pos({ path.curve.valueAt(0).x, path.curve.valueAt(0).y });
-		ECS->AddComponent(e, Transform{ pos, glm::vec2(1.f, 1.f), 0.f });
-
-		Texture* tex = Texture::CreateTexture(sim_data.stage_data.enemy_textures[index]);
-		ECS->AddComponent(e, Renderable({ glm::vec4(1,1,1,1), tex }));
+	
 	}
 
-	void UpdateEnemyPath(std::size_t index)
+	void UpdateEnemyPathing()
 	{
-		auto& path = ECS->GetComponent<BezierPath>(sim_data.entity_map[index]);
-
-		path.time_start = sim_data.stage_data.enemy_start_times[index];
-		path.speed = sim_data.stage_data.enemy_speeds[index];
-		path.curve = path_cache[sim_data.stage_data.enemy_paths[index]];
+		path_system->SetElapsed(stage_timer);
 	}
 
 	std::vector<std::string> GetCurveFilepaths()
@@ -192,9 +251,9 @@ public:
 		return result;
 	}
 
-	SimulationData& GetStageData() 
+	const std::vector<Entity>& GetActiveEntities() 
 	{
-		return sim_data;
+		return active_entities;
 	}
 
 	void SetStageLength(float l)
@@ -226,12 +285,16 @@ public:
 		float dt = (current_time - previous_time) / 1000.f;
 		previous_time = current_time;
 
-		
+		for (const auto& e : to_remove)
+		{
+			ECS->DestroyEntity(e);
+		}
+		to_remove.clear();
 
 		if (running)
 		{
 			stage_timer += dt;
-			path_system->Update(dt);
+			path_system->SetElapsed(stage_timer);
 		}
 		render_system->Update(dt);
 
@@ -262,16 +325,6 @@ public:
 		assert(time >= 0);
 
 		this->stage_timer = time;
-
-		for (const auto& pair : sim_data.entity_map)
-		{
-			Entity e = pair.second;
-
-			auto& path = ECS->GetComponent<BezierPath>(e);
-			path.time_start = sim_data.stage_data.enemy_start_times[pair.first];
-			path.speed = sim_data.stage_data.enemy_speeds[pair.first];			
-		}
-		
 		path_system->SetElapsed(stage_timer);
 	}
 };

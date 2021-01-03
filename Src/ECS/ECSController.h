@@ -29,6 +29,15 @@ public:
     }
 
     template<typename T>
+    bool HasComponent(Entity entity)
+    {
+        auto entity_sig = entity_manager->GetSignature(entity);
+        auto component_flag = component_manager->GetComponentType<T>();
+        
+        return entity_sig.test(component_flag);
+    }
+
+    template<typename T>
     void AddComponent(Entity entity, T component)
     {
         component_manager->AddComponent<T>(entity, component);
