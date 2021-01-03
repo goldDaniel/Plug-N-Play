@@ -34,28 +34,16 @@ public:
         bool running = true;
 
         ECSController ECS;
-        ECS.RegisterComponent<Transform>();
-        ECS.RegisterComponent<Velocity>();
-        ECS.RegisterComponent<Camera>();
-        ECS.RegisterComponent<Collider>();
-        ECS.RegisterComponent<Collision>();
-        ECS.RegisterComponent<Bullet>();
-        ECS.RegisterComponent<Weapon>();
-        ECS.RegisterComponent<BezierPath>();
-        ECS.RegisterComponent<InputSet>();
-        ECS.RegisterComponent<PlayerInput>();
-        ECS.RegisterComponent<Renderable>();
-        ECS.RegisterComponent<DebugRenderable>();
-
+        
 
         Signature inputSig;
         inputSig.set(ECS.GetComponentType<InputSet>());
         inputSig.set(ECS.GetComponentType<PlayerInput>());
         auto inputSystem = ECS.RegisterSystem<InputSystem>(inputSig);
         inputSystem->SetQuitCallback([&running]()
-            {
-                running = false;
-            });
+        {
+            running = false;
+        });
 
 
         Signature playerMoveSig;
@@ -155,7 +143,7 @@ public:
             ECS.AddComponent(player, Renderable{ glm::vec4(1,1,1,1), texture });
         }
 
-        StageData stage = LoadStageFromFile("Assets/Stages/Test Stage.stage");
+        StageData stage = {};//LoadStageFromFile("Assets/Stages/Test Stage.stage");
 
         for (std::size_t i = 0; i < stage.enemy_start_times.size(); i++)
         {
