@@ -39,6 +39,11 @@ public:
 		}
 	}
 
+	const std::map<Texture*, std::string>& GetTextureCache()
+	{
+		return texture_cache;
+	}
+
 	void CreateDefaultEnemy(Entity entity, ECSController* const ECS)
 	{
 		ECS->AddComponent(entity, Transform());

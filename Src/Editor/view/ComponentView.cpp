@@ -5,8 +5,7 @@
 #include <filesystem>
 #include <Application.h>
 
-template<>
-void ComponentView::OnGUIRender<Transform>(Transform * component)
+void ComponentView::OnGUIRender(Transform * component)
 {
 	ImGui::Text("TRANSFORM");
 	ImGui::Separator();
@@ -39,8 +38,7 @@ void ComponentView::OnGUIRender<Transform>(Transform * component)
 	ImGui::Separator();
 }
 
-template<>
-void ComponentView::OnGUIRender<BezierPath>(BezierPath * component)
+void ComponentView::OnGUIRender(BezierPath * component)
 {	
 	ImGui::Text("BEZIER PATH");
 	ImGui::Separator();
@@ -64,47 +62,24 @@ void ComponentView::OnGUIRender<BezierPath>(BezierPath * component)
 	ImGui::Separator();
 }
 
-template<>
-void ComponentView::OnGUIRender<Renderable>(Renderable * component)
+void ComponentView::OnGUIRender(const std::map<Texture*, std::string>& texture_cache, Renderable * renderable)
 {
-	std::map<std::string, Texture*> texture_cache;
-
-	//caching  
-	auto path = std::filesystem::path("Assets/Textures");
-	path.make_preferred();
-	for (const auto& file : std::filesystem::directory_iterator(path))
-	{
-		const auto& path_str = file.path().string();
-
-		Texture* t = Texture::CreateTexture(path_str);
-
-		texture_cache.insert({ path_str, t });
-	}
 
 	ImGui::Text("RENDERABLE");
 	ImGui::Separator();
 
 	ImGui::Text("Texture: ");
 	ImGui::SameLine();
-	std::vector<std::string> paths;
-	std::string current;
-	for (const auto& pair : texture_cache)
-	{
-		paths.push_back(pair.first);
-		if (pair.second == component->texture)
-		{
-			current = pair.first;
-		}
-	}
+	std::string current = texture_cache.find(renderable->texture)->second;
 	if (ImGui::BeginCombo("", current.c_str()))
 	{
-		for (const auto& path_option : paths)
+		for (const auto& pair : texture_cache)
 		{
-			bool is_selected = (current == path_option);
-			if (ImGui::Selectable(path_option.c_str(), is_selected))
+			bool is_selected = (current == pair.second);
+			if (ImGui::Selectable(pair.second.c_str(), is_selected))
 			{
-				current = path_option;
-				component->texture = texture_cache[current];
+				current = pair.second;
+				renderable->texture = pair.first;
 			}
 			if (is_selected)
 			{
@@ -117,7 +92,7 @@ void ComponentView::OnGUIRender<Renderable>(Renderable * component)
 	float w = ImGui::GetWindowContentRegionWidth();
 	ImGui::PushItemWidth(w / 3);
 
-	ImGui::ColorPicker4("Color", (float*)&component->color);
+	ImGui::ColorPicker4("Color", (float*)&renderable->color);
 	
 	ImGui::PopItemWidth();
 	ImGui::Separator();

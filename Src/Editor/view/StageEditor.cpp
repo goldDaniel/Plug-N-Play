@@ -140,7 +140,7 @@ void StageEditor::OnGUIRender()
 			if (path) ComponentView().OnGUIRender(path);
 
 			auto renderable = simulation->GetComponent<Renderable>(selected_entity);
-			if (renderable) ComponentView().OnGUIRender(renderable);
+			if (renderable) ComponentView().OnGUIRender(simulation->GetTextureCache(), renderable);
 
 			simulation->UpdateEnemyPathing();
 		}

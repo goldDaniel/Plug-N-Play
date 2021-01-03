@@ -70,6 +70,11 @@ public:
 		}
 	}
 
+	const std::map<Texture*, std::string>& GetTextureCache()
+	{
+		return persistence->GetTextureCache();
+	}
+
 	void DestroyEntity(Entity entity)
 	{
 		to_remove.insert(entity);
