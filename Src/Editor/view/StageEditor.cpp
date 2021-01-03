@@ -70,6 +70,11 @@ void StageEditor::OnGUIRender()
 								ImGuiTableFlags_Hideable |
 								ImGuiTableFlags_Sortable;
 
+		if (ImGui::Button("New Enemy"))
+		{
+			simulation->AddDefaultEnemy();
+		}
+
 		ImVec2 outer_size = ImVec2(-FLT_MIN, 16 * 16);
 		if (ImGui::BeginTable("##table1", 2, flags, outer_size))
 		{
@@ -80,33 +85,37 @@ void StageEditor::OnGUIRender()
 
 			auto entities = simulation->GetActiveEntities();
 
-			for (std::size_t i = 0; i < entities.size(); i++)
+			for (const auto& entity : entities)
 			{
 				ImGui::TableNextRow();
 
-				ImGui::PushID(i);
+				ImGui::PushID(entity);
 				{
-					ImGui::PushID(i * 1000 + 0);
+					ImGui::PushID(entity * 1000 + 0);
 					ImGui::TableSetColumnIndex(0);
 
-					bool selected = entities[i] == selected_entity;
-					std::string selected_text = std::to_string(entities[i]);
+					bool selected = entity == selected_entity;
+					std::string selected_text = std::to_string(entity);
 					ImGui::Selectable(selected_text.c_str(), &selected, false);
 					if (selected)
 					{
-						selected_entity = entities[i];
+						selected_entity = entity;
 					}
-					if (!selected && entities[i] == selected_entity)
+					if (!selected && entity == selected_entity)
 					{
 						selected_entity = -1;
 					}
 					ImGui::PopID();
 
-					ImGui::PushID(i * 1000 + 1);
+					ImGui::PushID(entity * 1000 + 1);
 					ImGui::TableSetColumnIndex(1);
 					if (ImGui::Button("Delete"))
 					{
-						simulation->DestroyEntity(selected_entity);
+						simulation->DestroyEntity(entity);
+						if (selected_entity == entity)
+						{
+							selected_entity = -1;
+						}
 					}
 					ImGui::PopID();
 				}

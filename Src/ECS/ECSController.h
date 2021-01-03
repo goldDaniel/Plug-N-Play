@@ -29,7 +29,7 @@ public:
     }
 
     template<typename T>
-    bool HasComponent(Entity entity)
+    bool HasComponent(Entity entity) const
     {
         auto entity_sig = entity_manager->GetSignature(entity);
         auto component_flag = component_manager->GetComponentType<T>();

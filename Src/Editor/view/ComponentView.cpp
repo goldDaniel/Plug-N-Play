@@ -47,6 +47,7 @@ void ComponentView::OnGUIRender<BezierPath>(BezierPath * component)
 
 	float local_start_time = component->time_start;
 	ImGui::InputFloat("Start Time", &local_start_time, 0.1, 1);
+	if (local_start_time < 0) local_start_time = 0;
 	component->time_start = local_start_time;
 
 	float local_completion_speed = 1.f / component->speed;

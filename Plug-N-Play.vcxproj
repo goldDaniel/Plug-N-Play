@@ -154,6 +154,7 @@
     <ClInclude Include="src\ecs\Entity.h" />
     <ClInclude Include="src\ecs\EntityManager.h" />
     <ClInclude Include="src\ecs\SystemManager.h" />
+    <ClInclude Include="Src\Editor\data\StagePersistence.h" />
     <ClInclude Include="Src\Editor\view\ComponentView.h" />
     <ClInclude Include="Src\Editor\view\CurveEditor.h" />
     <ClInclude Include="Src\Editor\EditorApplication.h" />

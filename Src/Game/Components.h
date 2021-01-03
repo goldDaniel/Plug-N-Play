@@ -92,7 +92,7 @@ struct Weapon
 
 struct Renderable
 {
-    glm::vec4 color;
+    glm::vec4 color = glm::vec4(1,1,1,1);
     Texture* texture;
 };
 
