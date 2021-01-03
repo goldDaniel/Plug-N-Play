@@ -122,9 +122,9 @@ public:
 	}
 
 	template<typename T>
-	const T& GetComponent(Entity entity) const
+	T* GetComponent(Entity entity) const
 	{
-		return ECS->GetComponent<T>(entity);
+		return &ECS->GetComponent<T>(entity);
 	}
 
 	void SelectEntity(Entity& result, glm::vec2 mouse_world_pos)
@@ -153,7 +153,7 @@ public:
 		sim_data.stage_data.enemy_textures.push_back("Assets/Textures/Enemy.png");
 		sim_data.stage_data.enemy_speeds.push_back(1.f/25.f);
 
-		float index = sim_data.stage_data.enemy_paths.size() - 1;
+		std::size_t index = sim_data.stage_data.enemy_paths.size() - 1;
 
 		Entity e = ECS->CreateEntity();
 		sim_data.entity_map.insert({ index, e });
@@ -226,16 +226,7 @@ public:
 		float dt = (current_time - previous_time) / 1000.f;
 		previous_time = current_time;
 
-		for (const auto& pair : sim_data.entity_map)
-		{
-			Entity e = pair.second;
-
-			auto& path = ECS->GetComponent<BezierPath>(e);
-			path.time_start = sim_data.stage_data.enemy_start_times[pair.first];
-			path.speed = sim_data.stage_data.enemy_speeds[pair.first];
-
-			path_system->SetElapsed(stage_timer);
-		}
+		
 
 		if (running)
 		{
@@ -271,7 +262,17 @@ public:
 		assert(time >= 0);
 
 		this->stage_timer = time;
-		path_system->SetElapsed(time);
+
+		for (const auto& pair : sim_data.entity_map)
+		{
+			Entity e = pair.second;
+
+			auto& path = ECS->GetComponent<BezierPath>(e);
+			path.time_start = sim_data.stage_data.enemy_start_times[pair.first];
+			path.speed = sim_data.stage_data.enemy_speeds[pair.first];			
+		}
+		
+		path_system->SetElapsed(stage_timer);
 	}
 };
 

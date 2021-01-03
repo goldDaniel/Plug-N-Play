@@ -1,5 +1,7 @@
 #include "StageEditor.h"
 
+#include "ComponentView.h"
+
 
 StageEditor::StageEditor()
 {
@@ -166,6 +168,13 @@ void StageEditor::OnGUIRender()
 			}
 			ImGui::EndTable();
 		}
+
+		if (selected_entity != -1)
+		{
+			auto trans = simulation->GetComponent<Transform>(selected_entity);
+
+			TransformView(trans).OnGUIRender();
+		}
 	}
 	ImGui::End();
 
@@ -210,8 +219,8 @@ void StageEditor::Render(ShapeRenderer& sh)
 		const auto& transform = simulation->GetComponent<Transform>(selected_entity);
 		const auto& path = simulation->GetComponent<BezierPath>(selected_entity);
 
-		glm::vec2 min = transform.position - transform.scale / 2.f;
-		glm::vec2 max = transform.position + transform.scale / 2.f;
+		glm::vec2 min = transform->position - transform->scale / 2.f;
+		glm::vec2 max = transform->position + transform->scale / 2.f;
 
 		sh.SetColor({0.4f, 0.2f, 0.9f, 1.f});
 		sh.Rect(min, max);
@@ -221,8 +230,8 @@ void StageEditor::Render(ShapeRenderer& sh)
 		float step = 0.05f;
 		for (float i = 0; i < 1; i += step)
 		{
-			const auto& p0 = path.curve.valueAt(i);
-			const auto& p1 = path.curve.valueAt(i + step);
+			const auto& p0 = path->curve.valueAt(i);
+			const auto& p1 = path->curve.valueAt(i + step);
 
 			sh.Line({ p0.x, p0.y }, { p1.x, p1.y });
 		}

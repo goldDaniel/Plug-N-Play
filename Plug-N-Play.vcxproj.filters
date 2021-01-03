@@ -1298,6 +1298,9 @@
     <ClInclude Include="Src\Editor\view\CurveEditor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Editor\view\ComponentView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="vendor\glm\detail\func_common.inl">
