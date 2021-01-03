@@ -75,6 +75,11 @@ public:
 		return persistence->GetTextureCache();
 	}
 
+	const std::map<std::string, Bezier::Bezier<3>>& GetPathCache()
+	{
+		return persistence->GetPathCache();
+	}
+
 	void DestroyEntity(Entity entity)
 	{
 		to_remove.insert(entity);

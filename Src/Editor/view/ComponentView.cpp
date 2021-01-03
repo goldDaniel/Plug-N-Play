@@ -38,10 +38,57 @@ void ComponentView::OnGUIRender(Transform * component)
 	ImGui::Separator();
 }
 
-void ComponentView::OnGUIRender(BezierPath * component)
+void ComponentView::OnGUIRender(const std::map<std::string, Bezier::Bezier<3>>& path_cache, BezierPath * component)
 {	
 	ImGui::Text("BEZIER PATH");
 	ImGui::Separator();
+
+	std::string current;
+	for (auto& pair : path_cache)
+	{
+		bool same_curve = true;
+		//couldnt get operator overloading working so we verify the data here
+		const auto& points_0 = component->curve.getControlPoints();
+		Bezier::Bezier<3> cpy(pair.second);
+		const auto& points_1 = cpy.getControlPoints();
+
+		if (points_0.size() == points_1.size())
+		{
+			for (std::size_t idx = 0; idx < points_0.size() && same_curve; idx++)
+			{
+				const auto& p0 = points_0[idx];
+				const auto& p1 = points_1[idx];
+
+				if (p0.x != p1.x || p0.y != p1.y)
+				{
+					same_curve = false;
+				}
+			}
+		}
+		if (same_curve)
+		{
+			current = pair.first;
+		}
+	}
+
+	if (ImGui::BeginCombo("", current.c_str()))
+	{
+		for (const auto& pair : path_cache)
+		{
+			bool is_selected = (current == pair.first);
+			if (ImGui::Selectable(pair.first.c_str(), is_selected))
+			{
+				current = pair.first;
+				component->curve = pair.second;
+			}
+			if (is_selected)
+			{
+				ImGui::SetItemDefaultFocus();
+			}
+		}
+		ImGui::EndCombo();
+	}
+
 
 	float local_start_time = component->time_start;
 	ImGui::InputFloat("Start Time", &local_start_time, 0.1, 1);
@@ -64,7 +111,6 @@ void ComponentView::OnGUIRender(BezierPath * component)
 
 void ComponentView::OnGUIRender(const std::map<Texture*, std::string>& texture_cache, Renderable * renderable)
 {
-
 	ImGui::Text("RENDERABLE");
 	ImGui::Separator();
 

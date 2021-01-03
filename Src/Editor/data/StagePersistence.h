@@ -44,6 +44,11 @@ public:
 		return texture_cache;
 	}
 
+	const std::map<std::string, Bezier::Bezier<3>>& GetPathCache()
+	{
+		return path_cache;
+	}
+
 	void CreateDefaultEnemy(Entity entity, ECSController* const ECS)
 	{
 		ECS->AddComponent(entity, Transform());

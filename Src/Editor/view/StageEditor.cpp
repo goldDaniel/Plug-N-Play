@@ -137,7 +137,7 @@ void StageEditor::OnGUIRender()
 			if(trans) ComponentView().OnGUIRender(trans);
 
 			auto path = simulation->GetComponent<BezierPath>(selected_entity);
-			if (path) ComponentView().OnGUIRender(path);
+			if (path) ComponentView().OnGUIRender(simulation->GetPathCache(), path);
 
 			auto renderable = simulation->GetComponent<Renderable>(selected_entity);
 			if (renderable) ComponentView().OnGUIRender(simulation->GetTextureCache(), renderable);

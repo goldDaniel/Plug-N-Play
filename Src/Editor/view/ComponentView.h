@@ -9,7 +9,7 @@ public:
 
 	void OnGUIRender(Transform * component);
 
-	void OnGUIRender(BezierPath* component);
+	void OnGUIRender(const std::map<std::string, Bezier::Bezier<3>>& path_cache, BezierPath* component);
 
 	void OnGUIRender(const std::map<Texture*, std::string>& texture_cache, Renderable* renderable);
 };
