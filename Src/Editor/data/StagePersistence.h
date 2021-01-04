@@ -9,8 +9,8 @@ class StagePersistence
 {
 private:
 
-	std::map<Texture*, std::string> texture_cache;
-	std::map<std::string, Bezier::Bezier<3>> path_cache;
+	std::unordered_map<std::string, Texture*> texture_cache;
+	std::unordered_map<std::string, Bezier::Bezier<3>> path_cache;
 
 public:
 
@@ -35,16 +35,16 @@ public:
 			const auto& path_str = file.path().string();
 			Texture* t = Texture::CreateTexture(path_str);
 
-			texture_cache.insert({ t, path_str });
+			texture_cache.insert({ path_str, t });
 		}
 	}
 
-	const std::map<Texture*, std::string>& GetTextureCache()
+	const std::unordered_map<std::string, Texture*>& GetTextureCache()
 	{
 		return texture_cache;
 	}
 
-	const std::map<std::string, Bezier::Bezier<3>>& GetPathCache()
+	const std::unordered_map<std::string, Bezier::Bezier<3>>& GetPathCache()
 	{
 		return path_cache;
 	}
@@ -61,7 +61,7 @@ public:
 		ECS->AddComponent(entity, path);
 
 		Renderable renderable;
-		renderable.texture = texture_cache.begin()->first;
+		renderable.texture = texture_cache.begin()->second;
 		ECS->AddComponent(entity, renderable);
 	}
 
@@ -123,7 +123,14 @@ public:
 																 renderable.color.a,
 				};
 
-				output["entities"][i]["renderable"]["texture"] = texture_cache[renderable.texture];
+				for (const auto& pair : texture_cache)
+				{
+					if (pair.second == renderable.texture)
+					{
+						output["entities"][i]["renderable"]["texture"] = pair.first;
+					}
+				}
+				
 			}
 
 

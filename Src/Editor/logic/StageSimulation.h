@@ -70,12 +70,12 @@ public:
 		}
 	}
 
-	const std::map<Texture*, std::string>& GetTextureCache()
+	const std::unordered_map<std::string, Texture*>& GetTextureCache()
 	{
 		return persistence->GetTextureCache();
 	}
 
-	const std::map<std::string, Bezier::Bezier<3>>& GetPathCache()
+	const std::unordered_map<std::string, Bezier::Bezier<3>>& GetPathCache()
 	{
 		return persistence->GetPathCache();
 	}
@@ -123,6 +123,7 @@ public:
 			if (const auto transform = GetComponent<Transform>(entity))
 			{
 				float radius = transform->scale.x > transform->scale.y ? transform->scale.x : transform->scale.y;
+				radius *= 0.5f;
 
 				if (glm::distance(transform->position, mouse_world_pos) < radius)
 				{
@@ -143,18 +144,6 @@ public:
 	void UpdateEnemyPathing()
 	{
 		path_system->SetElapsed(stage_timer);
-	}
-
-	std::vector<std::string> GetCurveFilepaths()
-	{
-		std::vector<std::string> result;
-
-		/*for (const auto& pair : path_cache)
-		{
-			result.push_back(pair.first);
-		}*/
-
-		return result;
 	}
 
 	const std::set<Entity>& GetActiveEntities() 

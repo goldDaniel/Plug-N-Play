@@ -134,14 +134,36 @@ void StageEditor::OnGUIRender()
 		if (selected_entity != -1)
 		{
 			auto trans = simulation->GetComponent<Transform>(selected_entity);
-			if(trans) ComponentView().OnGUIRender(trans);
-
+			if(trans)
+			{
+				if (ImGui::TreeNode("Transform"))
+				{
+					ComponentView().OnGUIRender(trans);
+					ImGui::TreePop();
+				}
+			}
+			
 			auto path = simulation->GetComponent<BezierPath>(selected_entity);
-			if (path) ComponentView().OnGUIRender(simulation->GetPathCache(), path);
+			if (path)
+			{
+				if (ImGui::TreeNode("Path Following"))
+				{
+					ComponentView().OnGUIRender(simulation->GetPathCache(), path);
+					ImGui::TreePop();
+				}
+			}
 
 			auto renderable = simulation->GetComponent<Renderable>(selected_entity);
-			if (renderable) ComponentView().OnGUIRender(simulation->GetTextureCache(), renderable);
-
+			if (renderable)
+			{
+				if (ImGui::TreeNode("Renderable"))
+				{
+					ComponentView().OnGUIRender(simulation->GetTextureCache(), renderable);
+					ImGui::TreePop();
+				}
+			}
+			
+			
 			simulation->UpdateEnemyPathing();
 		}
 	}

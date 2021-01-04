@@ -7,7 +7,6 @@
 
 void ComponentView::OnGUIRender(Transform * component)
 {
-	ImGui::Text("TRANSFORM");
 	ImGui::Separator();
 
 	float w = ImGui::GetWindowContentRegionWidth();
@@ -38,20 +37,20 @@ void ComponentView::OnGUIRender(Transform * component)
 	ImGui::Separator();
 }
 
-void ComponentView::OnGUIRender(const std::map<std::string, Bezier::Bezier<3>>& path_cache, BezierPath * component)
+void ComponentView::OnGUIRender(const std::unordered_map<std::string, Bezier::Bezier<3>>& path_cache, BezierPath * component)
 {	
-	ImGui::Text("BEZIER PATH");
 	ImGui::Separator();
 
 	std::string current;
 	for (auto& pair : path_cache)
 	{
 		bool same_curve = true;
-		//couldnt get operator overloading working so we verify the data here
 		const auto& points_0 = component->curve.getControlPoints();
 		Bezier::Bezier<3> cpy(pair.second);
 		const auto& points_1 = cpy.getControlPoints();
 
+		//couldnt get operator overloading working cause im dumb
+		//so we verify the data here
 		if (points_0.size() == points_1.size())
 		{
 			for (std::size_t idx = 0; idx < points_0.size() && same_curve; idx++)
@@ -71,6 +70,7 @@ void ComponentView::OnGUIRender(const std::map<std::string, Bezier::Bezier<3>>& 
 		}
 	}
 
+	ImGui::PushID(12355);
 	if (ImGui::BeginCombo("", current.c_str()))
 	{
 		for (const auto& pair : path_cache)
@@ -105,27 +105,33 @@ void ComponentView::OnGUIRender(const std::map<std::string, Bezier::Bezier<3>>& 
 	{
 		ImGui::Text("%u - X: %.2f, Y: %.2f", i, control_points[i].x, control_points[i].y);
 	}
+	ImGui::PopID();
 
 	ImGui::Separator();
 }
 
-void ComponentView::OnGUIRender(const std::map<Texture*, std::string>& texture_cache, Renderable * renderable)
+void ComponentView::OnGUIRender(const std::unordered_map<std::string, Texture*>& texture_cache, Renderable * renderable)
 {
-	ImGui::Text("RENDERABLE");
 	ImGui::Separator();
 
-	ImGui::Text("Texture: ");
-	ImGui::SameLine();
-	std::string current = texture_cache.find(renderable->texture)->second;
-	if (ImGui::BeginCombo("", current.c_str()))
+	std::string current;
+	for (auto& pair : texture_cache)
+	{
+		if (pair.second == renderable->texture)
+		{
+			current = pair.first;
+		}
+	}
+
+	if (ImGui::BeginCombo("Texture", current.c_str()))
 	{
 		for (const auto& pair : texture_cache)
 		{
-			bool is_selected = (current == pair.second);
-			if (ImGui::Selectable(pair.second.c_str(), is_selected))
+			bool is_selected = (current == pair.first);
+			if (ImGui::Selectable(pair.first.c_str(), is_selected))
 			{
-				current = pair.second;
-				renderable->texture = pair.first;
+				current = pair.first;
+				renderable->texture = pair.second;
 			}
 			if (is_selected)
 			{
@@ -134,12 +140,8 @@ void ComponentView::OnGUIRender(const std::map<Texture*, std::string>& texture_c
 		}
 		ImGui::EndCombo();
 	}
-
-	float w = ImGui::GetWindowContentRegionWidth();
-	ImGui::PushItemWidth(w / 3);
-
-	ImGui::ColorPicker4("Color", (float*)&renderable->color);
 	
-	ImGui::PopItemWidth();
+	ImGui::ColorPicker4("Color", (float*)&renderable->color);
+
 	ImGui::Separator();
 }
