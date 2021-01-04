@@ -47,8 +47,24 @@ void StagePersistence::CreateDefaultEnemy(Entity entity, ECSController* const EC
 	ECS->AddComponent(entity, path);
 
 	Renderable renderable;
-	renderable.texture = texture_cache.begin()->second;
+
+	auto file_path = std::filesystem::path("Assets/Textures/Enemy.png");
+	file_path.make_preferred();
+	if (texture_cache.find(file_path.string()) != texture_cache.end())
+	{
+		renderable.texture = texture_cache[file_path.string()];
+	}
+	else
+	{
+		renderable.texture = texture_cache.begin()->second;
+	}
 	ECS->AddComponent(entity, renderable);
+
+	Collider collider;
+	collider.category = Collider::Enemy;
+	collider.collides_with = Collider::Player;
+	collider.radius = 0.5f;
+	ECS->AddComponent(entity, collider);
 }
 
 void StagePersistence::SaveStage(ECSController* const ECS, const std::set<Entity>& active_entities, const std::string& filepath)

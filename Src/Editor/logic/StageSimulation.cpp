@@ -6,7 +6,6 @@ StageSimulation::StageSimulation()
 
 	persistence = std::make_unique<StagePersistence>();
 
-
 	ECS = std::make_unique<ECSController>();
 
 

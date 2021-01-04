@@ -37,6 +37,66 @@ void ComponentView::OnGUIRender(Transform * component)
 	ImGui::Separator();
 }
 
+void ComponentView::OnGUIRender(Collider* collider)
+{
+	ImGui::Separator();
+
+	static std::map<Collider::Type, std::string> type_string =
+	{
+		{Collider::None, "None"},
+		{Collider::Bullet, "Bullet"},
+		{Collider::Player, "Player"},
+		{Collider::Enemy, "Enemy"},
+	};
+	std::unordered_map<Collider::Type, bool> collides_with;
+
+	for (const auto& pair : type_string)
+	{
+		collides_with.insert({ pair.first, collider->collides_with & pair.first });
+	}
+
+	ImGui::InputFloat("Collision Radius", &collider->radius, 0.1f, 0.2f, "%.2f");
+
+	ImGui::Text("Is A: ");
+	ImGui::SameLine();
+	if (ImGui::BeginCombo("", type_string[collider->category].c_str()))
+	{
+		for (const auto& pair : type_string)
+		{
+			bool is_selected = (collider->category == pair.first);
+			if (ImGui::Selectable(pair.second.c_str(), is_selected))
+			{
+				collider->category = pair.first;
+			}
+			if (is_selected)
+			{
+				ImGui::SetItemDefaultFocus();
+			}
+		}
+		ImGui::EndCombo();
+	}
+
+	//we reset the collides with to 0, then update
+	//according 
+	collider->collides_with = Collider::None;	
+	ImGui::Text("Can Hit: ");
+	ImGui::Indent();
+	for (const auto& pair : collides_with)
+	{
+		bool local = pair.second;
+		ImGui::Checkbox(type_string[pair.first].c_str(), &local);
+		collides_with[pair.first] = local;
+
+		if (local)
+		{
+			collider->collides_with |= pair.first;
+		}
+	}
+	ImGui::Unindent();
+
+
+} 
+
 void ComponentView::OnGUIRender(const std::unordered_map<std::string, Bezier::Bezier<3>>& path_cache, BezierPath * component)
 {	
 	ImGui::Separator();

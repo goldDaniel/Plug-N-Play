@@ -163,8 +163,15 @@ void StageEditor::OnGUIRender()
 				}
 			}
 			
-			
-			simulation->UpdateEnemyPathing();
+			auto collider = simulation->GetComponent<Collider>(selected_entity);
+			if (collider)
+			{
+				if (ImGui::TreeNode("Collider"))
+				{
+					ComponentView().OnGUIRender(collider);
+					ImGui::TreePop();
+				}
+			}
 		}
 	}
 	ImGui::End();
@@ -191,24 +198,33 @@ void StageEditor::Render(ShapeRenderer& sh)
 {
 	if (selected_entity != -1)
 	{
+		//if we are selecting an entity it WILL have a transform, otherwise
+		//we wont be able to see it at all
 		const auto& transform = simulation->GetComponent<Transform>(selected_entity);
-		const auto& path = simulation->GetComponent<BezierPath>(selected_entity);
-
 		glm::vec2 min = transform->position - transform->scale / 2.f;
 		glm::vec2 max = transform->position + transform->scale / 2.f;
-
-		sh.SetColor({0.4f, 0.2f, 0.9f, 1.f});
+		sh.SetColor({ 0.4f, 0.2f, 0.9f, 1.f });
 		sh.Rect(min, max);
 
-
-		sh.SetColor({ 1,1,1,1 });
-		float step = 0.05f;
-		for (float i = 0; i < 1; i += step)
+		const auto& path = simulation->GetComponent<BezierPath>(selected_entity);
+		if (path)
 		{
-			const auto& p0 = path->curve.valueAt(i);
-			const auto& p1 = path->curve.valueAt(i + step);
+			sh.SetColor({ 1,1,1,1 });
+			float step = 0.05f;
+			for (float i = 0; i < 1; i += step)
+			{
+				const auto& p0 = path->curve.valueAt(i);
+				const auto& p1 = path->curve.valueAt(i + step);
 
-			sh.Line({ p0.x, p0.y }, { p1.x, p1.y });
+				sh.Line({ p0.x, p0.y }, { p1.x, p1.y });
+			}
+		}
+		
+		const auto& collider = simulation->GetComponent<Collider>(selected_entity);
+		if (collider)
+		{
+			sh.SetColor({0.8f, 0.4f, 0.4f, 1.f});
+			sh.Circle(transform->position, collider->radius);
 		}
 	}
 }
@@ -226,5 +242,8 @@ void StageEditor::OnMouseButtonUp()
 void StageEditor::Update(glm::vec2 mouse_world_pos)
 {
 	this->mouse_world_pos = mouse_world_pos;
+	//if we change an enemy path, we want to make the changes in the 
+	//simulation before we render thenext frame
+	simulation->UpdateEnemyPathing();
 	simulation->Update();
 }
