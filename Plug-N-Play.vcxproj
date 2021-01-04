@@ -121,6 +121,7 @@
     <ClCompile Include="src\ecs\ECSController.cpp" />
     <ClCompile Include="src\ecs\EntityManager.cpp" />
     <ClCompile Include="src\ecs\SystemManager.cpp" />
+    <ClCompile Include="Src\Editor\data\StagePersistence.cpp" />
     <ClCompile Include="Src\Editor\EditorApplication.cpp" />
     <ClCompile Include="Src\Editor\logic\StageSimulation.cpp" />
     <ClCompile Include="Src\Editor\view\ComponentView.cpp" />
