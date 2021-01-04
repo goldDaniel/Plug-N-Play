@@ -83,7 +83,7 @@ void StageEditor::OnGUIRender()
 			ImGui::TableSetupColumn("Functions");
 			ImGui::TableHeadersRow();
 
-			auto entities = simulation->GetActiveEntities();
+			const auto& entities = simulation->GetActiveEntities();
 
 			for (const auto& entity : entities)
 			{

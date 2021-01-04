@@ -122,6 +122,7 @@
     <ClCompile Include="src\ecs\EntityManager.cpp" />
     <ClCompile Include="src\ecs\SystemManager.cpp" />
     <ClCompile Include="Src\Editor\EditorApplication.cpp" />
+    <ClCompile Include="Src\Editor\logic\StageSimulation.cpp" />
     <ClCompile Include="Src\Editor\view\ComponentView.cpp" />
     <ClCompile Include="Src\Editor\view\StageEditor.cpp" />
     <ClCompile Include="src\game\systems\DebugRenderSystem.cpp" />
