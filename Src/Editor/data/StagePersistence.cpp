@@ -115,6 +115,15 @@ void StagePersistence::SaveStage(ECSController* const ECS, const std::set<Entity
 			}
 		}
 
+		if (ECS->HasComponent<Collider>(entity))
+		{
+			const auto& collider = ECS->GetComponent<Collider>(entity);
+
+			output["entities"][i]["collider"]["category"] = collider.category;
+			output["entities"][i]["collider"]["collides"] = collider.collides_with;
+			output["entities"][i]["collider"]["radius"] = collider.radius;
+		}
+
 		if (ECS->HasComponent<Renderable>(entity))
 		{
 			const auto& renderable = ECS->GetComponent<Renderable>(entity);
@@ -148,8 +157,8 @@ void StagePersistence::LoadStage(ECSController* const ECS, std::set<Entity>& act
 
 	for (std::size_t i = 0; i < data["entities"].size(); i++)
 	{
-		Entity enemy = ECS->CreateEntity();
-		active_entities.insert(enemy);
+		Entity entity = ECS->CreateEntity();
+		active_entities.insert(entity);
 
 		if (!data["entities"][i]["transform"].is_null())
 		{
@@ -160,7 +169,7 @@ void StagePersistence::LoadStage(ECSController* const ECS, std::set<Entity>& act
 			trans.scale.y = data["entities"][i]["transform"]["scale"][1];
 			trans.rotation = data["entities"][i]["transform"]["rotation"];
 
-			ECS->AddComponent(enemy, trans);
+			ECS->AddComponent(entity, trans);
 		}
 
 		if (!data["entities"][i]["path"].is_null())
@@ -171,9 +180,18 @@ void StagePersistence::LoadStage(ECSController* const ECS, std::set<Entity>& act
 			path.time = 0;
 			path.curve = path_cache[data["entities"][i]["path"]["bezier"]];
 
-			ECS->AddComponent(enemy, path);
+			ECS->AddComponent(entity, path);
 		}
 
+		if (!data["entities"][i]["collider"].is_null())
+		{
+			Collider collider;
+			collider.category = data["entities"][i]["collider"]["category"];
+			collider.collides_with = data["entities"][i]["collider"]["collides"];
+			collider.radius = data["entities"][i]["collider"]["radius"];
+
+			ECS->AddComponent(entity, collider);
+		}
 
 		if (!data["entities"][i]["renderable"].is_null())
 		{
@@ -186,7 +204,7 @@ void StagePersistence::LoadStage(ECSController* const ECS, std::set<Entity>& act
 			};
 			renderable.texture = Texture::CreateTexture(data["entities"][i]["renderable"]["texture"]);
 
-			ECS->AddComponent(enemy, renderable);
+			ECS->AddComponent(entity, renderable);
 		}
 
 	}
