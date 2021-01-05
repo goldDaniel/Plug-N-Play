@@ -39,7 +39,11 @@ EditorApplication::EditorApplication(SDL_Window* window, SDL_GLContext context, 
                   : Application::Application(window, context, window_width, window_height)
 {
     sh = ShapeRenderer::CreateShapeRenderer();
-    editor = std::make_unique<CurveEditor>();
+    
+    curve_editor = std::make_unique<CurveEditor>();
+    stage_editor = std::make_unique<StageEditor>();
+
+    current_editor = stage_editor;
 }
 
 EditorApplication::~EditorApplication() {}
@@ -64,11 +68,11 @@ void EditorApplication::Run()
             
             if (event.type == SDL_MOUSEBUTTONDOWN)
                 if (event.button.button == SDL_BUTTON_LEFT)
-                    editor->OnMouseButtonDown();
+                    current_editor->OnMouseButtonDown();
 
             if (event.type == SDL_MOUSEBUTTONUP)
                 if (event.button.button == SDL_BUTTON_LEFT)
-                    editor->OnMouseButtonUp();
+                    current_editor->OnMouseButtonUp();
             
             
             if (event.type == SDL_MOUSEMOTION)
@@ -88,7 +92,7 @@ void EditorApplication::Run()
         //INTERACTION
         glm::vec2 selection_point = ProjectToXY0Plane({ mouseX, mouseY }, view, proj, window_width, window_height);
         
-        editor->Update(selection_point);
+        current_editor->Update(selection_point);
 
         //RENDERING
         sh->Begin(proj, view);
@@ -111,7 +115,7 @@ void EditorApplication::Run()
         glm::vec2 max = glm::vec2(+3.5, +6.5);
         sh->Rect(min, max);
 
-        editor->Render(*sh);
+        current_editor->Render(*sh);
 
         sh->End();
 
@@ -135,11 +139,11 @@ void EditorApplication::Run()
             {
                 if (ImGui::MenuItem("Curve Editor"))
                 {
-                    editor = std::make_unique<CurveEditor>();
+                    current_editor = curve_editor;
                 }
                 if (ImGui::MenuItem("Stage Editor"))
                 {
-                    editor = std::make_unique<StageEditor>();
+                    current_editor = stage_editor;
                 }
                 ImGui::EndMenu();
             }
@@ -153,7 +157,7 @@ void EditorApplication::Run()
             ImGui::EndMainMenuBar();
         }
 
-        editor->OnGUIRender();
+        current_editor->OnGUIRender();
 
 
         ImGui::Render();        

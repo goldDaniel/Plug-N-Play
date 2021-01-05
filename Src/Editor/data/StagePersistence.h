@@ -24,6 +24,8 @@ public:
 
 	void SaveStage(ECSController* const ECS, const std::set<Entity>& active_entities, const std::string& filepath);;
 
+	void LoadStage(ECSController* const ECS, const std::string& filepath);
+
 	void LoadStage(ECSController* const ECS, std::set<Entity>& active_entities, const std::string& filepath);
 };
 

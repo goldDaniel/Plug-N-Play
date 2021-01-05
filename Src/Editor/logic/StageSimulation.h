@@ -54,6 +54,8 @@ public:
 
 	void SelectEntity(Entity& result, glm::vec2 mouse_world_pos);
 
+	void CloneEntity(Entity entity);
+
 	void AddDefaultEnemy();
 
 	void UpdateEnemyPathing();

@@ -21,6 +21,10 @@
 #include <Game/Systems/DebugRenderSystem.h>
 
 
+//TODO: refactor 
+#include <Editor/data/StagePersistence.h>
+
+
 class GameApplication : public Application
 {
 public:
@@ -143,25 +147,9 @@ public:
             ECS.AddComponent(player, Renderable{ glm::vec4(1,1,1,1), texture });
         }
 
-        StageData stage = {};//LoadStageFromFile("Assets/Stages/Test Stage.stage");
-
-        for (std::size_t i = 0; i < stage.enemy_start_times.size(); i++)
-        {
-            Entity enemy = ECS.CreateEntity();
-            
-
-            BezierPath path;
-            path.time_start = stage.enemy_start_times[i];
-            path.speed = 1.f / 6.f;
-            path.curve = LoadPathFromFile(stage.enemy_paths[i]);
-
-            glm::vec2 pos({ path.curve.valueAt(0).x, path.curve.valueAt(0).y });
-            ECS.AddComponent(enemy, Transform{pos, glm::vec2(1.f, 1.f), 0.f });
-
-            ECS.AddComponent(enemy, path);
-            ECS.AddComponent(enemy, Collider{ Collider::Enemy, Collider::Player, 0.5f });
-            ECS.AddComponent(enemy, Renderable({ glm::vec4(1,1,1,1), Texture::CreateTexture(stage.enemy_textures[i]) }));
-        }
+        auto persistence = std::make_unique<StagePersistence>();
+        
+        persistence->LoadStage(&ECS, "Assets/Stages/Testing Stage.stage");
 
         float elapsed = 0;
         float prevTicks = SDL_GetTicks();

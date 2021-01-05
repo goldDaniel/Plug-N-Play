@@ -79,7 +79,7 @@ void ComponentView::OnGUIRender(Collider* collider)
 	//we reset the collides with to 0, then update
 	//according 
 	collider->collides_with = Collider::None;	
-	ImGui::Text("Can Hit: ");
+	ImGui::Text("Collides With: ");
 	ImGui::Indent();
 	for (const auto& pair : collides_with)
 	{
@@ -172,7 +172,7 @@ void ComponentView::OnGUIRender(const std::unordered_map<std::string, Bezier::Be
 
 void ComponentView::OnGUIRender(const std::unordered_map<std::string, Texture*>& texture_cache, Renderable * renderable)
 {
-	ImGui::Separator();
+	ImGui::Separator(); 
 
 	std::string current;
 	for (auto& pair : texture_cache)

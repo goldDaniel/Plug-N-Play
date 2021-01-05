@@ -150,6 +150,12 @@ void StagePersistence::SaveStage(ECSController* const ECS, const std::set<Entity
 	}
 }
 
+void StagePersistence::LoadStage(ECSController* const ECS, const std::string& filepath)
+{
+	std::set<Entity> dummy;
+	LoadStage(ECS, dummy, filepath);
+}
+
 void StagePersistence::LoadStage(ECSController* const ECS, std::set<Entity>& active_entities, const std::string& filepath)
 {
 	nlohmann::json data = LoadStageFromFile(filepath);

@@ -23,7 +23,10 @@ class EditorApplication : public Application
 private:
     std::unique_ptr<ShapeRenderer> sh;
 
-    std::unique_ptr<Editor> editor;
+    std::shared_ptr<Editor> stage_editor;
+    std::shared_ptr<Editor> curve_editor;
+
+    std::shared_ptr<Editor> current_editor;
 
     bool show_console = false;
 

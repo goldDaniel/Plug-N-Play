@@ -72,6 +72,11 @@ void StageSimulation::SaveStage(const std::string& filepath)
 	persistence->SaveStage(ECS.get(), active_entities, filepath);
 }
 
+void StageSimulation::CloneEntity(Entity entity)
+{
+	//TODO:
+}
+
 void StageSimulation::SelectEntity(Entity& result, glm::vec2 mouse_world_pos)
 {
 	for (const auto& entity : active_entities)
