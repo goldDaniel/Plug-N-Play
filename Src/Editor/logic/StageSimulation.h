@@ -34,18 +34,20 @@ public:
 
 	StageSimulation();
 
-	const std::unordered_map<std::string, Texture*>& GetTextureCache();
+	[[nodiscard]] const std::unordered_map<std::string, Texture*>& GetTextureCache();
 
-	const std::unordered_map<std::string, Bezier::Bezier<3>>& GetPathCache();
+	[[nodiscard]] const std::unordered_map<std::string, Bezier::Bezier<3>>& GetPathCache();
 
-	const std::set<Entity>& GetActiveEntities();
+	[[nodiscard]] const std::set<Entity>& GetActiveEntities();
 
-	bool IsRunning() const;
+	[[nodiscard]] bool IsRunning() const;
 
-	float GetStageLength() const;
+	[[nodiscard]] float GetStageLength() const;
 
-	float GetStageTime() const;
+	[[nodiscard]] float GetStageTime() const;
 
+	[[nodiscard]] Entity CloneEntity(Entity entity);
+	
 	void DestroyEntity(Entity entity);
 
 	void LoadStage(const std::string& filepath);
@@ -53,8 +55,6 @@ public:
 	void SaveStage(const std::string& filepath);
 
 	void SelectEntity(Entity& result, glm::vec2 mouse_world_pos);
-
-	void CloneEntity(Entity entity);
 
 	void AddDefaultEnemy();
 
@@ -72,6 +72,14 @@ public:
 
 	void SetStageTime(const float time);
 
+	/// <summary>
+	/// Checks if an entity has a component, and returns it if it does.
+	/// We return a pointer rather than a reference as the pointer will be null
+	/// if an entity does not have a component
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
+	/// <param name="entity"></param>
+	/// <returns></returns>
 	template<typename T>
 	T* GetComponent(Entity entity) const
 	{

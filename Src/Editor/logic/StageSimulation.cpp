@@ -72,9 +72,32 @@ void StageSimulation::SaveStage(const std::string& filepath)
 	persistence->SaveStage(ECS.get(), active_entities, filepath);
 }
 
-void StageSimulation::CloneEntity(Entity entity)
+Entity StageSimulation::CloneEntity(Entity entity)
 {
-	//TODO:
+	Entity clone = ECS->CreateEntity();
+	active_entities.insert(clone);
+
+	if (const auto transform = GetComponent<Transform>(entity))
+	{
+		ECS->AddComponent(clone, *transform);
+	}
+
+	if (const auto collider = GetComponent<Collider>(entity))
+	{
+		ECS->AddComponent(clone, *collider);
+	}
+
+	if (const auto path = GetComponent<BezierPath>(entity))
+	{
+		ECS->AddComponent(clone, *path);
+	}
+
+	if (const auto renderable = GetComponent<Renderable>(entity))
+	{
+		ECS->AddComponent(clone, *renderable);
+	}
+
+	return clone;
 }
 
 void StageSimulation::SelectEntity(Entity& result, glm::vec2 mouse_world_pos)
@@ -172,7 +195,7 @@ float StageSimulation::GetStageLength() const
 	return stage_length;
 }
 
-float StageSimulation::GetStageTime() const
+float StageSimulation::GetStageTime() const 
 {
 	return stage_timer;
 }

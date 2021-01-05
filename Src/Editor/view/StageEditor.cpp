@@ -111,7 +111,7 @@ void StageEditor::OnGUIRender()
 					ImGui::TableSetColumnIndex(1);
 					if (ImGui::Button("Clone"))
 					{
-						simulation->CloneEntity(entity);
+						selected_entity = simulation->CloneEntity(entity);
 					}
 					ImGui::SameLine();
 					if (ImGui::Button("Delete"))
