@@ -117,6 +117,7 @@ void StageEditor::OnGUIRender()
 					if (ImGui::Button("Delete"))
 					{
 						simulation->DestroyEntity(entity);
+						//we dont want to select an entity that no longer exists
 						if (selected_entity == entity)
 						{
 							selected_entity = -1;

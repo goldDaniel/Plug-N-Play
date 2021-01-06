@@ -20,13 +20,26 @@ ECSController::ECSController()
     RegisterComponent<PlayerInput>();
     RegisterComponent<Renderable>();
     RegisterComponent<DebugRenderable>();
-
-
 }
 
 Entity ECSController::CreateEntity()
 {
     return entity_manager->CreateEntity();
+}
+
+Entity ECSController::CloneEntity(Entity entity)
+{
+
+    //TODO: clone entity data, not just component types
+
+    Entity clone = entity_manager->CreateEntity();
+    auto signature = entity_manager->GetSignature(entity);
+    
+    entity_manager->SetSignature(clone, signature);
+    system_manager->EntitySignatureChanged(clone, signature);
+
+    
+    return clone;
 }
 
 void ECSController::DestroyEntity(Entity e)
