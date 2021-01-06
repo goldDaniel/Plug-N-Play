@@ -138,8 +138,7 @@ void StageEditor::OnGUIRender()
 	{
 		if (selected_entity != -1)
 		{
-			auto trans = simulation->GetComponent<Transform>(selected_entity);
-			if(trans)
+			if(auto trans = simulation->GetComponent<Transform>(selected_entity))
 			{
 				if (ImGui::TreeNode("Transform"))
 				{
@@ -147,9 +146,8 @@ void StageEditor::OnGUIRender()
 					ImGui::TreePop();
 				}
 			}
-			
-			auto path = simulation->GetComponent<BezierPath>(selected_entity);
-			if (path)
+
+			if (auto path = simulation->GetComponent<BezierPath>(selected_entity))
 			{
 				if (ImGui::TreeNode("Path Following"))
 				{
@@ -158,8 +156,7 @@ void StageEditor::OnGUIRender()
 				}
 			}
 
-			auto renderable = simulation->GetComponent<Renderable>(selected_entity);
-			if (renderable)
+			if (auto renderable = simulation->GetComponent<Renderable>(selected_entity))
 			{
 				if (ImGui::TreeNode("Renderable"))
 				{
@@ -168,8 +165,7 @@ void StageEditor::OnGUIRender()
 				}
 			}
 			
-			auto collider = simulation->GetComponent<Collider>(selected_entity);
-			if (collider)
+			if (auto collider = simulation->GetComponent<Collider>(selected_entity))
 			{
 				if (ImGui::TreeNode("Collider"))
 				{
@@ -211,8 +207,7 @@ void StageEditor::Render(ShapeRenderer& sh)
 		sh.SetColor({ 0.4f, 0.2f, 0.9f, 1.f });
 		sh.Rect(min, max);
 
-		const auto& path = simulation->GetComponent<BezierPath>(selected_entity);
-		if (path)
+		if (const auto& path = simulation->GetComponent<BezierPath>(selected_entity))
 		{
 			sh.SetColor({ 1,1,1,1 });
 			float step = 0.05f;
@@ -225,8 +220,7 @@ void StageEditor::Render(ShapeRenderer& sh)
 			}
 		}
 		
-		const auto& collider = simulation->GetComponent<Collider>(selected_entity);
-		if (collider)
+		if (const auto& collider = simulation->GetComponent<Collider>(selected_entity))
 		{
 			sh.SetColor({0.8f, 0.4f, 0.4f, 1.f});
 			sh.Circle(transform->position, collider->radius);
