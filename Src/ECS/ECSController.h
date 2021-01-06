@@ -21,8 +21,6 @@ public:
     Entity CreateEntity();
     void DestroyEntity(Entity e);
 
-    Entity CloneEntity(Entity entity);
-
     //COMPONENT========================================================
     template<typename T>
     void RegisterComponent()

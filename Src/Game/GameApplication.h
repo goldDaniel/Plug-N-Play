@@ -21,7 +21,7 @@
 #include <Game/Systems/DebugRenderSystem.h>
 
 
-//TODO: refactor into a shared folder 
+//TODO: refactor 
 #include <Editor/data/StagePersistence.h>
 
 
@@ -38,6 +38,7 @@ public:
         bool running = true;
 
         ECSController ECS;
+        
 
         Signature inputSig;
         inputSig.set(ECS.GetComponentType<InputSet>());

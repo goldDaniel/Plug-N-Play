@@ -20,7 +20,7 @@ public:
 
             glm::vec2 input_velocity(0,0);
         
-            float speed = Constants::WORLD_WIDTH * 2;
+            float speed = 14;
 
             if(input.key_left)  input_velocity.x -= 1;
             if(input.key_right) input_velocity.x += 1;
