@@ -15,7 +15,6 @@ public:
 
 	void Update(float dt)
 	{
-
 		std::set<Entity> to_remove;
 
 		for (const auto& entity : entities)
@@ -28,6 +27,15 @@ public:
 				to_remove.insert(collision.e0);
 				to_remove.insert(collision.e1);
 				
+				//collision entities only hold collision data, so we must delete 
+				to_remove.insert(entity);
+			}
+
+			if (collision.type0 == Collider::Enemy &&
+				collision.type1 == Collider::Player)
+			{
+				to_remove.insert(collision.e1);
+
 				//collision entities only hold collision data, so we must delete 
 				to_remove.insert(entity);
 			}

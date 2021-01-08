@@ -69,7 +69,11 @@ void StageSimulation::LoadStage(const std::string& filepath)
 
 void StageSimulation::SaveStage(const std::string& filepath)
 {
+	float local_stage_time = stage_timer;
+
+	SetStageTime(0);
 	persistence->SaveStage(ECS.get(), active_entities, filepath);
+	SetStageTime(local_stage_time);
 }
 
 Entity StageSimulation::CloneEntity(Entity entity)

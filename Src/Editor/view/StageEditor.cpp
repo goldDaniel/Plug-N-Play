@@ -142,7 +142,10 @@ void StageEditor::OnGUIRender()
 			{
 				if (ImGui::TreeNode("Transform"))
 				{
+					ImGui::PushID(0);
 					ComponentView().OnGUIRender(trans);
+					ImGui::PopID();
+				
 					ImGui::TreePop();
 				}
 			}
@@ -151,7 +154,10 @@ void StageEditor::OnGUIRender()
 			{
 				if (ImGui::TreeNode("Path Following"))
 				{
+					ImGui::PushID(0);
 					ComponentView().OnGUIRender(simulation->GetPathCache(), path);
+					ImGui::PopID();
+					
 					ImGui::TreePop();
 				}
 			}
@@ -160,7 +166,10 @@ void StageEditor::OnGUIRender()
 			{
 				if (ImGui::TreeNode("Renderable"))
 				{
+					ImGui::PushID(0);
 					ComponentView().OnGUIRender(simulation->GetTextureCache(), renderable);
+					ImGui::PopID();
+					
 					ImGui::TreePop();
 				}
 			}
@@ -169,7 +178,10 @@ void StageEditor::OnGUIRender()
 			{
 				if (ImGui::TreeNode("Collider"))
 				{
+					ImGui::PushID(0);
 					ComponentView().OnGUIRender(collider);
+					ImGui::PopID();
+
 					ImGui::TreePop();
 				}
 			}

@@ -12,7 +12,6 @@ void ComponentView::OnGUIRender(Transform * component)
 	float w = ImGui::GetWindowContentRegionWidth();
 	ImGui::PushItemWidth(w / 3);
 
-	ImGui::PushID(1);
 	ImGui::Text("Position");
 	ImGui::InputFloat("X", &component->position.x, 0.1, 1);
 	ImGui::SameLine();
@@ -31,7 +30,6 @@ void ComponentView::OnGUIRender(Transform * component)
 	float rotation_local = glm::degrees(component->rotation);
 	ImGui::InputFloat("", &rotation_local, 1, 30);
 	component->rotation = glm::radians(rotation_local);
-	ImGui::PopID();
 
 	ImGui::PopItemWidth();
 	ImGui::Separator();
@@ -130,7 +128,6 @@ void ComponentView::OnGUIRender(const std::unordered_map<std::string, Bezier::Be
 		}
 	}
 
-	ImGui::PushID(12355);
 	if (ImGui::BeginCombo("", current.c_str()))
 	{
 		for (const auto& pair : path_cache)
@@ -165,8 +162,7 @@ void ComponentView::OnGUIRender(const std::unordered_map<std::string, Bezier::Be
 	{
 		ImGui::Text("%u - X: %.2f, Y: %.2f", i, control_points[i].x, control_points[i].y);
 	}
-	ImGui::PopID();
-
+	
 	ImGui::Separator();
 }
 
